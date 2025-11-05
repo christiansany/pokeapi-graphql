@@ -68,7 +68,7 @@ function formatError(formattedError: GraphQLFormattedError): GraphQLFormattedErr
 const server = new ApolloServer<Context>({
   typeDefs,
   resolvers,
-  introspection: !isProduction,
+  introspection: true, // Enable introspection for GraphiQL
   includeStacktraceInErrorResponses: !isProduction,
   formatError,
 });
@@ -87,7 +87,7 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
   
-  // Apply Apollo middleware to /graphql route
+  // Apply Apollo middleware to /graphql route for POST requests
   app.use('/graphql', expressMiddleware(server, {
     context: async () => createContext(),
   }));
@@ -96,7 +96,7 @@ async function startServer() {
   if (require.main === module) {
     app.listen(port, () => {
       console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
-      console.log(`📊 GraphQL Playground: http://localhost:${port}/graphql`);
+      console.log(`🎨 GraphiQL UI available at http://localhost:${port}/graphql`);
     });
   }
 }
