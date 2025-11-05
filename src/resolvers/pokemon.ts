@@ -1,5 +1,5 @@
-import { PokemonResolvers } from "../types/generated";
-import { encodeGlobalId } from "../utils/relay";
+import { PokemonResolvers } from "../types/generated.ts";
+import { encodeGlobalId } from "../utils/relay.ts";
 
 export const Pokemon: PokemonResolvers = {
   id: (parent) => {
