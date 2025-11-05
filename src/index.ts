@@ -1,13 +1,19 @@
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
-import { GraphQLFormattedError } from 'graphql';
+import type { GraphQLFormattedError } from 'graphql';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { resolvers } from './resolvers';
-import { createContext, Context } from './context';
+import { resolvers } from './resolvers/index.ts';
+import { createContext } from './context.ts';
+import type { Context } from './context.ts';
+
+// ES module equivalent of __dirname
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Load environment variables
 dotenv.config();
@@ -93,12 +99,12 @@ async function startServer() {
   }));
   
   // Conditionally start server for local development
-  if (require.main === module) {
-    app.listen(port, () => {
-      console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
-      console.log(`🎨 GraphiQL UI available at http://localhost:${port}/graphql`);
-    });
-  }
+  // if (require.main === module) {
+  //   app.listen(port, () => {
+  //     console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
+  //     console.log(`🎨 GraphiQL UI available at http://localhost:${port}/graphql`);
+  //   });
+  // }
 }
 
 startServer().catch((error) => {

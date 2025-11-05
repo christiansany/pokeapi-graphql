@@ -9,9 +9,9 @@ const config: CodegenConfig = {
         'typescript-resolvers'
       ],
       config: {
-        contextType: '../context#Context',
+        contextType: '../context.ts#Context',
         mappers: {
-          Pokemon: '../datasources/pokeapi#PokemonDTO'
+          Pokemon: '../datasources/pokeapi.ts#PokemonDTO'
         }
       }
     }
