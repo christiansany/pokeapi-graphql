@@ -4,8 +4,8 @@ import { GraphQLFormattedError } from 'graphql';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
-import { resolvers } from './resolvers/index.ts';
-import { createContext, Context } from './context.ts';
+import { resolvers } from './resolvers';
+import { createContext, Context } from './context';
 
 // Load environment variables
 dotenv.config();
