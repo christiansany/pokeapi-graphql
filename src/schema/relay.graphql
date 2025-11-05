@@ -1,0 +1,35 @@
+"""
+The Node interface is used to implement global object identification.
+All types that implement this interface must have a globally unique ID.
+"""
+interface Node {
+  """
+  The globally unique identifier for this object.
+  """
+  id: ID!
+}
+
+"""
+PageInfo contains information about pagination in a connection.
+"""
+type PageInfo {
+  """
+  Indicates whether more edges exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+  
+  """
+  Indicates whether more edges exist prior to the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+  
+  """
+  The cursor corresponding to the first node in edges. Null if the connection is empty.
+  """
+  startCursor: String
+  
+  """
+  The cursor corresponding to the last node in edges. Null if the connection is empty.
+  """
+  endCursor: String
+}
