@@ -1,9 +1,11 @@
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
+import { expressMiddleware } from '@apollo/server/express4';
 import { GraphQLFormattedError } from 'graphql';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import * as dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
 import { resolvers } from './resolvers';
 import { createContext, Context } from './context';
 
@@ -71,20 +73,38 @@ const server = new ApolloServer<Context>({
   formatError,
 });
 
+// Create Express application
+const app = express();
+
 // Start the server
 async function startServer() {
   const port = parseInt(process.env.PORT || '4000', 10);
   
-  const { url } = await startStandaloneServer(server, {
-    listen: { port },
-    context: async () => createContext(),
-  });
+  // Start Apollo Server
+  await server.start();
   
-  console.log(`🚀 Server ready at ${url}`);
-  console.log(`📊 GraphQL Playground: ${url}`);
+  // Configure middleware
+  app.use(cors());
+  app.use(express.json());
+  
+  // Apply Apollo middleware to /graphql route
+  app.use('/graphql', expressMiddleware(server, {
+    context: async () => createContext(),
+  }));
+  
+  // Conditionally start server for local development
+  if (require.main === module) {
+    app.listen(port, () => {
+      console.log(`🚀 Server ready at http://localhost:${port}/graphql`);
+      console.log(`📊 GraphQL Playground: http://localhost:${port}/graphql`);
+    });
+  }
 }
 
 startServer().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
 });
+
+// Export Express app for Vercel
+export default app;
