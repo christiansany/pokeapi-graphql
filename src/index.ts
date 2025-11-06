@@ -103,7 +103,7 @@ async function startServer() {
 
   // Apply Apollo middleware to /graphql route for POST requests
   app.use(
-    "/",
+    "/graphql",
     expressMiddleware(server, {
       context: async () => createContext(),
     })

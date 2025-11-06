@@ -5,5 +5,12 @@
       "source": "/(.*)",
       "destination": "/"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/graphql",
+      "permanent": true
+    }
   ]
 }
