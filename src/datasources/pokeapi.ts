@@ -44,17 +44,13 @@ export class PokeAPIDataSource {
       }
 
       if (!response.ok) {
-        throw new Error(
-          `PokéAPI request failed: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`PokéAPI request failed: ${response.status} ${response.statusText}`);
       }
 
       return (await response.json()) as T;
     } catch (error) {
       if (error instanceof Error && error.message.includes("fetch")) {
-        throw new Error(
-          `Network error: Unable to reach PokéAPI - ${error.message}`
-        );
+        throw new Error(`Network error: Unable to reach PokéAPI - ${error.message}`);
       }
       throw error;
     }
@@ -81,10 +77,7 @@ export class PokeAPIDataSource {
     return pokemon;
   }
 
-  async getPokemonList(
-    limit: number,
-    offset: number
-  ): Promise<PokemonListResponse> {
+  async getPokemonList(limit: number, offset: number): Promise<PokemonListResponse> {
     const cacheKey = `list:${limit}:${offset}`;
 
     // Check cache first

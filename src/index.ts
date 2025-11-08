@@ -14,7 +14,9 @@ import type { Context } from "./context.js";
 // Determine if running in production
 const isProduction = process.env.NODE_ENV === "production";
 
-const ENDPOINT = isProduction ? "https://pokeapi-graphql-one.vercel.app" : "http://localhost:3000/graphql";
+const ENDPOINT = isProduction
+  ? "https://pokeapi-graphql-one.vercel.app"
+  : "http://localhost:3000/graphql";
 
 // ES module equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -24,20 +26,12 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 // Load GraphQL schema from .graphql files
-const relaySchema = readFileSync(
-  join(__dirname, "schema", "relay.graphql"),
-  "utf-8"
-);
-const mainSchema = readFileSync(
-  join(__dirname, "schema", "schema.graphql"),
-  "utf-8"
-);
+const relaySchema = readFileSync(join(__dirname, "schema", "relay.graphql"), "utf-8");
+const mainSchema = readFileSync(join(__dirname, "schema", "schema.graphql"), "utf-8");
 const typeDefs = [relaySchema, mainSchema];
 
 // Error formatting function
-function formatError(
-  formattedError: GraphQLFormattedError
-): GraphQLFormattedError {
+function formatError(formattedError: GraphQLFormattedError): GraphQLFormattedError {
   // Log error with context
   console.error("[GraphQL Error]", {
     message: formattedError.message,
