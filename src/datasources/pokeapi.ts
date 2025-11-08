@@ -1,4 +1,4 @@
-import NodeCache from 'node-cache';
+import NodeCache from "node-cache";
 
 // PokemonDTO interface matching PokéAPI response structure
 export interface PokemonDTO {
@@ -21,46 +21,40 @@ export interface PokemonListResponse {
   results: Array<{ name: string; url: string }>;
 }
 
+const cache = new NodeCache({
+  stdTTL: 0,
+  checkperiod: 6000,
+  maxKeys: 5000,
+  useClones: false,
+});
+
 export class PokeAPIDataSource {
   private baseURL: string;
-  private cache: NodeCache;
-  private pokemonTTL: number;
-  private listTTL: number;
 
-  constructor(config: {
-    baseURL: string;
-    pokemonTTL?: number;
-    listTTL?: number;
-    maxCacheSize?: number;
-  }) {
+  constructor(config: { baseURL: string }) {
     this.baseURL = config.baseURL;
-    this.pokemonTTL = config.pokemonTTL || 3600; // 1 hour default
-    this.listTTL = config.listTTL || 300; // 5 minutes default
-    
-    this.cache = new NodeCache({
-      stdTTL: this.pokemonTTL,
-      checkperiod: 600,
-      maxKeys: config.maxCacheSize || 1000,
-      useClones: false
-    });
   }
 
   private async fetch<T>(url: string): Promise<T | null> {
     try {
       const response = await fetch(url);
-      
+
       if (response.status === 404) {
         return null;
       }
-      
+
       if (!response.ok) {
-        throw new Error(`PokéAPI request failed: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `PokéAPI request failed: ${response.status} ${response.statusText}`
+        );
       }
-      
-      return await response.json() as T;
+
+      return (await response.json()) as T;
     } catch (error) {
-      if (error instanceof Error && error.message.includes('fetch')) {
-        throw new Error(`Network error: Unable to reach PokéAPI - ${error.message}`);
+      if (error instanceof Error && error.message.includes("fetch")) {
+        throw new Error(
+          `Network error: Unable to reach PokéAPI - ${error.message}`
+        );
       }
       throw error;
     }
@@ -68,45 +62,48 @@ export class PokeAPIDataSource {
 
   async getPokemonById(id: number): Promise<PokemonDTO | null> {
     const cacheKey = `pokemon:${id}`;
-    
+
     // Check cache first
-    const cached = this.cache.get<PokemonDTO>(cacheKey);
+    const cached = cache.get<PokemonDTO>(cacheKey);
     if (cached) {
       return cached;
     }
-    
+
     // Fetch from PokéAPI
     const url = `${this.baseURL}/pokemon/${id}`;
     const pokemon = await this.fetch<PokemonDTO>(url);
-    
+
     // Store in cache if found
     if (pokemon) {
-      this.cache.set(cacheKey, pokemon, this.pokemonTTL);
+      cache.set(cacheKey, pokemon);
     }
-    
+
     return pokemon;
   }
 
-  async getPokemonList(limit: number, offset: number): Promise<PokemonListResponse> {
+  async getPokemonList(
+    limit: number,
+    offset: number
+  ): Promise<PokemonListResponse> {
     const cacheKey = `list:${limit}:${offset}`;
-    
+
     // Check cache first
-    const cached = this.cache.get<PokemonListResponse>(cacheKey);
+    const cached = cache.get<PokemonListResponse>(cacheKey);
     if (cached) {
       return cached;
     }
-    
+
     // Fetch from PokéAPI
     const url = `${this.baseURL}/pokemon?limit=${limit}&offset=${offset}`;
     const list = await this.fetch<PokemonListResponse>(url);
-    
+
     if (!list) {
-      throw new Error('Failed to fetch Pokemon list from PokéAPI');
+      throw new Error("Failed to fetch Pokemon list from PokéAPI");
     }
-    
+
     // Store in cache
-    this.cache.set(cacheKey, list, this.listTTL);
-    
+    cache.set(cacheKey, list);
+
     return list;
   }
 }
