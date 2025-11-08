@@ -1,6 +1,6 @@
-import type { Resolvers } from '../types/generated.ts';
-import { Query } from './query.ts';
-import { Pokemon } from './pokemon.ts';
+import type { Resolvers } from '../types/generated.js';
+import { Query } from './query.js';
+import { Pokemon } from './pokemon.js';
 
 export const resolvers: Resolvers = {
   Query,

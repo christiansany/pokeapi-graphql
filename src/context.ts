@@ -1,4 +1,4 @@
-import { PokeAPIDataSource } from './datasources/pokeapi.ts';
+import { PokeAPIDataSource } from './datasources/pokeapi.js';
 
 export interface Context {
   dataSources: {

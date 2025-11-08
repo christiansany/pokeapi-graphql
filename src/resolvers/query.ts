@@ -1,7 +1,7 @@
 import { GraphQLError } from 'graphql';
-import type { QueryResolvers } from '../types/generated.ts';
-import { decodeGlobalId } from '../utils/relay.ts';
-import { decodeCursor, encodeCursor } from '../utils/cursor.ts';
+import type { QueryResolvers } from '../types/generated.js';
+import { decodeGlobalId } from '../utils/relay.js';
+import { decodeCursor, encodeCursor } from '../utils/cursor.js';
 
 export const Query: QueryResolvers = {
   pokemon: async (_, { id }, { dataSources }) => {

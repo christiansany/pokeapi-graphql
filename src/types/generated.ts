@@ -1,7 +1,6 @@
-// @ts-nocheck
-import { GraphQLResolveInfo } from 'graphql';
-import { PokemonDTO } from '../datasources/pokeapi.ts';
-import { Context } from '../context.ts';
+import type { GraphQLResolveInfo } from 'graphql';
+import type { PokemonDTO } from '../datasources/pokeapi.js';
+import type { Context } from '../context.js';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
