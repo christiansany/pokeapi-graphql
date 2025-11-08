@@ -24,17 +24,16 @@ export const Query: QueryResolvers = {
   },
 
   pokemons: async (_, args, { dataSources }) => {
-    const { first, after } = args;
+    const { first: limit, after } = args;
+
+    // TODO: Add restriction to not allow more than 50 pokemons from loading in one request
     
     // Validate pagination arguments
-    if (first !== undefined && first !== null && first <= 0) {
-      throw new GraphQLError('"first" must be a positive integer', {
+    if (limit !== undefined && limit !== null && limit <= 0) {
+      throw new GraphQLError('"limit" must be a positive integer', {
         extensions: { code: 'INVALID_PAGINATION_ARGS' }
       });
     }
-    
-    // Default limit to first argument or 10
-    const limit = first ?? 10;
     
     // Decode after cursor to get starting offset
     let offset = 0;
@@ -49,7 +48,7 @@ export const Query: QueryResolvers = {
     }
     
     // Fetch Pokemon list from PokéAPI
-    const listResponse = await dataSources.pokeapi.getPokemonList(limit, offset);
+    const listResponse = await dataSources.pokeapi.getPokemonList(limit ?? 0, offset);
     
     // Fetch full Pokemon data for each result
     const pokemonPromises = listResponse.results.map((result: { name: string; url: string }) => {
@@ -71,7 +70,7 @@ export const Query: QueryResolvers = {
     }));
     
     // Calculate pagination info
-    const hasNextPage = offset + limit < listResponse.count;
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
     const hasPreviousPage = offset > 0;
     const startCursor = edges.length > 0 ? edges[0].cursor : null;
     const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
