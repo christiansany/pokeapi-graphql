@@ -9,5 +9,11 @@ export const Pokemon: PokemonResolvers = {
   baseExperience: (parent) => parent.base_experience,
   order: (parent) => parent.order,
   image: (parent) => parent.sprites.front_default || "",
-  abilities: (parent) => parent.abilities,
+  abilities: (parent) => ({
+    edges: parent.abilities.map((abilityRef) => ({
+      slot: abilityRef.slot,
+      isHidden: abilityRef.is_hidden,
+      abilityName: abilityRef.ability.name,
+    })),
+  }),
 };

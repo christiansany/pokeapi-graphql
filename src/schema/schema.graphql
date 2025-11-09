@@ -40,7 +40,7 @@ type Pokemon implements Node {
   """
   The abilities this Pokemon can have.
   """
-  abilities: [PokemonAbility!]!
+  abilities: PokemonAbilityConnection!
 }
 
 """
@@ -105,23 +105,20 @@ type Query {
   node(id: ID!): Node
 }
 
-# TODO: This doesn't really make sense to have PokemonAbility flattened
-# This should be a lsit of edges and the slot and isHidden values should be on the edge and not PokemonAbility
+"""
+A connection to a list of Pokemon abilities.
+"""
+type PokemonAbilityConnection {
+  """
+  A list of edges containing Pokemon-specific ability metadata.
+  """
+  edges: [PokemonAbilityEdge!]!
+}
 
 """
-A Pokemon ability with full details.
+An edge representing the relationship between a Pokemon and an Ability.
 """
-type PokemonAbility implements Node {
-  """
-  The globally unique identifier for this ability.
-  """
-  id: ID!
-  
-  """
-  The name of the ability.
-  """
-  name: String!
-  
+type PokemonAbilityEdge {
   """
   The slot this ability occupies (1, 2, or 3).
   """
@@ -131,6 +128,26 @@ type PokemonAbility implements Node {
   Whether this is a hidden ability.
   """
   isHidden: Boolean!
+  
+  """
+  The ability at the end of this edge.
+  """
+  node: Ability!
+}
+
+"""
+An ability that Pokemon can have.
+"""
+type Ability implements Node {
+  """
+  The globally unique identifier for this ability.
+  """
+  id: ID!
+  
+  """
+  The name of the ability.
+  """
+  name: String!
   
   """
   Effect entries describing what this ability does.

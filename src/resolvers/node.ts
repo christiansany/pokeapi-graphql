@@ -6,9 +6,9 @@ export const Node: NodeResolvers = {
     if ("base_experience" in parent && "sprites" in parent) {
       return "Pokemon";
     }
-    // Check if it's a PokemonAbility by looking for ability-specific fields
-    if ("ability" in parent && "slot" in parent && "is_hidden" in parent) {
-      return "PokemonAbility";
+    // Check if it's an Ability by looking for ability-specific fields
+    if ("effect_entries" in parent && "flavor_text_entries" in parent) {
+      return "Ability";
     }
     return null;
   },
