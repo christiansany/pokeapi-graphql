@@ -17,6 +17,7 @@ const config: CodegenConfig = {
         contextType: "../context.js#Context",
         mappers: {
           Pokemon: "../datasources/pokeapi.js#PokemonDTO",
+          PokemonAbility: "../datasources/pokeapi.js#AbilityReferenceDTO",
         },
       },
     },

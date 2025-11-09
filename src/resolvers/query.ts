@@ -26,11 +26,9 @@ export const Query: QueryResolvers = {
   pokemons: async (_, args, { dataSources }) => {
     const { first: limit, after } = args;
 
-    // TODO: Add restriction to not allow more than 50 pokemons from loading in one request
-
     // Validate pagination arguments
-    if (limit !== undefined && limit !== null && limit <= 0) {
-      throw new GraphQLError('"limit" must be a positive integer', {
+    if (limit !== undefined && limit !== null && (limit <= 0 || limit > 50)) {
+      throw new GraphQLError('"limit" must be a positive integer, and no more than 50', {
         extensions: { code: "INVALID_PAGINATION_ARGS" },
       });
     }
@@ -86,7 +84,6 @@ export const Query: QueryResolvers = {
       totalCount: listResponse.count,
     };
   },
-
   node: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 

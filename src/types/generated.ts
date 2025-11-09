@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import { GraphQLResolveInfo } from 'graphql';
-import { PokemonDTO } from '../datasources/pokeapi.js';
+import { PokemonDTO, AbilityReferenceDTO } from '../datasources/pokeapi.js';
 import { Context } from '../context.js';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -19,6 +19,28 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+};
+
+/** An effect entry describing an ability's effect. */
+export type EffectEntry = {
+  __typename?: 'EffectEntry';
+  /** The full effect description. */
+  effect: Scalars['String']['output'];
+  /** The language this effect is written in. */
+  language: Scalars['String']['output'];
+  /** A short effect description. */
+  shortEffect: Scalars['String']['output'];
+};
+
+/** Flavor text for an ability from a specific game version. */
+export type FlavorTextEntry = {
+  __typename?: 'FlavorTextEntry';
+  /** The flavor text. */
+  flavorText: Scalars['String']['output'];
+  /** The language this text is written in. */
+  language: Scalars['String']['output'];
+  /** The game version group this text is from. */
+  versionGroup: Scalars['String']['output'];
 };
 
 /**
@@ -46,6 +68,8 @@ export type PageInfo = {
 /** A Pokemon from the PokéAPI. */
 export type Pokemon = Node & {
   __typename?: 'Pokemon';
+  /** The abilities this Pokemon can have. */
+  abilities: Array<PokemonAbility>;
   /** The base experience gained for defeating this Pokemon. */
   baseExperience: Scalars['Int']['output'];
   /** The height of this Pokemon in decimetres. */
@@ -60,6 +84,23 @@ export type Pokemon = Node & {
   order: Scalars['Int']['output'];
   /** The weight of this Pokemon in hectograms. */
   weight: Scalars['Int']['output'];
+};
+
+/** A Pokemon ability with full details. */
+export type PokemonAbility = {
+  __typename?: 'PokemonAbility';
+  /** Effect entries describing what this ability does. */
+  effectEntries: Array<EffectEntry>;
+  /** Flavor text entries from various game versions. */
+  flavorTextEntries: Array<FlavorTextEntry>;
+  /** The unique identifier for this ability. */
+  id: Scalars['Int']['output'];
+  /** Whether this is a hidden ability. */
+  isHidden: Scalars['Boolean']['output'];
+  /** The name of the ability. */
+  name: Scalars['String']['output'];
+  /** The slot this ability occupies (1, 2, or 3). */
+  slot: Scalars['Int']['output'];
 };
 
 /** A connection to a list of Pokemon. */
@@ -184,11 +225,14 @@ export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  EffectEntry: ResolverTypeWrapper<EffectEntry>;
+  FlavorTextEntry: ResolverTypeWrapper<FlavorTextEntry>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Pokemon: ResolverTypeWrapper<PokemonDTO>;
+  PokemonAbility: ResolverTypeWrapper<AbilityReferenceDTO>;
   PokemonConnection: ResolverTypeWrapper<Omit<PokemonConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonEdge']> }>;
   PokemonEdge: ResolverTypeWrapper<Omit<PokemonEdge, 'node'> & { node: ResolversTypes['Pokemon'] }>;
   Query: ResolverTypeWrapper<{}>;
@@ -198,15 +242,32 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  EffectEntry: EffectEntry;
+  FlavorTextEntry: FlavorTextEntry;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
   PageInfo: PageInfo;
   Pokemon: PokemonDTO;
+  PokemonAbility: AbilityReferenceDTO;
   PokemonConnection: Omit<PokemonConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonEdge']> };
   PokemonEdge: Omit<PokemonEdge, 'node'> & { node: ResolversParentTypes['Pokemon'] };
   Query: {};
   String: Scalars['String']['output'];
+};
+
+export type EffectEntryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['EffectEntry'] = ResolversParentTypes['EffectEntry']> = {
+  effect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  shortEffect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type FlavorTextEntryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['FlavorTextEntry'] = ResolversParentTypes['FlavorTextEntry']> = {
+  flavorText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  versionGroup?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
@@ -223,6 +284,7 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
 };
 
 export type PokemonResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Pokemon'] = ResolversParentTypes['Pokemon']> = {
+  abilities?: Resolver<Array<ResolversTypes['PokemonAbility']>, ParentType, ContextType>;
   baseExperience?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   height?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -230,6 +292,16 @@ export type PokemonResolvers<ContextType = Context, ParentType extends Resolvers
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   weight?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonAbilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonAbility'] = ResolversParentTypes['PokemonAbility']> = {
+  effectEntries?: Resolver<Array<ResolversTypes['EffectEntry']>, ParentType, ContextType>;
+  flavorTextEntries?: Resolver<Array<ResolversTypes['FlavorTextEntry']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  isHidden?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -253,9 +325,12 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
 };
 
 export type Resolvers<ContextType = Context> = {
+  EffectEntry?: EffectEntryResolvers<ContextType>;
+  FlavorTextEntry?: FlavorTextEntryResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
+  PokemonAbility?: PokemonAbilityResolvers<ContextType>;
   PokemonConnection?: PokemonConnectionResolvers<ContextType>;
   PokemonEdge?: PokemonEdgeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

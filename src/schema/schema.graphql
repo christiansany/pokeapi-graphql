@@ -36,6 +36,11 @@ type Pokemon implements Node {
   The front sprite image URL for this Pokemon.
   """
   image: String!
+  
+  """
+  The abilities this Pokemon can have.
+  """
+  abilities: [PokemonAbility!]!
 }
 
 """
@@ -98,4 +103,79 @@ type Query {
   Fetch any object that implements the Node interface by its global ID.
   """
   node(id: ID!): Node
+}
+
+"""
+A Pokemon ability with full details.
+"""
+type PokemonAbility {
+  """
+  The unique identifier for this ability.
+  """
+  id: Int!
+  
+  """
+  The name of the ability.
+  """
+  name: String!
+  
+  """
+  The slot this ability occupies (1, 2, or 3).
+  """
+  slot: Int!
+  
+  """
+  Whether this is a hidden ability.
+  """
+  isHidden: Boolean!
+  
+  """
+  Effect entries describing what this ability does.
+  """
+  effectEntries: [EffectEntry!]!
+  
+  """
+  Flavor text entries from various game versions.
+  """
+  flavorTextEntries: [FlavorTextEntry!]!
+}
+
+"""
+An effect entry describing an ability's effect.
+"""
+type EffectEntry {
+  """
+  The full effect description.
+  """
+  effect: String!
+  
+  """
+  A short effect description.
+  """
+  shortEffect: String!
+  
+  """
+  The language this effect is written in.
+  """
+  language: String!
+}
+
+"""
+Flavor text for an ability from a specific game version.
+"""
+type FlavorTextEntry {
+  """
+  The flavor text.
+  """
+  flavorText: String!
+  
+  """
+  The language this text is written in.
+  """
+  language: String!
+  
+  """
+  The game version group this text is from.
+  """
+  versionGroup: String!
 }

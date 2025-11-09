@@ -9,4 +9,5 @@ export const Pokemon: PokemonResolvers = {
   baseExperience: (parent) => parent.base_experience,
   order: (parent) => parent.order,
   image: (parent) => parent.sprites.front_default || "",
+  abilities: (parent) => parent.abilities,
 };

@@ -1,4 +1,43 @@
 import NodeCache from "node-cache";
+import DataLoader from "dataloader";
+
+// Ability-related interfaces
+export interface AbilityReferenceDTO {
+  ability: {
+    name: string;
+    url: string;
+  };
+  is_hidden: boolean;
+  slot: number;
+}
+
+export interface EffectEntryDTO {
+  effect: string;
+  short_effect: string;
+  language: {
+    name: string;
+    url: string;
+  };
+}
+
+export interface FlavorTextEntryDTO {
+  flavor_text: string;
+  language: {
+    name: string;
+    url: string;
+  };
+  version_group: {
+    name: string;
+    url: string;
+  };
+}
+
+export interface AbilityDTO {
+  id: number;
+  name: string;
+  effect_entries: EffectEntryDTO[];
+  flavor_text_entries: FlavorTextEntryDTO[];
+}
 
 // PokemonDTO interface matching PokéAPI response structure
 export interface PokemonDTO {
@@ -11,6 +50,7 @@ export interface PokemonDTO {
   sprites: {
     front_default: string | null;
   };
+  abilities: AbilityReferenceDTO[];
 }
 
 // PokemonListResponse interface for paginated list endpoint
@@ -30,20 +70,30 @@ const cache = new NodeCache({
 
 export class PokeAPIDataSource {
   private baseURL: string;
+  public abilityLoader: DataLoader<string, AbilityDTO | null>;
 
   constructor(config: { baseURL: string }) {
     this.baseURL = config.baseURL;
+
+    // Initialize DataLoader with batching logic
+    this.abilityLoader = new DataLoader<string, AbilityDTO | null>(
+      async (names: readonly string[]) => {
+        // Fetch all abilities in parallel
+        const abilities = await Promise.all(names.map((name) => this.getAbilityByName(name)));
+        return abilities;
+      },
+      {
+        // Cache results within the same request
+        cache: true,
+      }
+    );
   }
 
-  private async fetch<T>(url: string): Promise<T | null> {
+  private async fetch<T>(url: string): Promise<T> {
     try {
       const response = await fetch(url);
 
-      if (response.status === 404) {
-        return null;
-      }
-
-      if (!response.ok) {
+      if (response.status === 404 || !response.ok) {
         throw new Error(`PokéAPI request failed: ${response.status} ${response.statusText}`);
       }
 
@@ -56,7 +106,7 @@ export class PokeAPIDataSource {
     }
   }
 
-  async getPokemonById(id: number): Promise<PokemonDTO | null> {
+  async getPokemonById(id: number): Promise<PokemonDTO> {
     const cacheKey = `pokemon:${id}`;
 
     // Check cache first
@@ -98,5 +148,36 @@ export class PokeAPIDataSource {
     cache.set(cacheKey, list);
 
     return list;
+  }
+
+  async getAbilityByName(name: string): Promise<AbilityDTO | null> {
+    const cacheKey = `ability:${name}`;
+
+    // Check cache first
+    const cached = cache.get<AbilityDTO>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    try {
+      // Fetch from PokéAPI
+      const url = `${this.baseURL}/ability/${name}`;
+      const ability = await this.fetch<AbilityDTO>(url);
+
+      // Store in cache if found
+      if (ability) {
+        cache.set(cacheKey, ability);
+      }
+
+      return ability;
+    } catch (error) {
+      // Handle 404 responses by returning null
+      if (error instanceof Error && error.message.includes("404")) {
+        console.warn(`Ability not found: ${name}`);
+        return null;
+      }
+      // Re-throw network errors
+      throw error;
+    }
   }
 }
