@@ -3,6 +3,8 @@
 import { GraphQLResolveInfo } from 'graphql';
 import { PokemonDTO } from '../domains/pokemon/pokemon.dto.js';
 import { AbilityDTO } from '../domains/ability/ability.dto.js';
+import { StatDTO } from '../domains/stat/stat.dto.js';
+import { TypeDTO } from '../domains/type/type.dto.js';
 import { Context } from '../context.js';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -33,6 +35,26 @@ export type Ability = Node & {
   id: Scalars['ID']['output'];
   /** The name of the ability. */
   name: Scalars['String']['output'];
+};
+
+/**
+ * Damage relations for a type.
+ * Describes type effectiveness in battle.
+ */
+export type DamageRelations = {
+  __typename?: 'DamageRelations';
+  /** Types that deal double damage to this type. */
+  doubleDamageFrom: Array<NamedApiResource>;
+  /** Types that this type deals double damage to. */
+  doubleDamageTo: Array<NamedApiResource>;
+  /** Types that deal half damage to this type. */
+  halfDamageFrom: Array<NamedApiResource>;
+  /** Types that this type deals half damage to. */
+  halfDamageTo: Array<NamedApiResource>;
+  /** Types that deal no damage to this type. */
+  noDamageFrom: Array<NamedApiResource>;
+  /** Types that this type deals no damage to. */
+  noDamageTo: Array<NamedApiResource>;
 };
 
 /** Dream World sprites. */
@@ -100,6 +122,24 @@ export type HomeSprites = {
   frontShinyFemale?: Maybe<Scalars['String']['output']>;
 };
 
+/** A move that affects a stat. */
+export type MoveStatAffect = {
+  __typename?: 'MoveStatAffect';
+  /** The amount of change to the stat. */
+  change: Scalars['Int']['output'];
+  /** The move that causes this change. */
+  move: NamedApiResource;
+};
+
+/** Sets of moves that affect a stat. */
+export type MoveStatAffectSets = {
+  __typename?: 'MoveStatAffectSets';
+  /** Moves that decrease this stat. */
+  decrease: Array<MoveStatAffect>;
+  /** Moves that increase this stat. */
+  increase: Array<MoveStatAffect>;
+};
+
 /** Details about how a Pokemon learns a move in a specific version group. */
 export type MoveVersionGroupDetail = {
   __typename?: 'MoveVersionGroupDetail';
@@ -111,6 +151,15 @@ export type MoveVersionGroupDetail = {
   versionGroup: NamedApiResource;
 };
 
+/** A localized name for a resource. */
+export type Name = {
+  __typename?: 'Name';
+  /** The language this name is in. */
+  language: NamedApiResource;
+  /** The localized name. */
+  name: Scalars['String']['output'];
+};
+
 /** A named API resource reference. */
 export type NamedApiResource = {
   __typename?: 'NamedAPIResource';
@@ -118,6 +167,15 @@ export type NamedApiResource = {
   name: Scalars['String']['output'];
   /** The URL of the referenced resource. */
   url: Scalars['String']['output'];
+};
+
+/** Sets of natures that affect a stat. */
+export type NatureStatAffectSets = {
+  __typename?: 'NatureStatAffectSets';
+  /** Natures that decrease this stat. */
+  decrease: Array<NamedApiResource>;
+  /** Natures that increase this stat. */
+  increase: Array<NamedApiResource>;
 };
 
 /**
@@ -158,6 +216,15 @@ export type PageInfo = {
   hasPreviousPage: Scalars['Boolean']['output'];
   /** The cursor corresponding to the first node in edges. Null if the connection is empty. */
   startCursor?: Maybe<Scalars['String']['output']>;
+};
+
+/** Past damage relations for a type in a previous generation. */
+export type PastDamageRelations = {
+  __typename?: 'PastDamageRelations';
+  /** The damage relations that were in effect. */
+  damageRelations: DamageRelations;
+  /** The generation this damage relation set was in effect. */
+  generation: NamedApiResource;
 };
 
 /** A Pokemon from the PokéAPI. */
@@ -290,8 +357,8 @@ export type PokemonStatEdge = {
   baseStat: Scalars['Int']['output'];
   /** The effort points (EVs) gained when defeating this Pokemon. */
   effort: Scalars['Int']['output'];
-  /** The stat reference. */
-  stat: NamedApiResource;
+  /** The stat at the end of this edge. */
+  node: Stat;
 };
 
 /** A connection to a list of Pokemon types. */
@@ -304,10 +371,10 @@ export type PokemonTypeConnection = {
 /** An edge representing the relationship between a Pokemon and a Type. */
 export type PokemonTypeEdge = {
   __typename?: 'PokemonTypeEdge';
+  /** The type at the end of this edge. */
+  node: Type;
   /** The slot this type occupies (1 or 2). */
   slot: Scalars['Int']['output'];
-  /** The type reference. */
-  type: NamedApiResource;
 };
 
 export type Query = {
@@ -318,6 +385,14 @@ export type Query = {
   pokemon?: Maybe<Pokemon>;
   /** Fetch a paginated list of Pokemon using forward-only cursor-based pagination. */
   pokemons: PokemonConnection;
+  /** Fetch a single Stat by its global ID. */
+  stat?: Maybe<Stat>;
+  /** Fetch a paginated list of Stats using forward-only cursor-based pagination. */
+  stats: StatConnection;
+  /** Fetch a single Type by its global ID. */
+  type?: Maybe<Type>;
+  /** Fetch a paginated list of Types using forward-only cursor-based pagination. */
+  types: TypeConnection;
 };
 
 
@@ -334,6 +409,125 @@ export type QueryPokemonArgs = {
 export type QueryPokemonsArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryStatArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryStatsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryTypeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryTypesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** A Stat that Pokemon can have (HP, Attack, Defense, etc.). */
+export type Stat = Node & {
+  __typename?: 'Stat';
+  /** Moves that affect this stat. */
+  affectingMoves: MoveStatAffectSets;
+  /** Natures that affect this stat. */
+  affectingNatures: NatureStatAffectSets;
+  /** Characteristics that are determined by this stat. */
+  characteristics: Array<NamedApiResource>;
+  /** The internal ID of this Stat in the games. */
+  gameIndex: Scalars['Int']['output'];
+  /** The globally unique identifier for this Stat. */
+  id: Scalars['ID']['output'];
+  /** Whether this stat only exists within a battle. */
+  isBattleOnly: Scalars['Boolean']['output'];
+  /** The class of damage this stat is directly related to (null for most stats). */
+  moveDamageClass?: Maybe<NamedApiResource>;
+  /** The name of this Stat. */
+  name: Scalars['String']['output'];
+  /** Localized names for this stat. */
+  names: Array<Name>;
+};
+
+/** A connection to a list of Stats. */
+export type StatConnection = {
+  __typename?: 'StatConnection';
+  /** A list of edges. */
+  edges: Array<StatEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The total count of Stats available. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in a Stat connection. */
+export type StatEdge = {
+  __typename?: 'StatEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The Stat at the end of the edge. */
+  node: Stat;
+};
+
+/** A Type that Pokemon and moves can have (Fire, Water, Grass, etc.). */
+export type Type = Node & {
+  __typename?: 'Type';
+  /** Damage relations for this type. */
+  damageRelations: DamageRelations;
+  /** Game indices for this type across different versions. */
+  gameIndices: Array<GameIndex>;
+  /** The generation this type was introduced in. */
+  generation: NamedApiResource;
+  /** The globally unique identifier for this Type. */
+  id: Scalars['ID']['output'];
+  /** The class of damage this type inflicts (physical, special, or status). */
+  moveDamageClass?: Maybe<NamedApiResource>;
+  /** Moves that have this type. */
+  moves: Array<NamedApiResource>;
+  /** The name of this Type. */
+  name: Scalars['String']['output'];
+  /** Localized names for this type. */
+  names: Array<Name>;
+  /** Past damage relations for this type in previous generations. */
+  pastDamageRelations: Array<PastDamageRelations>;
+  /** Pokemon that have this type. */
+  pokemon: Array<TypePokemon>;
+};
+
+/** A connection to a list of Types. */
+export type TypeConnection = {
+  __typename?: 'TypeConnection';
+  /** A list of edges. */
+  edges: Array<TypeEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The total count of Types available. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in a Type connection. */
+export type TypeEdge = {
+  __typename?: 'TypeEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The Type at the end of the edge. */
+  node: Type;
+};
+
+/** A Pokemon that has a specific type. */
+export type TypePokemon = {
+  __typename?: 'TypePokemon';
+  /** The Pokemon that has this type. */
+  pokemon: NamedApiResource;
+  /** The slot this type occupies for the Pokemon (1 or 2). */
+  slot: Scalars['Int']['output'];
 };
 
 
@@ -406,13 +600,14 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  Node: ( AbilityDTO ) | ( PokemonDTO );
+  Node: ( AbilityDTO ) | ( PokemonDTO ) | ( StatDTO ) | ( TypeDTO );
 };
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Ability: ResolverTypeWrapper<AbilityDTO>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  DamageRelations: ResolverTypeWrapper<DamageRelations>;
   DreamWorldSprites: ResolverTypeWrapper<DreamWorldSprites>;
   EffectEntry: ResolverTypeWrapper<EffectEntry>;
   FlavorTextEntry: ResolverTypeWrapper<FlavorTextEntry>;
@@ -422,12 +617,17 @@ export type ResolversTypes = {
   HomeSprites: ResolverTypeWrapper<HomeSprites>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  MoveStatAffect: ResolverTypeWrapper<MoveStatAffect>;
+  MoveStatAffectSets: ResolverTypeWrapper<MoveStatAffectSets>;
   MoveVersionGroupDetail: ResolverTypeWrapper<MoveVersionGroupDetail>;
+  Name: ResolverTypeWrapper<Name>;
   NamedAPIResource: ResolverTypeWrapper<NamedApiResource>;
+  NatureStatAffectSets: ResolverTypeWrapper<NatureStatAffectSets>;
   Node: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['Node']>;
   OfficialArtworkSprites: ResolverTypeWrapper<OfficialArtworkSprites>;
   OtherPokemonSprites: ResolverTypeWrapper<OtherPokemonSprites>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
+  PastDamageRelations: ResolverTypeWrapper<PastDamageRelations>;
   Pokemon: ResolverTypeWrapper<PokemonDTO>;
   PokemonAbilityConnection: ResolverTypeWrapper<Omit<PokemonAbilityConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonAbilityEdge']> }>;
   PokemonAbilityEdge: ResolverTypeWrapper<{ slot: number; isHidden: boolean; abilityName: string }>;
@@ -436,18 +636,26 @@ export type ResolversTypes = {
   PokemonMoveConnection: ResolverTypeWrapper<PokemonMoveConnection>;
   PokemonMoveEdge: ResolverTypeWrapper<PokemonMoveEdge>;
   PokemonSprites: ResolverTypeWrapper<PokemonSprites>;
-  PokemonStatConnection: ResolverTypeWrapper<PokemonStatConnection>;
-  PokemonStatEdge: ResolverTypeWrapper<PokemonStatEdge>;
-  PokemonTypeConnection: ResolverTypeWrapper<PokemonTypeConnection>;
-  PokemonTypeEdge: ResolverTypeWrapper<PokemonTypeEdge>;
+  PokemonStatConnection: ResolverTypeWrapper<Omit<PokemonStatConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonStatEdge']> }>;
+  PokemonStatEdge: ResolverTypeWrapper<{ baseStat: number; effort: number; statName: string }>;
+  PokemonTypeConnection: ResolverTypeWrapper<Omit<PokemonTypeConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonTypeEdge']> }>;
+  PokemonTypeEdge: ResolverTypeWrapper<{ slot: number; typeName: string }>;
   Query: ResolverTypeWrapper<{}>;
+  Stat: ResolverTypeWrapper<StatDTO>;
+  StatConnection: ResolverTypeWrapper<Omit<StatConnection, 'edges'> & { edges: Array<ResolversTypes['StatEdge']> }>;
+  StatEdge: ResolverTypeWrapper<Omit<StatEdge, 'node'> & { node: ResolversTypes['Stat'] }>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Type: ResolverTypeWrapper<TypeDTO>;
+  TypeConnection: ResolverTypeWrapper<Omit<TypeConnection, 'edges'> & { edges: Array<ResolversTypes['TypeEdge']> }>;
+  TypeEdge: ResolverTypeWrapper<Omit<TypeEdge, 'node'> & { node: ResolversTypes['Type'] }>;
+  TypePokemon: ResolverTypeWrapper<TypePokemon>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Ability: AbilityDTO;
   Boolean: Scalars['Boolean']['output'];
+  DamageRelations: DamageRelations;
   DreamWorldSprites: DreamWorldSprites;
   EffectEntry: EffectEntry;
   FlavorTextEntry: FlavorTextEntry;
@@ -457,12 +665,17 @@ export type ResolversParentTypes = {
   HomeSprites: HomeSprites;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  MoveStatAffect: MoveStatAffect;
+  MoveStatAffectSets: MoveStatAffectSets;
   MoveVersionGroupDetail: MoveVersionGroupDetail;
+  Name: Name;
   NamedAPIResource: NamedApiResource;
+  NatureStatAffectSets: NatureStatAffectSets;
   Node: ResolversInterfaceTypes<ResolversParentTypes>['Node'];
   OfficialArtworkSprites: OfficialArtworkSprites;
   OtherPokemonSprites: OtherPokemonSprites;
   PageInfo: PageInfo;
+  PastDamageRelations: PastDamageRelations;
   Pokemon: PokemonDTO;
   PokemonAbilityConnection: Omit<PokemonAbilityConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonAbilityEdge']> };
   PokemonAbilityEdge: { slot: number; isHidden: boolean; abilityName: string };
@@ -471,12 +684,19 @@ export type ResolversParentTypes = {
   PokemonMoveConnection: PokemonMoveConnection;
   PokemonMoveEdge: PokemonMoveEdge;
   PokemonSprites: PokemonSprites;
-  PokemonStatConnection: PokemonStatConnection;
-  PokemonStatEdge: PokemonStatEdge;
-  PokemonTypeConnection: PokemonTypeConnection;
-  PokemonTypeEdge: PokemonTypeEdge;
+  PokemonStatConnection: Omit<PokemonStatConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonStatEdge']> };
+  PokemonStatEdge: { baseStat: number; effort: number; statName: string };
+  PokemonTypeConnection: Omit<PokemonTypeConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonTypeEdge']> };
+  PokemonTypeEdge: { slot: number; typeName: string };
   Query: {};
+  Stat: StatDTO;
+  StatConnection: Omit<StatConnection, 'edges'> & { edges: Array<ResolversParentTypes['StatEdge']> };
+  StatEdge: Omit<StatEdge, 'node'> & { node: ResolversParentTypes['Stat'] };
   String: Scalars['String']['output'];
+  Type: TypeDTO;
+  TypeConnection: Omit<TypeConnection, 'edges'> & { edges: Array<ResolversParentTypes['TypeEdge']> };
+  TypeEdge: Omit<TypeEdge, 'node'> & { node: ResolversParentTypes['Type'] };
+  TypePokemon: TypePokemon;
 };
 
 export type AbilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Ability'] = ResolversParentTypes['Ability']> = {
@@ -484,6 +704,16 @@ export type AbilityResolvers<ContextType = Context, ParentType extends Resolvers
   flavorTextEntries?: Resolver<Array<ResolversTypes['FlavorTextEntry']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DamageRelationsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['DamageRelations'] = ResolversParentTypes['DamageRelations']> = {
+  doubleDamageFrom?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  doubleDamageTo?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  halfDamageFrom?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  halfDamageTo?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  noDamageFrom?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  noDamageTo?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -533,10 +763,28 @@ export type HomeSpritesResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MoveStatAffectResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveStatAffect'] = ResolversParentTypes['MoveStatAffect']> = {
+  change?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  move?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MoveStatAffectSetsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveStatAffectSets'] = ResolversParentTypes['MoveStatAffectSets']> = {
+  decrease?: Resolver<Array<ResolversTypes['MoveStatAffect']>, ParentType, ContextType>;
+  increase?: Resolver<Array<ResolversTypes['MoveStatAffect']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MoveVersionGroupDetailResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveVersionGroupDetail'] = ResolversParentTypes['MoveVersionGroupDetail']> = {
   levelLearnedAt?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   moveLearnMethod?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
   versionGroup?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type NameResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Name'] = ResolversParentTypes['Name']> = {
+  language?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -546,8 +794,14 @@ export type NamedApiResourceResolvers<ContextType = Context, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type NatureStatAffectSetsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['NatureStatAffectSets'] = ResolversParentTypes['NatureStatAffectSets']> = {
+  decrease?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  increase?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Ability' | 'Pokemon', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Ability' | 'Pokemon' | 'Stat' | 'Type', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -569,6 +823,12 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
   hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PastDamageRelationsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PastDamageRelations'] = ResolversParentTypes['PastDamageRelations']> = {
+  damageRelations?: Resolver<ResolversTypes['DamageRelations'], ParentType, ContextType>;
+  generation?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -650,7 +910,7 @@ export type PokemonStatConnectionResolvers<ContextType = Context, ParentType ext
 export type PokemonStatEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonStatEdge'] = ResolversParentTypes['PokemonStatEdge']> = {
   baseStat?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   effort?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  stat?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Stat'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -660,8 +920,8 @@ export type PokemonTypeConnectionResolvers<ContextType = Context, ParentType ext
 };
 
 export type PokemonTypeEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonTypeEdge'] = ResolversParentTypes['PokemonTypeEdge']> = {
+  node?: Resolver<ResolversTypes['Type'], ParentType, ContextType>;
   slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  type?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -669,10 +929,74 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
   pokemons?: Resolver<ResolversTypes['PokemonConnection'], ParentType, ContextType, Partial<QueryPokemonsArgs>>;
+  stat?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType, RequireFields<QueryStatArgs, 'id'>>;
+  stats?: Resolver<ResolversTypes['StatConnection'], ParentType, ContextType, Partial<QueryStatsArgs>>;
+  type?: Resolver<Maybe<ResolversTypes['Type']>, ParentType, ContextType, RequireFields<QueryTypeArgs, 'id'>>;
+  types?: Resolver<ResolversTypes['TypeConnection'], ParentType, ContextType, Partial<QueryTypesArgs>>;
+};
+
+export type StatResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = {
+  affectingMoves?: Resolver<ResolversTypes['MoveStatAffectSets'], ParentType, ContextType>;
+  affectingNatures?: Resolver<ResolversTypes['NatureStatAffectSets'], ParentType, ContextType>;
+  characteristics?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  gameIndex?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isBattleOnly?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  moveDamageClass?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type StatConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StatConnection'] = ResolversParentTypes['StatConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['StatEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type StatEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['StatEdge'] = ResolversParentTypes['StatEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Stat'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TypeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Type'] = ResolversParentTypes['Type']> = {
+  damageRelations?: Resolver<ResolversTypes['DamageRelations'], ParentType, ContextType>;
+  gameIndices?: Resolver<Array<ResolversTypes['GameIndex']>, ParentType, ContextType>;
+  generation?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  moveDamageClass?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  moves?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  pastDamageRelations?: Resolver<Array<ResolversTypes['PastDamageRelations']>, ParentType, ContextType>;
+  pokemon?: Resolver<Array<ResolversTypes['TypePokemon']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TypeConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TypeConnection'] = ResolversParentTypes['TypeConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['TypeEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TypeEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TypeEdge'] = ResolversParentTypes['TypeEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Type'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TypePokemonResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TypePokemon'] = ResolversParentTypes['TypePokemon']> = {
+  pokemon?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = Context> = {
   Ability?: AbilityResolvers<ContextType>;
+  DamageRelations?: DamageRelationsResolvers<ContextType>;
   DreamWorldSprites?: DreamWorldSpritesResolvers<ContextType>;
   EffectEntry?: EffectEntryResolvers<ContextType>;
   FlavorTextEntry?: FlavorTextEntryResolvers<ContextType>;
@@ -680,12 +1004,17 @@ export type Resolvers<ContextType = Context> = {
   HeldItem?: HeldItemResolvers<ContextType>;
   HeldItemVersion?: HeldItemVersionResolvers<ContextType>;
   HomeSprites?: HomeSpritesResolvers<ContextType>;
+  MoveStatAffect?: MoveStatAffectResolvers<ContextType>;
+  MoveStatAffectSets?: MoveStatAffectSetsResolvers<ContextType>;
   MoveVersionGroupDetail?: MoveVersionGroupDetailResolvers<ContextType>;
+  Name?: NameResolvers<ContextType>;
   NamedAPIResource?: NamedApiResourceResolvers<ContextType>;
+  NatureStatAffectSets?: NatureStatAffectSetsResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
   OfficialArtworkSprites?: OfficialArtworkSpritesResolvers<ContextType>;
   OtherPokemonSprites?: OtherPokemonSpritesResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
+  PastDamageRelations?: PastDamageRelationsResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
   PokemonAbilityConnection?: PokemonAbilityConnectionResolvers<ContextType>;
   PokemonAbilityEdge?: PokemonAbilityEdgeResolvers<ContextType>;
@@ -699,5 +1028,12 @@ export type Resolvers<ContextType = Context> = {
   PokemonTypeConnection?: PokemonTypeConnectionResolvers<ContextType>;
   PokemonTypeEdge?: PokemonTypeEdgeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Stat?: StatResolvers<ContextType>;
+  StatConnection?: StatConnectionResolvers<ContextType>;
+  StatEdge?: StatEdgeResolvers<ContextType>;
+  Type?: TypeResolvers<ContextType>;
+  TypeConnection?: TypeConnectionResolvers<ContextType>;
+  TypeEdge?: TypeEdgeResolvers<ContextType>;
+  TypePokemon?: TypePokemonResolvers<ContextType>;
 };
 

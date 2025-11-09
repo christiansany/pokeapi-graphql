@@ -54,19 +54,13 @@ export const Pokemon: PokemonResolvers = {
     edges: parent.stats.map((statRef) => ({
       baseStat: statRef.base_stat,
       effort: statRef.effort,
-      stat: {
-        name: statRef.stat.name,
-        url: statRef.stat.url,
-      },
+      statName: statRef.stat.name,
     })),
   }),
   types: (parent) => ({
     edges: parent.types.map((typeRef) => ({
       slot: typeRef.slot,
-      type: {
-        name: typeRef.type.name,
-        url: typeRef.type.url,
-      },
+      typeName: typeRef.type.name,
     })),
   }),
   moves: (parent) => ({

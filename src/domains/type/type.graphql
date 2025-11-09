@@ -1,0 +1,178 @@
+"""
+A Type that Pokemon and moves can have (Fire, Water, Grass, etc.).
+"""
+type Type implements Node {
+  """
+  The globally unique identifier for this Type.
+  """
+  id: ID!
+  
+  """
+  The name of this Type.
+  """
+  name: String!
+  
+  """
+  Damage relations for this type.
+  """
+  damageRelations: DamageRelations!
+  
+  """
+  Past damage relations for this type in previous generations.
+  """
+  pastDamageRelations: [PastDamageRelations!]!
+  
+  """
+  Game indices for this type across different versions.
+  """
+  gameIndices: [GameIndex!]!
+  
+  """
+  The generation this type was introduced in.
+  """
+  generation: NamedAPIResource!
+  
+  """
+  The class of damage this type inflicts (physical, special, or status).
+  """
+  moveDamageClass: NamedAPIResource
+  
+  """
+  Localized names for this type.
+  """
+  names: [Name!]!
+  
+  """
+  Pokemon that have this type.
+  """
+  pokemon: [TypePokemon!]!
+  
+  """
+  Moves that have this type.
+  """
+  moves: [NamedAPIResource!]!
+}
+
+"""
+Damage relations for a type.
+Describes type effectiveness in battle.
+"""
+type DamageRelations {
+  """
+  Types that this type deals no damage to.
+  """
+  noDamageTo: [NamedAPIResource!]!
+  
+  """
+  Types that this type deals half damage to.
+  """
+  halfDamageTo: [NamedAPIResource!]!
+  
+  """
+  Types that this type deals double damage to.
+  """
+  doubleDamageTo: [NamedAPIResource!]!
+  
+  """
+  Types that deal no damage to this type.
+  """
+  noDamageFrom: [NamedAPIResource!]!
+  
+  """
+  Types that deal half damage to this type.
+  """
+  halfDamageFrom: [NamedAPIResource!]!
+  
+  """
+  Types that deal double damage to this type.
+  """
+  doubleDamageFrom: [NamedAPIResource!]!
+}
+
+"""
+Past damage relations for a type in a previous generation.
+"""
+type PastDamageRelations {
+  """
+  The generation this damage relation set was in effect.
+  """
+  generation: NamedAPIResource!
+  
+  """
+  The damage relations that were in effect.
+  """
+  damageRelations: DamageRelations!
+}
+
+"""
+A Pokemon that has a specific type.
+"""
+type TypePokemon {
+  """
+  The slot this type occupies for the Pokemon (1 or 2).
+  """
+  slot: Int!
+  
+  """
+  The Pokemon that has this type.
+  """
+  pokemon: NamedAPIResource!
+}
+
+"""
+An edge in a Type connection.
+"""
+type TypeEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Type at the end of the edge.
+  """
+  node: Type!
+}
+
+"""
+A connection to a list of Types.
+"""
+type TypeConnection {
+  """
+  A list of edges.
+  """
+  edges: [TypeEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Types available.
+  """
+  totalCount: Int!
+}
+
+extend type Query {
+  """
+  Fetch a single Type by its global ID.
+  """
+  type(id: ID!): Type
+  
+  """
+  Fetch a paginated list of Types using forward-only cursor-based pagination.
+  """
+  types(
+    """
+    Returns the first n elements from the list. If not provided, uses PokeAPI default (20).
+    Must be between 1 and 50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): TypeConnection!
+}

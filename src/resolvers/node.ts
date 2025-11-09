@@ -7,8 +7,20 @@ export const Node: NodeResolvers = {
       return "Pokemon";
     }
     // Check if it's an Ability by looking for ability-specific fields
-    if ("effect_entries" in parent && "flavor_text_entries" in parent) {
+    if (
+      "effect_entries" in parent &&
+      "flavor_text_entries" in parent &&
+      "is_main_series" in parent
+    ) {
       return "Ability";
+    }
+    // Check if it's a Stat by looking for stat-specific fields
+    if ("game_index" in parent && "is_battle_only" in parent && "affecting_moves" in parent) {
+      return "Stat";
+    }
+    // Check if it's a Type by looking for type-specific fields
+    if ("damage_relations" in parent && "move_damage_class" in parent) {
+      return "Type";
     }
     return null;
   },

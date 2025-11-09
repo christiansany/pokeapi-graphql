@@ -314,7 +314,7 @@ type PokemonAbilityConnection {
 type PokemonAbilityEdge {
   slot: Int!
   isHidden: Boolean!
-  node: Ability!
+  node: Ability!  # ⚠️ CRITICAL: Must be the actual type, NOT NamedAPIResource!
 }
 ```
 
@@ -325,6 +325,119 @@ type PokemonAbilityEdge {
 - Pokemon ↔ Stats (baseStat, effort)
 - Location ↔ Pokemon (encounters with chance, minLevel, maxLevel)
 - And other many-to-many relationships
+
+**⚠️ CRITICAL EDGE PATTERN RULES:**
+
+1. **Edge `node` field MUST return the actual entity type, NOT NamedAPIResource**
+   ```graphql
+   # ✅ CORRECT
+   type PokemonAbilityEdge {
+     slot: Int!
+     isHidden: Boolean!
+     node: Ability!  # Returns full Ability object
+   }
+   
+   # ❌ WRONG
+   type PokemonAbilityEdge {
+     slot: Int!
+     isHidden: Boolean!
+     ability: NamedAPIResource!  # Just a reference, not the full object
+   }
+   ```
+
+2. **Edge resolver MUST fetch the full entity using DataLoader**
+   ```typescript
+   // ✅ CORRECT - Edge resolver fetches full entity
+   export const PokemonAbilityEdge: PokemonAbilityEdgeResolvers = {
+     slot: (parent) => parent.slot,
+     isHidden: (parent) => parent.isHidden,
+     node: async (parent, _, { dataSources }) => {
+       // Fetch full Ability object using DataLoader for batching
+       const ability = await dataSources.ability.getAbilityByName(parent.abilityName);
+       if (!ability) {
+         throw new Error(`Ability not found: ${parent.abilityName}`);
+       }
+       return ability;
+     },
+   };
+   
+   // ❌ WRONG - Just returning the reference
+   export const PokemonAbilityEdge: PokemonAbilityEdgeResolvers = {
+     slot: (parent) => parent.slot,
+     isHidden: (parent) => parent.isHidden,
+     ability: (parent) => parent.ability,  // Just returns NamedAPIResource
+   };
+   ```
+
+3. **Parent resolver MUST pass minimal data (just the name) to enable DataLoader batching**
+   ```typescript
+   // ✅ CORRECT - Pass only the name for DataLoader batching
+   abilities: (parent) => ({
+     edges: parent.abilities.map((abilityRef) => ({
+       slot: abilityRef.slot,
+       isHidden: abilityRef.is_hidden,
+       abilityName: abilityRef.ability.name,  // Just the name
+     })),
+   }),
+   
+   // ❌ WRONG - Passing full NamedAPIResource
+   abilities: (parent) => ({
+     edges: parent.abilities.map((abilityRef) => ({
+       slot: abilityRef.slot,
+       isHidden: abilityRef.is_hidden,
+       ability: {
+         name: abilityRef.ability.name,
+         url: abilityRef.ability.url,
+       },
+     })),
+   }),
+   ```
+
+4. **Codegen mapper MUST match the minimal data structure**
+   ```typescript
+   // ✅ CORRECT - Mapper matches minimal data
+   mappers: {
+     PokemonAbilityEdge: "{ slot: number; isHidden: boolean; abilityName: string }",
+     PokemonStatEdge: "{ baseStat: number; effort: number; statName: string }",
+     PokemonTypeEdge: "{ slot: number; typeName: string }",
+   }
+   
+   // ❌ WRONG - Mapper includes full NamedAPIResource
+   mappers: {
+     PokemonAbilityEdge: "{ slot: number; isHidden: boolean; ability: { name: string; url: string } }",
+   }
+   ```
+
+**Why This Pattern?**
+- **Performance**: DataLoader batches all ability/stat/type requests in a single GraphQL query
+- **Consistency**: All edges follow the same pattern (metadata + node)
+- **Flexibility**: Clients can query as much or as little of the node as needed
+- **Relay Compliance**: Follows Relay edge specification with `node` field
+
+**Example Query:**
+```graphql
+query {
+  pokemon(id: "UG9rZW1vbjoyNQ==") {
+    name
+    abilities {
+      edges {
+        slot
+        isHidden
+        node {  # Full Ability object available here
+          id
+          name
+          effect_entries {
+            effect
+            language {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
 
 ### 3. DataSource Architecture
 

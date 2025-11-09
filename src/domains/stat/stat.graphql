@@ -1,0 +1,167 @@
+"""
+A Stat that Pokemon can have (HP, Attack, Defense, etc.).
+"""
+type Stat implements Node {
+  """
+  The globally unique identifier for this Stat.
+  """
+  id: ID!
+  
+  """
+  The name of this Stat.
+  """
+  name: String!
+  
+  """
+  The internal ID of this Stat in the games.
+  """
+  gameIndex: Int!
+  
+  """
+  Whether this stat only exists within a battle.
+  """
+  isBattleOnly: Boolean!
+  
+  """
+  Moves that affect this stat.
+  """
+  affectingMoves: MoveStatAffectSets!
+  
+  """
+  Natures that affect this stat.
+  """
+  affectingNatures: NatureStatAffectSets!
+  
+  """
+  Characteristics that are determined by this stat.
+  """
+  characteristics: [NamedAPIResource!]!
+  
+  """
+  The class of damage this stat is directly related to (null for most stats).
+  """
+  moveDamageClass: NamedAPIResource
+  
+  """
+  Localized names for this stat.
+  """
+  names: [Name!]!
+}
+
+"""
+A localized name for a resource.
+"""
+type Name {
+  """
+  The localized name.
+  """
+  name: String!
+  
+  """
+  The language this name is in.
+  """
+  language: NamedAPIResource!
+}
+
+"""
+Sets of moves that affect a stat.
+"""
+type MoveStatAffectSets {
+  """
+  Moves that increase this stat.
+  """
+  increase: [MoveStatAffect!]!
+  
+  """
+  Moves that decrease this stat.
+  """
+  decrease: [MoveStatAffect!]!
+}
+
+"""
+A move that affects a stat.
+"""
+type MoveStatAffect {
+  """
+  The amount of change to the stat.
+  """
+  change: Int!
+  
+  """
+  The move that causes this change.
+  """
+  move: NamedAPIResource!
+}
+
+"""
+Sets of natures that affect a stat.
+"""
+type NatureStatAffectSets {
+  """
+  Natures that increase this stat.
+  """
+  increase: [NamedAPIResource!]!
+  
+  """
+  Natures that decrease this stat.
+  """
+  decrease: [NamedAPIResource!]!
+}
+
+"""
+An edge in a Stat connection.
+"""
+type StatEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Stat at the end of the edge.
+  """
+  node: Stat!
+}
+
+"""
+A connection to a list of Stats.
+"""
+type StatConnection {
+  """
+  A list of edges.
+  """
+  edges: [StatEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Stats available.
+  """
+  totalCount: Int!
+}
+
+extend type Query {
+  """
+  Fetch a single Stat by its global ID.
+  """
+  stat(id: ID!): Stat
+  
+  """
+  Fetch a paginated list of Stats using forward-only cursor-based pagination.
+  """
+  stats(
+    """
+    Returns the first n elements from the list. If not provided, uses PokeAPI default (20).
+    Must be between 1 and 50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): StatConnection!
+}

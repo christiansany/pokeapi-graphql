@@ -1,6 +1,8 @@
 import { PokeAPIDataSource } from "./datasources/pokeapi.js";
 import { PokemonDataSource } from "./domains/pokemon/PokemonDataSource.js";
 import { AbilityDataSource } from "./domains/ability/AbilityDataSource.js";
+import { StatDataSource } from "./domains/stat/StatDataSource.js";
+import { TypeDataSource } from "./domains/type/TypeDataSource.js";
 
 /**
  * GraphQL context interface.
@@ -14,15 +16,15 @@ export interface Context {
     pokeapi: PokeAPIDataSource;
     pokemon: PokemonDataSource;
     ability: AbilityDataSource;
+    stat: StatDataSource;
+    type: TypeDataSource;
     // Future domain-specific DataSources will be added here:
     // move: MoveDataSource;
-    // type: TypeDataSource;
     // item: ItemDataSource;
     // location: LocationDataSource;
     // evolution: EvolutionDataSource;
     // berry: BerryDataSource;
     // game: GameDataSource;
-    // stat: StatDataSource;
     // contest: ContestDataSource;
     // encounter: EncounterDataSource;
     // machine: MachineDataSource;
@@ -42,6 +44,8 @@ export function createContext(): Context {
       pokeapi: new PokeAPIDataSource(config),
       pokemon: new PokemonDataSource(config),
       ability: new AbilityDataSource(config),
+      stat: new StatDataSource(config),
+      type: new TypeDataSource(config),
       // Future domain-specific DataSources will be initialized here
     },
   };

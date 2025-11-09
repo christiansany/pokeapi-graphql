@@ -37,6 +37,130 @@ mappers: {
 
 ---
 
+## ⚠️ CRITICAL: Edge Pattern Implementation Rules
+
+**ALL Edge types MUST follow this exact pattern. Deviating from this pattern will break DataLoader batching and violate Relay specifications.**
+
+### Rule 1: Edge `node` Field Must Return Actual Entity Type
+
+```graphql
+# ✅ CORRECT - node returns the full entity type
+type PokemonAbilityEdge {
+  slot: Int!
+  isHidden: Boolean!
+  node: Ability!  # Returns full Ability object
+}
+
+type PokemonStatEdge {
+  baseStat: Int!
+  effort: Int!
+  node: Stat!  # Returns full Stat object
+}
+
+type PokemonTypeEdge {
+  slot: Int!
+  node: Type!  # Returns full Type object
+}
+
+# ❌ WRONG - using NamedAPIResource instead of actual type
+type PokemonStatEdge {
+  baseStat: Int!
+  effort: Int!
+  stat: NamedAPIResource!  # Just a reference, not the full object
+}
+```
+
+### Rule 2: Parent Resolver Must Pass Minimal Data (Name Only)
+
+```typescript
+// ✅ CORRECT - Pass only the name for DataLoader batching
+stats: (parent) => ({
+  edges: parent.stats.map((statRef) => ({
+    baseStat: statRef.base_stat,
+    effort: statRef.effort,
+    statName: statRef.stat.name,  // Just the name
+  })),
+}),
+
+types: (parent) => ({
+  edges: parent.types.map((typeRef) => ({
+    slot: typeRef.slot,
+    typeName: typeRef.type.name,  // Just the name
+  })),
+}),
+
+// ❌ WRONG - Passing full NamedAPIResource
+stats: (parent) => ({
+  edges: parent.stats.map((statRef) => ({
+    baseStat: statRef.base_stat,
+    effort: statRef.effort,
+    stat: {
+      name: statRef.stat.name,
+      url: statRef.stat.url,
+    },
+  })),
+}),
+```
+
+### Rule 3: Edge Resolver Must Fetch Full Entity Using DataLoader
+
+```typescript
+// ✅ CORRECT - Edge resolver fetches full entity
+export const PokemonStatEdge: PokemonStatEdgeResolvers = {
+  baseStat: (parent) => parent.baseStat,
+  effort: (parent) => parent.effort,
+  node: async (parent, _, { dataSources }) => {
+    // Fetch full Stat object using DataLoader for batching
+    const stat = await dataSources.stat.getStatByName(parent.statName);
+    if (!stat) {
+      throw new Error(`Stat not found: ${parent.statName}`);
+    }
+    return stat;
+  },
+};
+
+// ❌ WRONG - Just returning the reference
+export const PokemonStatEdge: PokemonStatEdgeResolvers = {
+  baseStat: (parent) => parent.baseStat,
+  effort: (parent) => parent.effort,
+  stat: (parent) => parent.stat,  // Just returns NamedAPIResource
+};
+```
+
+### Rule 4: Codegen Mapper Must Match Minimal Data Structure
+
+```typescript
+// ✅ CORRECT - Mapper matches minimal data with name only
+mappers: {
+  PokemonAbilityEdge: "{ slot: number; isHidden: boolean; abilityName: string }",
+  PokemonStatEdge: "{ baseStat: number; effort: number; statName: string }",
+  PokemonTypeEdge: "{ slot: number; typeName: string }",
+}
+
+// ❌ WRONG - Mapper includes full NamedAPIResource
+mappers: {
+  PokemonStatEdge: "{ baseStat: number; effort: number; stat: { name: string; url: string } }",
+}
+```
+
+### Why This Pattern?
+
+1. **Performance**: DataLoader batches all entity requests in a single GraphQL query
+2. **Consistency**: All edges follow the same pattern (metadata + node)
+3. **Flexibility**: Clients can query as much or as little of the node as needed
+4. **Relay Compliance**: Follows Relay edge specification with `node` field
+
+### Checklist for Every Edge Implementation
+
+When implementing ANY edge type, verify:
+- [ ] GraphQL schema has `node: EntityType!` field (not `entity: NamedAPIResource!`)
+- [ ] Parent resolver passes only the entity name (e.g., `abilityName`, `statName`, `typeName`)
+- [ ] Edge resolver has `node` field that fetches full entity using DataLoader
+- [ ] Codegen mapper uses inline type with name field only
+- [ ] Edge resolver throws error if entity not found
+
+---
+
 - [x] 1. Foundation and Base Infrastructure
   - Create BasePokeAPIDataSource abstract class with shared fetch, cache, and DataLoader initialization logic in domains/base/
   - Create common DTOs (NamedAPIResource, APIResource, NamedAPIResourceList, etc.) in domains/base/common.dto.ts
@@ -67,8 +191,8 @@ mappers: {
     - Update imports and context access patterns (context.dataSources.ability)
     - _Requirements: 2.1, 2.2, 2.4, 15.1, 15.2, 16.1, 21.1_
 
-- [ ] 3. Complete Pokemon Domain with Stats and Types
-  - [ ] 3.1 Implement Pokemon stats edge and Stat type
+- [x] 3. Complete Pokemon Domain with Stats and Types
+  - [x] 3.1 Implement Pokemon stats edge and Stat type
     - Create Stat DTOs in domains/stat/stat.dto.ts
     - Create StatDataSource with DataLoaders for stats by ID and name
     - Create stat.graphql schema with Stat type implementing Node
@@ -79,7 +203,7 @@ mappers: {
     - Update codegen.ts mappers: Stat → domains/stat/stat.dto.ts#StatDTO, PokemonStatEdge → inline type
     - _Requirements: 1.3, 11.1, 11.2, 11.5, 16.1, 18.4_
   
-  - [ ] 3.2 Implement Pokemon types edge and Type system
+  - [x] 3.2 Implement Pokemon types edge and Type system
     - Create Type DTOs in domains/type/type.dto.ts including DamageRelationsDTO
     - Create TypeDataSource with DataLoaders for types by ID and name
     - Create type.graphql schema with Type type implementing Node and damage relations

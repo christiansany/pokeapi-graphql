@@ -334,9 +334,9 @@ type PokemonStatEdge {
   effort: Int!
   
   """
-  The stat reference.
+  The stat at the end of this edge.
   """
-  stat: NamedAPIResource!
+  node: Stat!
 }
 
 """
@@ -359,9 +359,9 @@ type PokemonTypeEdge {
   slot: Int!
   
   """
-  The type reference.
+  The type at the end of this edge.
   """
-  type: NamedAPIResource!
+  node: Type!
 }
 
 """

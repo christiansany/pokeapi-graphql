@@ -21,10 +21,13 @@ const config: CodegenConfig = {
         mappers: {
           Pokemon: "../domains/pokemon/pokemon.dto.js#PokemonDTO",
           Ability: "../domains/ability/ability.dto.js#AbilityDTO",
+          Stat: "../domains/stat/stat.dto.js#StatDTO",
+          Type: "../domains/type/type.dto.js#TypeDTO",
           PokemonAbilityEdge: "{ slot: number; isHidden: boolean; abilityName: string }",
+          PokemonStatEdge: "{ baseStat: number; effort: number; statName: string }",
+          PokemonTypeEdge: "{ slot: number; typeName: string }",
           // Future domain-specific mappers will be added here as domains are implemented:
           // Move: "../domains/move/move.dto.js#MoveDTO",
-          // Type: "../domains/type/type.dto.js#TypeDTO",
           // Item: "../domains/item/item.dto.js#ItemDTO",
           // etc.
         },
