@@ -13,6 +13,11 @@ Tasks are organized to:
 
 ## Important Notes
 
+**DTO Naming Convention**: ALL DTOs MUST use the "DTO" suffix to avoid naming conflicts with generated GraphQL types.
+- ✅ CORRECT: `PokemonDTO`, `AbilityDTO`, `NamedAPIResourceDTO`, `SpritesDTO`
+- ❌ WRONG: `Pokemon`, `Ability`, `NamedAPIResource`, `Sprites`
+- **Rationale**: GraphQL Code Generator creates types from schema (e.g., `Pokemon`), while DTOs represent PokeAPI REST responses with different structures. Without the suffix, TypeScript will have naming conflicts.
+
 **GraphQL Code Generator Mappers**: Each task that introduces new GraphQL types MUST update the `codegen.ts` mappers configuration to map GraphQL types to their corresponding DTOs. This ensures type-safe resolvers with proper parent types.
 
 Example mapper entries:
@@ -32,7 +37,7 @@ mappers: {
 
 ---
 
-- [ ] 1. Foundation and Base Infrastructure
+- [x] 1. Foundation and Base Infrastructure
   - Create BasePokeAPIDataSource abstract class with shared fetch, cache, and DataLoader initialization logic in domains/base/
   - Create common DTOs (NamedAPIResource, APIResource, NamedAPIResourceList, etc.) in domains/base/common.dto.ts
   - Update pagination utilities to support nullable first argument (1-50 validation, 0 for default)

@@ -202,7 +202,57 @@ src/
 - **Scalability**: New domains can be added as new directories without touching existing code
 - **Clear boundaries**: Each domain is self-contained with clear interfaces
 
-### 2. Core Type Patterns
+### 2. Naming Conventions
+
+**CRITICAL: All DTOs MUST use the "DTO" suffix to avoid naming conflicts with generated GraphQL types.**
+
+#### DTO Naming Rules
+
+1. **All PokeAPI response types use DTO suffix**:
+   - `PokemonDTO`, `AbilityDTO`, `MoveDTO`, `TypeDTO`, etc.
+   - `NamedAPIResourceDTO`, `APIResourceDTO` (common types)
+   - `EffectEntryDTO`, `FlavorTextEntryDTO`, `SpritesDTO` (nested types)
+
+2. **Rationale**: 
+   - GraphQL Code Generator creates types like `Pokemon`, `Ability`, `Move` from schema
+   - DTOs represent PokeAPI REST responses (different structure)
+   - Without suffix, TypeScript would have naming conflicts
+   - Example: `Pokemon` (GraphQL type) vs `PokemonDTO` (PokeAPI response)
+
+3. **File naming**:
+   - DTO files: `{domain}.dto.ts` (e.g., `pokemon.dto.ts`)
+   - Schema files: `{domain}.graphql` (e.g., `pokemon.graphql`)
+   - DataSource files: `{Domain}DataSource.ts` (e.g., `PokemonDataSource.ts`)
+   - Resolver files: `{domain}.resolver.ts` (e.g., `pokemon.resolver.ts`)
+
+4. **Examples**:
+   ```typescript
+   // ✅ CORRECT - DTOs have suffix
+   export interface PokemonDTO { ... }
+   export interface NamedAPIResourceDTO { ... }
+   export interface SpritesDTO { ... }
+   
+   // ❌ WRONG - Missing DTO suffix
+   export interface Pokemon { ... }
+   export interface NamedAPIResource { ... }
+   export interface Sprites { ... }
+   ```
+
+5. **Common DTOs** (in `domains/base/common.dto.ts`):
+   - `NamedAPIResourceDTO` - Named resource reference
+   - `APIResourceDTO` - Unnamed resource reference
+   - `NamedAPIResourceListDTO` - Paginated named list
+   - `APIResourceListDTO` - Paginated unnamed list
+   - `NameDTO` - Localized name
+   - `EffectEntryDTO` - Effect text
+   - `FlavorTextEntryDTO` - Flavor text
+   - `GameIndexDTO` - Game index
+   - `DescriptionDTO` - Description text
+   - `SpritesDTO` - Sprite URLs
+   - `VersionEncounterDetailDTO` - Encounter details
+   - `EncounterDetailDTO` - Encounter metadata
+
+### 3. Core Type Patterns
 
 #### Node Interface Implementation
 
