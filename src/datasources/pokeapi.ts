@@ -62,10 +62,7 @@ export interface PokemonListResponse {
 }
 
 const cache = new NodeCache({
-  stdTTL: 0,
-  checkperiod: 6000,
-  maxKeys: 5000,
-  useClones: false,
+  useClones: true,
 });
 
 export class PokeAPIDataSource {
