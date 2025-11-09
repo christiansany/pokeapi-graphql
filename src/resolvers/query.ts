@@ -20,7 +20,7 @@ export const Query: QueryResolvers = {
       });
     }
 
-    return dataSources.pokeapi.getPokemonById(numericId);
+    return dataSources.pokemon.getPokemonById(numericId);
   },
 
   pokemons: async (_, args, { dataSources }) => {
@@ -46,26 +46,28 @@ export const Query: QueryResolvers = {
     }
 
     // Fetch Pokemon list from PokéAPI
-    const listResponse = await dataSources.pokeapi.getPokemonList(limit ?? 0, offset);
+    const listResponse = await dataSources.pokemon.getPokemonList(limit ?? 0, offset);
 
     // Fetch full Pokemon data for each result
     const pokemonPromises = listResponse.results.map((result: { name: string; url: string }) => {
       // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/pokemon/1/" -> 1)
       const urlParts = result.url.split("/");
       const id = parseInt(urlParts[urlParts.length - 2], 10);
-      return dataSources.pokeapi.getPokemonById(id);
+      return dataSources.pokemon.getPokemonById(id);
     });
 
     const pokemons = await Promise.all(pokemonPromises);
 
-    // Filter out any null results
-    const validPokemons = pokemons.filter((p) => p !== null);
-
-    // Create edges with cursors
-    const edges = validPokemons.map((pokemon, index: number) => ({
-      cursor: encodeCursor(offset + index),
-      node: pokemon,
-    }));
+    // Filter out any null results and create edges with cursors
+    const edges = pokemons
+      .map((pokemon, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: pokemon,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
 
     // Calculate pagination info
     const hasNextPage = offset + (limit ?? 0) < listResponse.count;
@@ -97,14 +99,14 @@ export const Query: QueryResolvers = {
         if (isNaN(numericId)) {
           return null;
         }
-        return dataSources.pokeapi.getPokemonById(numericId);
+        return dataSources.pokemon.getPokemonById(numericId);
       }
       case "Ability": {
         const numericId = parseInt(decoded.id, 10);
         if (isNaN(numericId)) {
           return null;
         }
-        return dataSources.pokeapi.getAbilityById(numericId);
+        return dataSources.ability.getAbilityById(numericId);
       }
       default:
         return null;

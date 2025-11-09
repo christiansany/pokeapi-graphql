@@ -1,0 +1,64 @@
+"""
+An ability that Pokemon can have.
+"""
+type Ability implements Node {
+  """
+  The globally unique identifier for this ability.
+  """
+  id: ID!
+  
+  """
+  The name of the ability.
+  """
+  name: String!
+  
+  """
+  Effect entries describing what this ability does.
+  """
+  effectEntries: [EffectEntry!]!
+  
+  """
+  Flavor text entries from various game versions.
+  """
+  flavorTextEntries: [FlavorTextEntry!]!
+}
+
+"""
+An effect entry describing an ability's effect.
+"""
+type EffectEntry {
+  """
+  The full effect description.
+  """
+  effect: String!
+  
+  """
+  A short effect description.
+  """
+  shortEffect: String!
+  
+  """
+  The language this effect is written in.
+  """
+  language: String!
+}
+
+"""
+Flavor text for an ability from a specific game version.
+"""
+type FlavorTextEntry {
+  """
+  The flavor text.
+  """
+  flavorText: String!
+  
+  """
+  The language this text is written in.
+  """
+  language: String!
+  
+  """
+  The game version group this text is from.
+  """
+  versionGroup: String!
+}

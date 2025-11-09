@@ -15,9 +15,9 @@ import type { Resolvers } from "../types/generated.js";
 // Import existing resolvers
 import { Query } from "../resolvers/query.js";
 import { Node } from "../resolvers/node.js";
-import { Pokemon } from "../resolvers/pokemon.js";
-import { Ability } from "../resolvers/ability.js";
-import { PokemonAbilityEdge } from "../resolvers/pokemonAbilityEdge.js";
+import { Pokemon } from "./pokemon/pokemon.resolver.js";
+import { Ability } from "./ability/ability.resolver.js";
+import { PokemonAbilityEdge } from "./pokemon/edges/pokemonAbility.edge.js";
 
 /**
  * Combined resolver map for all GraphQL types.

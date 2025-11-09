@@ -1,0 +1,432 @@
+"""
+A Pokemon from the PokéAPI.
+"""
+type Pokemon implements Node {
+  """
+  The globally unique identifier for this Pokemon.
+  """
+  id: ID!
+  
+  """
+  The name of this Pokemon.
+  """
+  name: String!
+  
+  """
+  The height of this Pokemon in decimetres.
+  """
+  height: Int!
+  
+  """
+  The weight of this Pokemon in hectograms.
+  """
+  weight: Int!
+  
+  """
+  The base experience gained for defeating this Pokemon.
+  """
+  baseExperience: Int!
+  
+  """
+  Order for sorting. Almost national order, except families are grouped together.
+  """
+  order: Int!
+  
+  """
+  Whether this is the default form for this Pokemon.
+  """
+  isDefault: Boolean!
+  
+  """
+  Sprites (images) for this Pokemon.
+  """
+  sprites: PokemonSprites!
+  
+  """
+  The abilities this Pokemon can have.
+  """
+  abilities: PokemonAbilityConnection!
+  
+  """
+  The stats for this Pokemon.
+  """
+  stats: PokemonStatConnection!
+  
+  """
+  The types this Pokemon has.
+  """
+  types: PokemonTypeConnection!
+  
+  """
+  The moves this Pokemon can learn.
+  """
+  moves: PokemonMoveConnection!
+  
+  """
+  The species this Pokemon belongs to.
+  """
+  species: NamedAPIResource!
+  
+  """
+  The forms this Pokemon can take.
+  """
+  forms: [NamedAPIResource!]!
+  
+  """
+  Game indices for this Pokemon across different versions.
+  """
+  gameIndices: [GameIndex!]!
+  
+  """
+  Items this Pokemon may be holding in the wild.
+  """
+  heldItems: [HeldItem!]!
+  
+  """
+  URL to location areas where this Pokemon can be encountered.
+  """
+  locationAreaEncounters: String!
+}
+
+"""
+Sprites (images) for a Pokemon.
+"""
+type PokemonSprites {
+  """
+  The default front sprite.
+  """
+  frontDefault: String
+  
+  """
+  The shiny front sprite.
+  """
+  frontShiny: String
+  
+  """
+  The female front sprite.
+  """
+  frontFemale: String
+  
+  """
+  The shiny female front sprite.
+  """
+  frontShinyFemale: String
+  
+  """
+  The default back sprite.
+  """
+  backDefault: String
+  
+  """
+  The shiny back sprite.
+  """
+  backShiny: String
+  
+  """
+  The female back sprite.
+  """
+  backFemale: String
+  
+  """
+  The shiny female back sprite.
+  """
+  backShinyFemale: String
+  
+  """
+  Other sprite collections (official artwork, home, dream world).
+  """
+  other: OtherPokemonSprites
+}
+
+"""
+Other sprite collections for a Pokemon.
+"""
+type OtherPokemonSprites {
+  """
+  Dream World artwork.
+  """
+  dreamWorld: DreamWorldSprites
+  
+  """
+  Pokemon Home sprites.
+  """
+  home: HomeSprites
+  
+  """
+  Official artwork.
+  """
+  officialArtwork: OfficialArtworkSprites
+}
+
+"""
+Dream World sprites.
+"""
+type DreamWorldSprites {
+  frontDefault: String
+  frontFemale: String
+}
+
+"""
+Pokemon Home sprites.
+"""
+type HomeSprites {
+  frontDefault: String
+  frontFemale: String
+  frontShiny: String
+  frontShinyFemale: String
+}
+
+"""
+Official artwork sprites.
+"""
+type OfficialArtworkSprites {
+  frontDefault: String
+  frontShiny: String
+}
+
+"""
+A named API resource reference.
+"""
+type NamedAPIResource {
+  """
+  The name of the referenced resource.
+  """
+  name: String!
+  
+  """
+  The URL of the referenced resource.
+  """
+  url: String!
+}
+
+"""
+A game index entry for a Pokemon.
+"""
+type GameIndex {
+  """
+  The internal ID of this Pokemon in a specific game.
+  """
+  gameIndex: Int!
+  
+  """
+  The version this game index is for.
+  """
+  version: NamedAPIResource!
+}
+
+"""
+An item that a Pokemon may hold in the wild.
+"""
+type HeldItem {
+  """
+  The item being held.
+  """
+  item: NamedAPIResource!
+  
+  """
+  Version-specific details about this held item.
+  """
+  versionDetails: [HeldItemVersion!]!
+}
+
+"""
+Version-specific details for a held item.
+"""
+type HeldItemVersion {
+  """
+  How rare this item is (percentage).
+  """
+  rarity: Int!
+  
+  """
+  The version this rarity applies to.
+  """
+  version: NamedAPIResource!
+}
+
+"""
+An edge in a Pokemon connection.
+"""
+type PokemonEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Pokemon at the end of the edge.
+  """
+  node: Pokemon!
+}
+
+"""
+A connection to a list of Pokemon.
+"""
+type PokemonConnection {
+  """
+  A list of edges.
+  """
+  edges: [PokemonEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Pokemon available.
+  """
+  totalCount: Int!
+}
+
+"""
+A connection to a list of Pokemon abilities.
+"""
+type PokemonAbilityConnection {
+  """
+  A list of edges containing Pokemon-specific ability metadata.
+  """
+  edges: [PokemonAbilityEdge!]!
+}
+
+"""
+An edge representing the relationship between a Pokemon and an Ability.
+"""
+type PokemonAbilityEdge {
+  """
+  The slot this ability occupies (1, 2, or 3).
+  """
+  slot: Int!
+  
+  """
+  Whether this is a hidden ability.
+  """
+  isHidden: Boolean!
+  
+  """
+  The ability at the end of this edge.
+  """
+  node: Ability!
+}
+
+"""
+A connection to a list of Pokemon stats.
+"""
+type PokemonStatConnection {
+  """
+  A list of edges containing Pokemon-specific stat values.
+  """
+  edges: [PokemonStatEdge!]!
+}
+
+"""
+An edge representing the relationship between a Pokemon and a Stat.
+"""
+type PokemonStatEdge {
+  """
+  The base value of this stat for this Pokemon.
+  """
+  baseStat: Int!
+  
+  """
+  The effort points (EVs) gained when defeating this Pokemon.
+  """
+  effort: Int!
+  
+  """
+  The stat reference.
+  """
+  stat: NamedAPIResource!
+}
+
+"""
+A connection to a list of Pokemon types.
+"""
+type PokemonTypeConnection {
+  """
+  A list of edges containing Pokemon-specific type information.
+  """
+  edges: [PokemonTypeEdge!]!
+}
+
+"""
+An edge representing the relationship between a Pokemon and a Type.
+"""
+type PokemonTypeEdge {
+  """
+  The slot this type occupies (1 or 2).
+  """
+  slot: Int!
+  
+  """
+  The type reference.
+  """
+  type: NamedAPIResource!
+}
+
+"""
+A connection to a list of Pokemon moves.
+"""
+type PokemonMoveConnection {
+  """
+  A list of edges containing Pokemon-specific move learning information.
+  """
+  edges: [PokemonMoveEdge!]!
+}
+
+"""
+An edge representing the relationship between a Pokemon and a Move.
+"""
+type PokemonMoveEdge {
+  """
+  The move reference.
+  """
+  move: NamedAPIResource!
+  
+  """
+  Version-specific details about how this Pokemon learns this move.
+  """
+  versionGroupDetails: [MoveVersionGroupDetail!]!
+}
+
+"""
+Details about how a Pokemon learns a move in a specific version group.
+"""
+type MoveVersionGroupDetail {
+  """
+  The level at which this move is learned (0 if not learned by leveling).
+  """
+  levelLearnedAt: Int!
+  
+  """
+  The method by which this move is learned.
+  """
+  moveLearnMethod: NamedAPIResource!
+  
+  """
+  The version group this applies to.
+  """
+  versionGroup: NamedAPIResource!
+}
+
+extend type Query {
+  """
+  Fetch a single Pokemon by its global ID.
+  """
+  pokemon(id: ID!): Pokemon
+  
+  """
+  Fetch a paginated list of Pokemon using forward-only cursor-based pagination.
+  """
+  pokemons(
+    """
+    Returns the first n elements from the list. Defaults to 10.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): PokemonConnection!
+}

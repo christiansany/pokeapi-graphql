@@ -1,5 +1,5 @@
-import type { AbilityResolvers } from "../types/generated.js";
-import { encodeGlobalId } from "../utils/relay.js";
+import type { AbilityResolvers } from "../../types/generated.js";
+import { encodeGlobalId } from "../../utils/relay.js";
 
 export const Ability: AbilityResolvers = {
   id: (parent) => encodeGlobalId("Ability", parent.id),

@@ -19,8 +19,8 @@ const config: CodegenConfig = {
       config: {
         contextType: "../context.js#Context",
         mappers: {
-          Pokemon: "../datasources/pokeapi.js#PokemonDTO",
-          Ability: "../datasources/pokeapi.js#AbilityDTO",
+          Pokemon: "../domains/pokemon/pokemon.dto.js#PokemonDTO",
+          Ability: "../domains/ability/ability.dto.js#AbilityDTO",
           PokemonAbilityEdge: "{ slot: number; isHidden: boolean; abilityName: string }",
           // Future domain-specific mappers will be added here as domains are implemented:
           // Move: "../domains/move/move.dto.js#MoveDTO",

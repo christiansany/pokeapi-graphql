@@ -26,9 +26,34 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 // Load GraphQL schema from .graphql files
-const relaySchema = readFileSync(join(__dirname, "schema", "relay.graphql"), "utf-8");
-const mainSchema = readFileSync(join(__dirname, "schema", "schema.graphql"), "utf-8");
-const typeDefs = [relaySchema, mainSchema];
+import { readdirSync, statSync } from "fs";
+
+// Helper function to recursively find all .graphql files
+function findGraphQLFiles(dir: string): string[] {
+  const files: string[] = [];
+  const entries = readdirSync(dir);
+
+  for (const entry of entries) {
+    const fullPath = join(dir, entry);
+    const stat = statSync(fullPath);
+
+    if (stat.isDirectory()) {
+      files.push(...findGraphQLFiles(fullPath));
+    } else if (entry.endsWith(".graphql")) {
+      files.push(fullPath);
+    }
+  }
+
+  return files;
+}
+
+// Load all schema files from schema/ and domains/
+const schemaFiles = [
+  ...findGraphQLFiles(join(__dirname, "schema")),
+  ...findGraphQLFiles(join(__dirname, "domains")),
+];
+
+const typeDefs = schemaFiles.map((file) => readFileSync(file, "utf-8"));
 
 // Error formatting function
 function formatError(formattedError: GraphQLFormattedError): GraphQLFormattedError {

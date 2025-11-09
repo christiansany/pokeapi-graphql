@@ -46,8 +46,8 @@ mappers: {
   - Update codegen.ts schema path to include domains/*/*.graphql
   - _Requirements: 15.1, 15.2, 17.3, 17.4, 20.1_
 
-- [ ] 2. Refactor Existing Pokemon and Ability Implementation
-  - [ ] 2.1 Migrate Pokemon to domain-based structure
+- [x] 2. Refactor Existing Pokemon and Ability Implementation
+  - [x] 2.1 Migrate Pokemon to domain-based structure
     - Move Pokemon DTOs to domains/pokemon/pokemon.dto.ts
     - Create PokemonDataSource extending BasePokeAPIDataSource with DataLoaders
     - Move pokemon.graphql schema to domains/pokemon/
@@ -58,7 +58,7 @@ mappers: {
     - Update imports and context access patterns (context.dataSources.pokemon)
     - _Requirements: 1.1, 1.2, 15.1, 15.2, 16.1, 21.1_
   
-  - [ ] 2.2 Migrate Ability to domain-based structure
+  - [x] 2.2 Migrate Ability to domain-based structure
     - Move Ability DTOs to domains/ability/ability.dto.ts
     - Create AbilityDataSource extending BasePokeAPIDataSource with DataLoaders
     - Move ability.graphql schema to domains/ability/
