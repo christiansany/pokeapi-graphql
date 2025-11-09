@@ -1,0 +1,282 @@
+"""
+A move that Pokemon can learn and use in battle.
+"""
+type Move implements Node {
+  """
+  The globally unique identifier for this move.
+  """
+  id: ID!
+
+  """
+  The name of this move.
+  """
+  name: String!
+
+  """
+  The percent value of how likely this move is to be successful (0-100).
+  Null if the move cannot miss.
+  """
+  accuracy: Int
+
+  """
+  The percent value of how likely it is this move will cause an effect (0-100).
+  """
+  effectChance: Int
+
+  """
+  Power Points. The number of times this move can be used.
+  """
+  pp: Int!
+
+  """
+  A value between -8 and 8. Sets the order in which moves are executed during battle.
+  Higher values make a move execute later.
+  """
+  priority: Int!
+
+  """
+  The base power of this move with a value of 0 if it does not have a base power.
+  """
+  power: Int
+
+  """
+  The type of damage the move inflicts on the target (physical, special, or status).
+  """
+  damageClass: NamedAPIResource!
+
+  """
+  The effect of this move listed in different languages.
+  """
+  effectEntries: [MoveEffectEntry!]!
+
+  """
+  The list of Pokemon that can learn this move.
+  """
+  learnedByPokemon: [NamedAPIResource!]!
+
+  """
+  The flavor text of this move listed in different languages.
+  """
+  flavorTextEntries: [MoveFlavorTextEntry!]!
+
+  """
+  The generation in which this move was introduced.
+  """
+  generation: NamedAPIResource!
+
+  """
+  Metadata about this move.
+  """
+  meta: MoveMeta
+
+  """
+  The name of this move listed in different languages.
+  """
+  names: [Name!]!
+
+  """
+  The type of target that will receive the effects of the attack.
+  """
+  target: NamedAPIResource!
+
+  """
+  The elemental type of this move.
+  """
+  type: NamedAPIResource!
+
+  """
+  The type of contest this move is used in.
+  """
+  contestType: NamedAPIResource
+
+  """
+  The effect the move has when used in a contest.
+  """
+  contestEffect: NamedAPIResource
+
+  """
+  The effect the move has when used in a super contest.
+  """
+  superContestEffect: NamedAPIResource
+
+  """
+  A list of stats this move effects and how much it effects them.
+  """
+  statChanges: [MoveStatChange!]!
+}
+
+"""
+An effect entry describing a move's effect.
+"""
+type MoveEffectEntry {
+  """
+  The full effect description.
+  """
+  effect: String!
+  
+  """
+  A short effect description.
+  """
+  shortEffect: String!
+  
+  """
+  The language this effect is written in.
+  """
+  language: NamedAPIResource!
+}
+
+"""
+Flavor text for a move from a specific game version.
+"""
+type MoveFlavorTextEntry {
+  """
+  The flavor text.
+  """
+  flavorText: String!
+  
+  """
+  The language this text is written in.
+  """
+  language: NamedAPIResource!
+  
+  """
+  The game version group this text is from.
+  """
+  versionGroup: NamedAPIResource
+}
+
+"""
+Metadata about a move including ailment, category, and battle mechanics.
+"""
+type MoveMeta {
+  """
+  The status ailment this move inflicts on its target.
+  """
+  ailment: NamedAPIResource!
+
+  """
+  The category of move this move falls under (damage, ailment, net-good-stats, etc.).
+  """
+  category: NamedAPIResource!
+
+  """
+  The minimum number of times this move hits. Null if it always hits once.
+  """
+  minHits: Int
+
+  """
+  The maximum number of times this move hits. Null if it always hits once.
+  """
+  maxHits: Int
+
+  """
+  The minimum number of turns this move continues to take effect. Null if it always lasts one turn.
+  """
+  minTurns: Int
+
+  """
+  The maximum number of turns this move continues to take effect. Null if it always lasts one turn.
+  """
+  maxTurns: Int
+
+  """
+  HP drain (if positive) or Recoil damage (if negative), in percent of damage done.
+  """
+  drain: Int!
+
+  """
+  The amount of hp gained by the attacking Pokemon, in percent of its maximum HP.
+  """
+  healing: Int!
+
+  """
+  Critical hit rate bonus.
+  """
+  critRate: Int!
+
+  """
+  The likelihood this attack will cause an ailment (0-100).
+  """
+  ailmentChance: Int!
+
+  """
+  The likelihood this attack will cause the target Pokemon to flinch (0-100).
+  """
+  flinchChance: Int!
+
+  """
+  The likelihood this attack will cause a stat change in the target Pokemon (0-100).
+  """
+  statChance: Int!
+}
+
+"""
+A stat change caused by a move.
+"""
+type MoveStatChange {
+  """
+  The amount of change to the stat.
+  """
+  change: Int!
+
+  """
+  The stat being affected.
+  """
+  stat: NamedAPIResource!
+}
+
+"""
+Connection type for paginated Move lists.
+"""
+type MoveConnection {
+  """
+  A list of edges.
+  """
+  edges: [MoveEdge!]!
+
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+
+  """
+  The total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+An edge in a Move connection.
+"""
+type MoveEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+
+  """
+  The Move at the end of the edge.
+  """
+  node: Move!
+}
+
+extend type Query {
+  """
+  Get a single move by its global ID.
+  """
+  move(id: ID!): Move
+
+  """
+  Get a paginated list of moves.
+  """
+  moves(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): MoveConnection!
+}

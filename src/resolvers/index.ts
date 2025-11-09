@@ -4,9 +4,11 @@ import { Pokemon } from "../domains/pokemon/pokemon.resolver.js";
 import { Ability } from "../domains/ability/ability.resolver.js";
 import { Stat } from "../domains/stat/stat.resolver.js";
 import { Type } from "../domains/type/type.resolver.js";
+import { Move } from "../domains/move/move.resolver.js";
 import { PokemonAbilityEdge } from "../domains/pokemon/edges/pokemonAbility.edge.js";
 import { PokemonStatEdge } from "../domains/pokemon/edges/pokemonStat.edge.js";
 import { PokemonTypeEdge } from "../domains/pokemon/edges/pokemonType.edge.js";
+import { PokemonMoveEdge } from "../domains/pokemon/edges/pokemonMove.edge.js";
 import { Node } from "./node.js";
 
 export const resolvers: Resolvers = {
@@ -16,7 +18,9 @@ export const resolvers: Resolvers = {
   Ability,
   Stat,
   Type,
+  Move,
   PokemonAbilityEdge,
   PokemonStatEdge,
   PokemonTypeEdge,
+  PokemonMoveEdge,
 };

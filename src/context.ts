@@ -3,6 +3,7 @@ import { PokemonDataSource } from "./domains/pokemon/PokemonDataSource.js";
 import { AbilityDataSource } from "./domains/ability/AbilityDataSource.js";
 import { StatDataSource } from "./domains/stat/StatDataSource.js";
 import { TypeDataSource } from "./domains/type/TypeDataSource.js";
+import { MoveDataSource } from "./domains/move/MoveDataSource.js";
 
 /**
  * GraphQL context interface.
@@ -18,8 +19,8 @@ export interface Context {
     ability: AbilityDataSource;
     stat: StatDataSource;
     type: TypeDataSource;
+    move: MoveDataSource;
     // Future domain-specific DataSources will be added here:
-    // move: MoveDataSource;
     // item: ItemDataSource;
     // location: LocationDataSource;
     // evolution: EvolutionDataSource;
@@ -46,6 +47,7 @@ export function createContext(): Context {
       ability: new AbilityDataSource(config),
       stat: new StatDataSource(config),
       type: new TypeDataSource(config),
+      move: new MoveDataSource(config),
       // Future domain-specific DataSources will be initialized here
     },
   };

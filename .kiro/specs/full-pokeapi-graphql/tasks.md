@@ -214,8 +214,8 @@ When implementing ANY edge type, verify:
     - Update codegen.ts mappers: Type → domains/type/type.dto.ts#TypeDTO, PokemonTypeEdge → inline type
     - _Requirements: 1.4, 4.1, 4.2, 4.3, 4.4, 16.1, 18.2_
 
-- [ ] 4. Implement Move System
-  - [ ] 4.1 Create Move domain structure
+- [x] 4. Implement Move System
+  - [x] 4.1 Create Move domain structure
     - Create Move DTOs in domains/move/move.dto.ts (MoveDTO, MoveMetaDTO, etc.)
     - Create MoveDataSource with DataLoaders for moves by ID and name
     - Create move.graphql schema with Move type implementing Node
@@ -224,18 +224,18 @@ When implementing ANY edge type, verify:
     - Update codegen.ts mappers: Move → domains/move/move.dto.ts#MoveDTO
     - _Requirements: 3.1, 3.2, 3.5, 16.1_
   
-  - [ ] 4.2 Implement Pokemon moves edge with version group details
+  - [x] 4.2 Implement Pokemon moves edge with version group details
     - Create PokemonMoveEdge resolver in domains/pokemon/edges/pokemonMove.edge.ts
     - Handle version_group_details array with learn method, level, and version group
     - Update Pokemon resolver to return moves connection with edges
     - Update codegen.ts mappers: PokemonMoveEdge → inline type with version group details
     - _Requirements: 1.5, 3.3, 18.3_
   
-  - [ ] 4.3 Implement Move-related types (MoveAilment, MoveDamageClass, etc.)
+  - [x] 4.3 Implement Move-related types (MoveAilment, MoveDamageClass, etc.)
     - Create DTOs for MoveAilment, MoveDamageClass, MoveCategory, MoveTarget
     - Add DataLoader methods to MoveDataSource for related types
-    - Create resolvers for move-related types
-    - Update Move resolver to resolve related type references
+    - NOTE: GraphQL schema still uses NamedAPIResource for these types - will be updated in task 17.1
+    - NOTE: Resolvers will be created when schema is updated in task 17.1
     - _Requirements: 3.1, 3.2_
 
 - [ ] 5. Implement PokemonSpecies and Forms
@@ -470,19 +470,148 @@ When implementing ANY edge type, verify:
     - Update Ability resolver to return pokemon connection with edges
     - _Requirements: 2.3, 18.5_
 
-- [ ] 17. Complete Node Interface Implementation
-  - [ ] 17.1 Update node resolver to support all types
+- [ ] 17. Resolve NamedAPIResource References to Entity Types
+  - [ ] 17.1 Update Move schema to use entity types
+    - Replace `damageClass: NamedAPIResource!` with `damageClass: MoveDamageClass!`
+    - Replace `target: NamedAPIResource!` with `target: MoveTarget!`
+    - Replace `type: NamedAPIResource!` with `type: Type!`
+    - Replace `generation: NamedAPIResource!` with `generation: Generation!` (after Generation is implemented)
+    - Replace `contestType: NamedAPIResource` with `contestType: ContestType` (after ContestType is implemented)
+    - Replace `contestEffect: NamedAPIResource` with `contestEffect: ContestEffect` (after ContestEffect is implemented)
+    - Replace `superContestEffect: NamedAPIResource` with `superContestEffect: SuperContestEffect` (after SuperContestEffect is implemented)
+    - In MoveMeta: Replace `ailment: NamedAPIResource!` with `ailment: MoveAilment!`
+    - In MoveMeta: Replace `category: NamedAPIResource!` with `category: MoveCategory!`
+    - In MoveStatChange: Replace `stat: NamedAPIResource!` with `stat: Stat!`
+    - Update Move resolver to fetch these entities using DataLoader (e.g., `dataSources.move.getMoveDamageClassByName()`)
+    - _Requirements: 3.1, 3.2, 4.1, 11.1, 16.1_
+  
+  - [ ] 17.2 Update Pokemon schema to use entity types
+    - Replace `species: NamedAPIResource!` with `species: PokemonSpecies!`
+    - Replace `forms: [NamedAPIResource!]!` with `forms: [PokemonForm!]!`
+    - In GameIndex: Replace `version: NamedAPIResource!` with `version: Version!`
+    - In HeldItem: Replace `item: NamedAPIResource!` with `item: Item!`
+    - In HeldItemVersion: Replace `version: NamedAPIResource!` with `version: Version!`
+    - In MoveVersionGroupDetail: Replace `moveLearnMethod: NamedAPIResource!` with `moveLearnMethod: MoveLearnMethod!`
+    - In MoveVersionGroupDetail: Replace `versionGroup: NamedAPIResource!` with `versionGroup: VersionGroup!`
+    - Update Pokemon resolver to fetch these entities using DataLoader
+    - _Requirements: 1.1, 1.5, 5.1, 9.2, 9.3, 10.1, 16.1_
+  
+  - [ ] 17.3 Update Ability schema to use entity types
+    - Replace `generation: NamedAPIResource!` with `generation: Generation!`
+    - Update Ability resolver to fetch generation using DataLoader
+    - _Requirements: 2.1, 9.1, 16.1_
+  
+  - [ ] 17.4 Update Stat schema to use entity types
+    - Replace `moveDamageClass: NamedAPIResource` with `moveDamageClass: MoveDamageClass`
+    - In MoveStatAffect: Replace `move: NamedAPIResource!` with `move: Move!`
+    - In NatureStatAffectSets: Replace increase/decrease arrays from `[NamedAPIResource!]!` to `[Nature!]!`
+    - Update Stat resolver to fetch these entities using DataLoader
+    - _Requirements: 11.1, 11.4, 3.1, 16.1_
+  
+  - [ ] 17.5 Update Type schema to use entity types
+    - Replace `generation: NamedAPIResource!` with `generation: Generation!`
+    - Replace `moveDamageClass: NamedAPIResource` with `moveDamageClass: MoveDamageClass`
+    - In DamageRelations: Replace all arrays from `[NamedAPIResource!]!` to `[Type!]!`
+    - Update Type resolver to fetch these entities using DataLoader
+    - _Requirements: 4.1, 9.1, 3.1, 16.1_
+  
+  - [ ] 17.6 Update PokemonSpecies schema to use entity types (after implementation)
+    - Replace `generation: NamedAPIResource!` with `generation: Generation!`
+    - Replace `growthRate: NamedAPIResource!` with `growthRate: GrowthRate!`
+    - Replace `habitat: NamedAPIResource` with `habitat: PokemonHabitat`
+    - Replace `shape: NamedAPIResource!` with `shape: PokemonShape!`
+    - Replace `color: NamedAPIResource!` with `color: PokemonColor!`
+    - Replace `eggGroups: [NamedAPIResource!]!` with `eggGroups: [EggGroup!]!`
+    - Replace `evolvesFromSpecies: NamedAPIResource` with `evolvesFromSpecies: PokemonSpecies`
+    - Replace `evolutionChain: NamedAPIResource!` with `evolutionChain: EvolutionChain!`
+    - Update PokemonSpecies resolver to fetch these entities using DataLoader
+    - _Requirements: 10.1, 10.3, 7.1, 9.1, 16.1_
+  
+  - [ ] 17.7 Update Item schema to use entity types (after implementation)
+    - Replace `category: NamedAPIResource!` with `category: ItemCategory!`
+    - Replace `flingEffect: NamedAPIResource` with `flingEffect: ItemFlingEffect`
+    - Replace `attributes: [NamedAPIResource!]!` with `attributes: [ItemAttribute!]!`
+    - Update Item resolver to fetch these entities using DataLoader
+    - _Requirements: 5.1, 5.3, 5.4, 5.5, 16.1_
+  
+  - [ ] 17.8 Update Location schema to use entity types (after implementation)
+    - Replace `region: NamedAPIResource!` with `region: Region!`
+    - In LocationArea: Replace `location: NamedAPIResource!` with `location: Location!`
+    - Update Location and LocationArea resolvers to fetch these entities using DataLoader
+    - _Requirements: 6.1, 6.2, 6.5, 16.1_
+  
+  - [ ] 17.9 Update EvolutionChain schema to use entity types (after implementation)
+    - In ChainLink: Replace `species: NamedAPIResource!` with `species: PokemonSpecies!`
+    - In EvolutionDetail: Replace `trigger: NamedAPIResource!` with `trigger: EvolutionTrigger!`
+    - In EvolutionDetail: Replace `item: NamedAPIResource` with `item: Item`
+    - In EvolutionDetail: Replace `heldItem: NamedAPIResource` with `heldItem: Item`
+    - In EvolutionDetail: Replace `knownMove: NamedAPIResource` with `knownMove: Move`
+    - In EvolutionDetail: Replace `knownMoveType: NamedAPIResource` with `knownMoveType: Type`
+    - In EvolutionDetail: Replace `location: NamedAPIResource` with `location: Location`
+    - In EvolutionDetail: Replace `partySpecies: NamedAPIResource` with `partySpecies: PokemonSpecies`
+    - In EvolutionDetail: Replace `partyType: NamedAPIResource` with `partyType: Type`
+    - In EvolutionDetail: Replace `tradeSpecies: NamedAPIResource` with `tradeSpecies: PokemonSpecies`
+    - Update EvolutionChain resolver to fetch these entities using DataLoader
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 10.1, 5.1, 3.1, 4.1, 6.1, 16.1_
+  
+  - [ ] 17.10 Update Berry schema to use entity types (after implementation)
+    - Replace `firmness: NamedAPIResource!` with `firmness: BerryFirmness!`
+    - Replace `item: NamedAPIResource!` with `item: Item!`
+    - Replace `naturalGiftType: NamedAPIResource!` with `naturalGiftType: Type!`
+    - In BerryFlavorEdge: Replace flavor reference with `flavor: BerryFlavor!`
+    - Update Berry resolver to fetch these entities using DataLoader
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 5.1, 4.1, 16.1_
+  
+  - [ ] 17.11 Update Game schema to use entity types (after implementation)
+    - In Generation: Replace `mainRegion: NamedAPIResource!` with `mainRegion: Region!`
+    - In Version: Replace `versionGroup: NamedAPIResource!` with `versionGroup: VersionGroup!`
+    - In VersionGroup: Replace `generation: NamedAPIResource!` with `generation: Generation!`
+    - In VersionGroup: Replace `regions: [NamedAPIResource!]!` with `regions: [Region!]!`
+    - In Pokedex: Replace `region: NamedAPIResource` with `region: Region`
+    - Update all Game resolvers to fetch these entities using DataLoader
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 6.5, 16.1_
+  
+  - [ ] 17.12 Update Nature schema to use entity types (after implementation)
+    - Replace `decreasedStat: NamedAPIResource` with `decreasedStat: Stat`
+    - Replace `increasedStat: NamedAPIResource` with `increasedStat: Stat`
+    - Replace `hatesFlavor: NamedAPIResource` with `hatesFlavor: BerryFlavor`
+    - Replace `likesFlavor: NamedAPIResource` with `likesFlavor: BerryFlavor`
+    - Update Nature resolver to fetch these entities using DataLoader
+    - _Requirements: 11.4, 11.5, 8.3, 16.1_
+  
+  - [ ] 17.13 Update Contest schema to use entity types (after implementation)
+    - In ContestType: Replace `berryFlavor: NamedAPIResource!` with `berryFlavor: BerryFlavor!`
+    - Update ContestType resolver to fetch berry flavor using DataLoader
+    - _Requirements: 12.1, 8.3, 16.1_
+  
+  - [ ] 17.14 Update Machine schema to use entity types (after implementation)
+    - Replace `item: NamedAPIResource!` with `item: Item!`
+    - Replace `move: NamedAPIResource!` with `move: Move!`
+    - Replace `versionGroup: NamedAPIResource!` with `versionGroup: VersionGroup!`
+    - Update Machine resolver to fetch these entities using DataLoader
+    - _Requirements: 14.1, 14.2, 14.3, 5.1, 3.1, 9.3, 16.1_
+  
+  - [ ] 17.15 Final verification: Remove all NamedAPIResource from schemas
+    - Search all .graphql files for "NamedAPIResource"
+    - Verify that NamedAPIResource only exists in pokemon.graphql as a type definition (for backward compatibility if needed)
+    - Verify all entity references use actual entity types
+    - Verify all resolvers fetch entities using DataLoader
+    - Update documentation to reflect that NamedAPIResource is only used in DTOs, never in GraphQL schemas
+    - _Requirements: 16.1, 21.5_
+
+- [ ] 18. Complete Node Interface Implementation
+  - [ ] 18.1 Update node resolver to support all types
     - Update Query.node resolver to route all 48+ resource types to appropriate DataSources
     - Add cases for all implemented types (Pokemon, Ability, Move, Type, Item, Location, Berry, Evolution, Species, Stat, Nature, Generation, Contest, Encounter, Machine, etc.)
     - Ensure proper error handling for invalid typenames
     - _Requirements: 16.1, 16.2, 16.3, 16.4, 16.5_
   
-  - [ ] 17.2 Update Node.__resolveType implementation
+  - [ ] 18.2 Update Node.__resolveType implementation
     - Implement type resolution logic for all concrete types
     - Use discriminating fields to determine concrete type from DTO structure
     - _Requirements: 16.1, 16.5_
 
-- [ ] 18. Update Documentation and Structure
+- [ ] 19. Update Documentation and Structure
   - [ ] 18.1 Update structure.md steering file
     - Document co-located domain architecture
     - Document BasePokeAPIDataSource pattern
@@ -506,7 +635,7 @@ When implementing ANY edge type, verify:
     - Provide example queries for each resource type
     - _Requirements: 21.5_
 
-- [ ] 19. Error Handling and Validation
+- [ ] 20. Error Handling and Validation
   - [ ] 19.1 Implement comprehensive error handling
     - Ensure all DataSource methods handle 404 responses gracefully
     - Ensure all resolvers handle null responses appropriately
@@ -521,7 +650,7 @@ When implementing ANY edge type, verify:
     - Sanitize numeric IDs
     - _Requirements: 17.3, 17.4, 19.1, 19.2, 19.3_
 
-- [ ] 20. Integration Testing and Verification
+- [ ] 21. Integration Testing and Verification
   - [ ] 20.1 Test all Query fields
     - Test single resource queries for all types
     - Test paginated list queries for all types
@@ -550,7 +679,7 @@ When implementing ANY edge type, verify:
     - Monitor memory usage with large result sets
     - _Requirements: 15.1, 15.2, 15.5_
 
-- [ ] 21. Final Polish and Optimization
+- [ ] 22. Final Polish and Optimization
   - [ ] 21.1 Code review and cleanup
     - Review all code for consistency
     - Remove any unused imports or code

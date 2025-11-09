@@ -65,10 +65,7 @@ export const Pokemon: PokemonResolvers = {
   }),
   moves: (parent) => ({
     edges: parent.moves.map((moveRef) => ({
-      move: {
-        name: moveRef.move.name,
-        url: moveRef.move.url,
-      },
+      moveName: moveRef.move.name, // Just the name for DataLoader batching
       versionGroupDetails: moveRef.version_group_details.map((detail) => ({
         levelLearnedAt: detail.level_learned_at,
         moveLearnMethod: {

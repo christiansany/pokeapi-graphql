@@ -379,14 +379,14 @@ An edge representing the relationship between a Pokemon and a Move.
 """
 type PokemonMoveEdge {
   """
-  The move reference.
-  """
-  move: NamedAPIResource!
-  
-  """
   Version-specific details about how this Pokemon learns this move.
   """
   versionGroupDetails: [MoveVersionGroupDetail!]!
+  
+  """
+  The move at the end of this edge.
+  """
+  node: Move!
 }
 
 """

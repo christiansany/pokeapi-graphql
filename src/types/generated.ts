@@ -5,6 +5,7 @@ import { PokemonDTO } from '../domains/pokemon/pokemon.dto.js';
 import { AbilityDTO } from '../domains/ability/ability.dto.js';
 import { StatDTO } from '../domains/stat/stat.dto.js';
 import { TypeDTO } from '../domains/type/type.dto.js';
+import { MoveDTO } from '../domains/move/move.dto.js';
 import { Context } from '../context.js';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -122,6 +123,128 @@ export type HomeSprites = {
   frontShinyFemale?: Maybe<Scalars['String']['output']>;
 };
 
+/** A move that Pokemon can learn and use in battle. */
+export type Move = Node & {
+  __typename?: 'Move';
+  /**
+   * The percent value of how likely this move is to be successful (0-100).
+   * Null if the move cannot miss.
+   */
+  accuracy?: Maybe<Scalars['Int']['output']>;
+  /** The effect the move has when used in a contest. */
+  contestEffect?: Maybe<NamedApiResource>;
+  /** The type of contest this move is used in. */
+  contestType?: Maybe<NamedApiResource>;
+  /** The type of damage the move inflicts on the target (physical, special, or status). */
+  damageClass: NamedApiResource;
+  /** The percent value of how likely it is this move will cause an effect (0-100). */
+  effectChance?: Maybe<Scalars['Int']['output']>;
+  /** The effect of this move listed in different languages. */
+  effectEntries: Array<MoveEffectEntry>;
+  /** The flavor text of this move listed in different languages. */
+  flavorTextEntries: Array<MoveFlavorTextEntry>;
+  /** The generation in which this move was introduced. */
+  generation: NamedApiResource;
+  /** The globally unique identifier for this move. */
+  id: Scalars['ID']['output'];
+  /** The list of Pokemon that can learn this move. */
+  learnedByPokemon: Array<NamedApiResource>;
+  /** Metadata about this move. */
+  meta?: Maybe<MoveMeta>;
+  /** The name of this move. */
+  name: Scalars['String']['output'];
+  /** The name of this move listed in different languages. */
+  names: Array<Name>;
+  /** The base power of this move with a value of 0 if it does not have a base power. */
+  power?: Maybe<Scalars['Int']['output']>;
+  /** Power Points. The number of times this move can be used. */
+  pp: Scalars['Int']['output'];
+  /**
+   * A value between -8 and 8. Sets the order in which moves are executed during battle.
+   * Higher values make a move execute later.
+   */
+  priority: Scalars['Int']['output'];
+  /** A list of stats this move effects and how much it effects them. */
+  statChanges: Array<MoveStatChange>;
+  /** The effect the move has when used in a super contest. */
+  superContestEffect?: Maybe<NamedApiResource>;
+  /** The type of target that will receive the effects of the attack. */
+  target: NamedApiResource;
+  /** The elemental type of this move. */
+  type: NamedApiResource;
+};
+
+/** Connection type for paginated Move lists. */
+export type MoveConnection = {
+  __typename?: 'MoveConnection';
+  /** A list of edges. */
+  edges: Array<MoveEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The total count of items in the connection. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in a Move connection. */
+export type MoveEdge = {
+  __typename?: 'MoveEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The Move at the end of the edge. */
+  node: Move;
+};
+
+/** An effect entry describing a move's effect. */
+export type MoveEffectEntry = {
+  __typename?: 'MoveEffectEntry';
+  /** The full effect description. */
+  effect: Scalars['String']['output'];
+  /** The language this effect is written in. */
+  language: NamedApiResource;
+  /** A short effect description. */
+  shortEffect: Scalars['String']['output'];
+};
+
+/** Flavor text for a move from a specific game version. */
+export type MoveFlavorTextEntry = {
+  __typename?: 'MoveFlavorTextEntry';
+  /** The flavor text. */
+  flavorText: Scalars['String']['output'];
+  /** The language this text is written in. */
+  language: NamedApiResource;
+  /** The game version group this text is from. */
+  versionGroup?: Maybe<NamedApiResource>;
+};
+
+/** Metadata about a move including ailment, category, and battle mechanics. */
+export type MoveMeta = {
+  __typename?: 'MoveMeta';
+  /** The status ailment this move inflicts on its target. */
+  ailment: NamedApiResource;
+  /** The likelihood this attack will cause an ailment (0-100). */
+  ailmentChance: Scalars['Int']['output'];
+  /** The category of move this move falls under (damage, ailment, net-good-stats, etc.). */
+  category: NamedApiResource;
+  /** Critical hit rate bonus. */
+  critRate: Scalars['Int']['output'];
+  /** HP drain (if positive) or Recoil damage (if negative), in percent of damage done. */
+  drain: Scalars['Int']['output'];
+  /** The likelihood this attack will cause the target Pokemon to flinch (0-100). */
+  flinchChance: Scalars['Int']['output'];
+  /** The amount of hp gained by the attacking Pokemon, in percent of its maximum HP. */
+  healing: Scalars['Int']['output'];
+  /** The maximum number of times this move hits. Null if it always hits once. */
+  maxHits?: Maybe<Scalars['Int']['output']>;
+  /** The maximum number of turns this move continues to take effect. Null if it always lasts one turn. */
+  maxTurns?: Maybe<Scalars['Int']['output']>;
+  /** The minimum number of times this move hits. Null if it always hits once. */
+  minHits?: Maybe<Scalars['Int']['output']>;
+  /** The minimum number of turns this move continues to take effect. Null if it always lasts one turn. */
+  minTurns?: Maybe<Scalars['Int']['output']>;
+  /** The likelihood this attack will cause a stat change in the target Pokemon (0-100). */
+  statChance: Scalars['Int']['output'];
+};
+
 /** A move that affects a stat. */
 export type MoveStatAffect = {
   __typename?: 'MoveStatAffect';
@@ -138,6 +261,15 @@ export type MoveStatAffectSets = {
   decrease: Array<MoveStatAffect>;
   /** Moves that increase this stat. */
   increase: Array<MoveStatAffect>;
+};
+
+/** A stat change caused by a move. */
+export type MoveStatChange = {
+  __typename?: 'MoveStatChange';
+  /** The amount of change to the stat. */
+  change: Scalars['Int']['output'];
+  /** The stat being affected. */
+  stat: NamedApiResource;
 };
 
 /** Details about how a Pokemon learns a move in a specific version group. */
@@ -314,8 +446,8 @@ export type PokemonMoveConnection = {
 /** An edge representing the relationship between a Pokemon and a Move. */
 export type PokemonMoveEdge = {
   __typename?: 'PokemonMoveEdge';
-  /** The move reference. */
-  move: NamedApiResource;
+  /** The move at the end of this edge. */
+  node: Move;
   /** Version-specific details about how this Pokemon learns this move. */
   versionGroupDetails: Array<MoveVersionGroupDetail>;
 };
@@ -379,6 +511,10 @@ export type PokemonTypeEdge = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get a single move by its global ID. */
+  move?: Maybe<Move>;
+  /** Get a paginated list of moves. */
+  moves: MoveConnection;
   /** Fetch any object that implements the Node interface by its global ID. */
   node?: Maybe<Node>;
   /** Fetch a single Pokemon by its global ID. */
@@ -393,6 +529,17 @@ export type Query = {
   type?: Maybe<Type>;
   /** Fetch a paginated list of Types using forward-only cursor-based pagination. */
   types: TypeConnection;
+};
+
+
+export type QueryMoveArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryMovesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -600,7 +747,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  Node: ( AbilityDTO ) | ( PokemonDTO ) | ( StatDTO ) | ( TypeDTO );
+  Node: ( AbilityDTO ) | ( MoveDTO ) | ( PokemonDTO ) | ( StatDTO ) | ( TypeDTO );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -617,8 +764,15 @@ export type ResolversTypes = {
   HomeSprites: ResolverTypeWrapper<HomeSprites>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Move: ResolverTypeWrapper<MoveDTO>;
+  MoveConnection: ResolverTypeWrapper<Omit<MoveConnection, 'edges'> & { edges: Array<ResolversTypes['MoveEdge']> }>;
+  MoveEdge: ResolverTypeWrapper<Omit<MoveEdge, 'node'> & { node: ResolversTypes['Move'] }>;
+  MoveEffectEntry: ResolverTypeWrapper<MoveEffectEntry>;
+  MoveFlavorTextEntry: ResolverTypeWrapper<MoveFlavorTextEntry>;
+  MoveMeta: ResolverTypeWrapper<MoveMeta>;
   MoveStatAffect: ResolverTypeWrapper<MoveStatAffect>;
   MoveStatAffectSets: ResolverTypeWrapper<MoveStatAffectSets>;
+  MoveStatChange: ResolverTypeWrapper<MoveStatChange>;
   MoveVersionGroupDetail: ResolverTypeWrapper<MoveVersionGroupDetail>;
   Name: ResolverTypeWrapper<Name>;
   NamedAPIResource: ResolverTypeWrapper<NamedApiResource>;
@@ -633,8 +787,8 @@ export type ResolversTypes = {
   PokemonAbilityEdge: ResolverTypeWrapper<{ slot: number; isHidden: boolean; abilityName: string }>;
   PokemonConnection: ResolverTypeWrapper<Omit<PokemonConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonEdge']> }>;
   PokemonEdge: ResolverTypeWrapper<Omit<PokemonEdge, 'node'> & { node: ResolversTypes['Pokemon'] }>;
-  PokemonMoveConnection: ResolverTypeWrapper<PokemonMoveConnection>;
-  PokemonMoveEdge: ResolverTypeWrapper<PokemonMoveEdge>;
+  PokemonMoveConnection: ResolverTypeWrapper<Omit<PokemonMoveConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonMoveEdge']> }>;
+  PokemonMoveEdge: ResolverTypeWrapper<{ moveName: string; versionGroupDetails: Array<{ levelLearnedAt: number; moveLearnMethod: { name: string; url: string }; versionGroup: { name: string; url: string } }> }>;
   PokemonSprites: ResolverTypeWrapper<PokemonSprites>;
   PokemonStatConnection: ResolverTypeWrapper<Omit<PokemonStatConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonStatEdge']> }>;
   PokemonStatEdge: ResolverTypeWrapper<{ baseStat: number; effort: number; statName: string }>;
@@ -665,8 +819,15 @@ export type ResolversParentTypes = {
   HomeSprites: HomeSprites;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  Move: MoveDTO;
+  MoveConnection: Omit<MoveConnection, 'edges'> & { edges: Array<ResolversParentTypes['MoveEdge']> };
+  MoveEdge: Omit<MoveEdge, 'node'> & { node: ResolversParentTypes['Move'] };
+  MoveEffectEntry: MoveEffectEntry;
+  MoveFlavorTextEntry: MoveFlavorTextEntry;
+  MoveMeta: MoveMeta;
   MoveStatAffect: MoveStatAffect;
   MoveStatAffectSets: MoveStatAffectSets;
+  MoveStatChange: MoveStatChange;
   MoveVersionGroupDetail: MoveVersionGroupDetail;
   Name: Name;
   NamedAPIResource: NamedApiResource;
@@ -681,8 +842,8 @@ export type ResolversParentTypes = {
   PokemonAbilityEdge: { slot: number; isHidden: boolean; abilityName: string };
   PokemonConnection: Omit<PokemonConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonEdge']> };
   PokemonEdge: Omit<PokemonEdge, 'node'> & { node: ResolversParentTypes['Pokemon'] };
-  PokemonMoveConnection: PokemonMoveConnection;
-  PokemonMoveEdge: PokemonMoveEdge;
+  PokemonMoveConnection: Omit<PokemonMoveConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonMoveEdge']> };
+  PokemonMoveEdge: { moveName: string; versionGroupDetails: Array<{ levelLearnedAt: number; moveLearnMethod: { name: string; url: string }; versionGroup: { name: string; url: string } }> };
   PokemonSprites: PokemonSprites;
   PokemonStatConnection: Omit<PokemonStatConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonStatEdge']> };
   PokemonStatEdge: { baseStat: number; effort: number; statName: string };
@@ -763,6 +924,73 @@ export type HomeSpritesResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MoveResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Move'] = ResolversParentTypes['Move']> = {
+  accuracy?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  contestEffect?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  contestType?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  damageClass?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  effectChance?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  effectEntries?: Resolver<Array<ResolversTypes['MoveEffectEntry']>, ParentType, ContextType>;
+  flavorTextEntries?: Resolver<Array<ResolversTypes['MoveFlavorTextEntry']>, ParentType, ContextType>;
+  generation?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  learnedByPokemon?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  meta?: Resolver<Maybe<ResolversTypes['MoveMeta']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  power?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  pp?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  priority?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  statChanges?: Resolver<Array<ResolversTypes['MoveStatChange']>, ParentType, ContextType>;
+  superContestEffect?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  target?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MoveConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveConnection'] = ResolversParentTypes['MoveConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['MoveEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MoveEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveEdge'] = ResolversParentTypes['MoveEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Move'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MoveEffectEntryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveEffectEntry'] = ResolversParentTypes['MoveEffectEntry']> = {
+  effect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  shortEffect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MoveFlavorTextEntryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveFlavorTextEntry'] = ResolversParentTypes['MoveFlavorTextEntry']> = {
+  flavorText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  versionGroup?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MoveMetaResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveMeta'] = ResolversParentTypes['MoveMeta']> = {
+  ailment?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  ailmentChance?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  category?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  critRate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  drain?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  flinchChance?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  healing?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  maxHits?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  maxTurns?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  minHits?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  minTurns?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  statChance?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MoveStatAffectResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveStatAffect'] = ResolversParentTypes['MoveStatAffect']> = {
   change?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   move?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
@@ -772,6 +1000,12 @@ export type MoveStatAffectResolvers<ContextType = Context, ParentType extends Re
 export type MoveStatAffectSetsResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveStatAffectSets'] = ResolversParentTypes['MoveStatAffectSets']> = {
   decrease?: Resolver<Array<ResolversTypes['MoveStatAffect']>, ParentType, ContextType>;
   increase?: Resolver<Array<ResolversTypes['MoveStatAffect']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MoveStatChangeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['MoveStatChange'] = ResolversParentTypes['MoveStatChange']> = {
+  change?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  stat?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -801,7 +1035,7 @@ export type NatureStatAffectSetsResolvers<ContextType = Context, ParentType exte
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Ability' | 'Pokemon' | 'Stat' | 'Type', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Ability' | 'Move' | 'Pokemon' | 'Stat' | 'Type', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -884,7 +1118,7 @@ export type PokemonMoveConnectionResolvers<ContextType = Context, ParentType ext
 };
 
 export type PokemonMoveEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonMoveEdge'] = ResolversParentTypes['PokemonMoveEdge']> = {
-  move?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Move'], ParentType, ContextType>;
   versionGroupDetails?: Resolver<Array<ResolversTypes['MoveVersionGroupDetail']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -926,6 +1160,8 @@ export type PokemonTypeEdgeResolvers<ContextType = Context, ParentType extends R
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  move?: Resolver<Maybe<ResolversTypes['Move']>, ParentType, ContextType, RequireFields<QueryMoveArgs, 'id'>>;
+  moves?: Resolver<ResolversTypes['MoveConnection'], ParentType, ContextType, Partial<QueryMovesArgs>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
   pokemons?: Resolver<ResolversTypes['PokemonConnection'], ParentType, ContextType, Partial<QueryPokemonsArgs>>;
@@ -1004,8 +1240,15 @@ export type Resolvers<ContextType = Context> = {
   HeldItem?: HeldItemResolvers<ContextType>;
   HeldItemVersion?: HeldItemVersionResolvers<ContextType>;
   HomeSprites?: HomeSpritesResolvers<ContextType>;
+  Move?: MoveResolvers<ContextType>;
+  MoveConnection?: MoveConnectionResolvers<ContextType>;
+  MoveEdge?: MoveEdgeResolvers<ContextType>;
+  MoveEffectEntry?: MoveEffectEntryResolvers<ContextType>;
+  MoveFlavorTextEntry?: MoveFlavorTextEntryResolvers<ContextType>;
+  MoveMeta?: MoveMetaResolvers<ContextType>;
   MoveStatAffect?: MoveStatAffectResolvers<ContextType>;
   MoveStatAffectSets?: MoveStatAffectSetsResolvers<ContextType>;
+  MoveStatChange?: MoveStatChangeResolvers<ContextType>;
   MoveVersionGroupDetail?: MoveVersionGroupDetailResolvers<ContextType>;
   Name?: NameResolvers<ContextType>;
   NamedAPIResource?: NamedApiResourceResolvers<ContextType>;
