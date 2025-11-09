@@ -49,6 +49,7 @@ function formatError(formattedError: GraphQLFormattedError): GraphQLFormattedErr
       "INVALID_GLOBAL_ID",
       "BAD_USER_INPUT",
       "GRAPHQL_VALIDATION_FAILED",
+      "INVALID_PAGINATION_ARGS",
     ];
 
     const errorCode = formattedError.extensions?.code as string;
