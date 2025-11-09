@@ -99,6 +99,25 @@ export const Query: QueryResolvers = {
         }
         return dataSources.pokeapi.getPokemonById(numericId);
       }
+      case "PokemonAbility": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          return null;
+        }
+        const abilityData = await dataSources.pokeapi.getAbilityById(numericId);
+        if (!abilityData) {
+          return null;
+        }
+        // Return in the format expected by PokemonAbility resolvers
+        return {
+          ability: {
+            name: abilityData.name,
+            url: `https://pokeapi.co/api/v2/ability/${numericId}/`,
+          },
+          slot: 0,
+          is_hidden: false,
+        };
+      }
       default:
         return null;
     }

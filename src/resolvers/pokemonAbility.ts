@@ -1,9 +1,11 @@
 import type { PokemonAbilityResolvers } from "../types/generated.js";
+import { encodeGlobalId } from "../utils/relay.js";
 
 export const PokemonAbility: PokemonAbilityResolvers = {
   id: async (parent, _, { dataSources }) => {
     const abilityData = await dataSources.pokeapi.abilityLoader.load(parent.ability.name);
-    return abilityData?.id ?? 0;
+    const numericId = abilityData?.id ?? 0;
+    return encodeGlobalId("PokemonAbility", numericId);
   },
   name: (parent) => parent.ability.name,
   slot: (parent) => parent.slot,

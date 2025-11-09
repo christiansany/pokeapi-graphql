@@ -87,14 +87,14 @@ export type Pokemon = Node & {
 };
 
 /** A Pokemon ability with full details. */
-export type PokemonAbility = {
+export type PokemonAbility = Node & {
   __typename?: 'PokemonAbility';
   /** Effect entries describing what this ability does. */
   effectEntries: Array<EffectEntry>;
   /** Flavor text entries from various game versions. */
   flavorTextEntries: Array<FlavorTextEntry>;
-  /** The unique identifier for this ability. */
-  id: Scalars['Int']['output'];
+  /** The globally unique identifier for this ability. */
+  id: Scalars['ID']['output'];
   /** Whether this is a hidden ability. */
   isHidden: Scalars['Boolean']['output'];
   /** The name of the ability. */
@@ -219,7 +219,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  Node: ( PokemonDTO );
+  Node: ( PokemonDTO ) | ( AbilityReferenceDTO );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -271,7 +271,7 @@ export type FlavorTextEntryResolvers<ContextType = Context, ParentType extends R
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Pokemon', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Pokemon' | 'PokemonAbility', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -298,7 +298,7 @@ export type PokemonResolvers<ContextType = Context, ParentType extends Resolvers
 export type PokemonAbilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonAbility'] = ResolversParentTypes['PokemonAbility']> = {
   effectEntries?: Resolver<Array<ResolversTypes['EffectEntry']>, ParentType, ContextType>;
   flavorTextEntries?: Resolver<Array<ResolversTypes['FlavorTextEntry']>, ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isHidden?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;

@@ -105,14 +105,17 @@ type Query {
   node(id: ID!): Node
 }
 
+# TODO: This doesn't really make sense to have PokemonAbility flattened
+# This should be a lsit of edges and the slot and isHidden values should be on the edge and not PokemonAbility
+
 """
 A Pokemon ability with full details.
 """
-type PokemonAbility {
+type PokemonAbility implements Node {
   """
-  The unique identifier for this ability.
+  The globally unique identifier for this ability.
   """
-  id: Int!
+  id: ID!
   
   """
   The name of the ability.

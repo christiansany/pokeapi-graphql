@@ -180,4 +180,37 @@ export class PokeAPIDataSource {
       throw error;
     }
   }
+
+  async getAbilityById(id: number): Promise<AbilityDTO | null> {
+    const cacheKey = `ability:id:${id}`;
+
+    // Check cache first
+    const cached = cache.get<AbilityDTO>(cacheKey);
+    if (cached) {
+      return cached;
+    }
+
+    try {
+      // Fetch from PokéAPI
+      const url = `${this.baseURL}/ability/${id}`;
+      const ability = await this.fetch<AbilityDTO>(url);
+
+      // Store in cache if found
+      if (ability) {
+        cache.set(cacheKey, ability);
+        // Also cache by name for consistency
+        cache.set(`ability:${ability.name}`, ability);
+      }
+
+      return ability;
+    } catch (error) {
+      // Handle 404 responses by returning null
+      if (error instanceof Error && error.message.includes("404")) {
+        console.warn(`Ability not found with ID: ${id}`);
+        return null;
+      }
+      // Re-throw network errors
+      throw error;
+    }
+  }
 }
