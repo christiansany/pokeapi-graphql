@@ -147,7 +147,7 @@ extend type Query {
   """
   Fetch a single Stat by its global ID.
   """
-  stat(id: ID!): Stat
+  statById(id: ID!): Stat
   
   """
   Fetch a paginated list of Stats using forward-only cursor-based pagination.

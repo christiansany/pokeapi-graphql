@@ -735,35 +735,35 @@ export type PokemonVarietyEdge = {
 export type Query = {
   __typename?: 'Query';
   /** Get a single move by its global ID. */
-  move?: Maybe<Move>;
+  moveById?: Maybe<Move>;
   /** Get a paginated list of moves. */
   moves: MoveConnection;
   /** Fetch any object that implements the Node interface by its global ID. */
   node?: Maybe<Node>;
   /** Fetch a single Pokemon by its global ID. */
-  pokemon?: Maybe<Pokemon>;
+  pokemonById?: Maybe<Pokemon>;
   /** Fetch a single Pokemon Form by its global ID. */
-  pokemonForm?: Maybe<PokemonForm>;
+  pokemonFormById?: Maybe<PokemonForm>;
   /** Fetch a paginated list of Pokemon Forms using forward-only cursor-based pagination. */
   pokemonForms: PokemonFormConnection;
-  /** Fetch a single Pokemon Species by its global ID. */
-  pokemonSpecies?: Maybe<PokemonSpecies>;
   /** Fetch a paginated list of Pokemon Species using forward-only cursor-based pagination. */
-  pokemonSpeciesList: PokemonSpeciesConnection;
+  pokemonSpecies: PokemonSpeciesConnection;
+  /** Fetch a single Pokemon Species by its global ID. */
+  pokemonSpeciesById?: Maybe<PokemonSpecies>;
   /** Fetch a paginated list of Pokemon using forward-only cursor-based pagination. */
   pokemons: PokemonConnection;
   /** Fetch a single Stat by its global ID. */
-  stat?: Maybe<Stat>;
+  statById?: Maybe<Stat>;
   /** Fetch a paginated list of Stats using forward-only cursor-based pagination. */
   stats: StatConnection;
   /** Fetch a single Type by its global ID. */
-  type?: Maybe<Type>;
+  typeById?: Maybe<Type>;
   /** Fetch a paginated list of Types using forward-only cursor-based pagination. */
   types: TypeConnection;
 };
 
 
-export type QueryMoveArgs = {
+export type QueryMoveByIdArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -779,12 +779,12 @@ export type QueryNodeArgs = {
 };
 
 
-export type QueryPokemonArgs = {
+export type QueryPokemonByIdArgs = {
   id: Scalars['ID']['input'];
 };
 
 
-export type QueryPokemonFormArgs = {
+export type QueryPokemonFormByIdArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -796,13 +796,13 @@ export type QueryPokemonFormsArgs = {
 
 
 export type QueryPokemonSpeciesArgs = {
-  id: Scalars['ID']['input'];
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
-export type QueryPokemonSpeciesListArgs = {
-  after?: InputMaybe<Scalars['String']['input']>;
-  first?: InputMaybe<Scalars['Int']['input']>;
+export type QueryPokemonSpeciesByIdArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -812,7 +812,7 @@ export type QueryPokemonsArgs = {
 };
 
 
-export type QueryStatArgs = {
+export type QueryStatByIdArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -823,7 +823,7 @@ export type QueryStatsArgs = {
 };
 
 
-export type QueryTypeArgs = {
+export type QueryTypeByIdArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -1585,18 +1585,18 @@ export type PokemonVarietyEdgeResolvers<ContextType = Context, ParentType extend
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  move?: Resolver<Maybe<ResolversTypes['Move']>, ParentType, ContextType, RequireFields<QueryMoveArgs, 'id'>>;
+  moveById?: Resolver<Maybe<ResolversTypes['Move']>, ParentType, ContextType, RequireFields<QueryMoveByIdArgs, 'id'>>;
   moves?: Resolver<ResolversTypes['MoveConnection'], ParentType, ContextType, Partial<QueryMovesArgs>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
-  pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
-  pokemonForm?: Resolver<Maybe<ResolversTypes['PokemonForm']>, ParentType, ContextType, RequireFields<QueryPokemonFormArgs, 'id'>>;
+  pokemonById?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonByIdArgs, 'id'>>;
+  pokemonFormById?: Resolver<Maybe<ResolversTypes['PokemonForm']>, ParentType, ContextType, RequireFields<QueryPokemonFormByIdArgs, 'id'>>;
   pokemonForms?: Resolver<ResolversTypes['PokemonFormConnection'], ParentType, ContextType, Partial<QueryPokemonFormsArgs>>;
-  pokemonSpecies?: Resolver<Maybe<ResolversTypes['PokemonSpecies']>, ParentType, ContextType, RequireFields<QueryPokemonSpeciesArgs, 'id'>>;
-  pokemonSpeciesList?: Resolver<ResolversTypes['PokemonSpeciesConnection'], ParentType, ContextType, Partial<QueryPokemonSpeciesListArgs>>;
+  pokemonSpecies?: Resolver<ResolversTypes['PokemonSpeciesConnection'], ParentType, ContextType, Partial<QueryPokemonSpeciesArgs>>;
+  pokemonSpeciesById?: Resolver<Maybe<ResolversTypes['PokemonSpecies']>, ParentType, ContextType, RequireFields<QueryPokemonSpeciesByIdArgs, 'id'>>;
   pokemons?: Resolver<ResolversTypes['PokemonConnection'], ParentType, ContextType, Partial<QueryPokemonsArgs>>;
-  stat?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType, RequireFields<QueryStatArgs, 'id'>>;
+  statById?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType, RequireFields<QueryStatByIdArgs, 'id'>>;
   stats?: Resolver<ResolversTypes['StatConnection'], ParentType, ContextType, Partial<QueryStatsArgs>>;
-  type?: Resolver<Maybe<ResolversTypes['Type']>, ParentType, ContextType, RequireFields<QueryTypeArgs, 'id'>>;
+  typeById?: Resolver<Maybe<ResolversTypes['Type']>, ParentType, ContextType, RequireFields<QueryTypeByIdArgs, 'id'>>;
   types?: Resolver<ResolversTypes['TypeConnection'], ParentType, ContextType, Partial<QueryTypesArgs>>;
 };
 

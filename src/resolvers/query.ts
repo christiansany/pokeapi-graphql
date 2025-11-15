@@ -4,7 +4,7 @@ import { decodeGlobalId, validatePaginationArgs } from "../utils/relay.js";
 import { encodeCursor } from "../utils/cursor.js";
 
 export const Query: QueryResolvers = {
-  pokemon: async (_, { id }, { dataSources }) => {
+  pokemonById: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
     if (!decoded || decoded.typename !== "Pokemon") {
@@ -70,7 +70,7 @@ export const Query: QueryResolvers = {
       totalCount: listResponse.count,
     };
   },
-  stat: async (_, { id }, { dataSources }) => {
+  statById: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
     if (!decoded || decoded.typename !== "Stat") {
@@ -137,7 +137,7 @@ export const Query: QueryResolvers = {
     };
   },
 
-  type: async (_, { id }, { dataSources }) => {
+  typeById: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
     if (!decoded || decoded.typename !== "Type") {
@@ -204,7 +204,7 @@ export const Query: QueryResolvers = {
     };
   },
 
-  move: async (_, { id }, { dataSources }) => {
+  moveById: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
     if (!decoded || decoded.typename !== "Move") {
@@ -271,7 +271,7 @@ export const Query: QueryResolvers = {
     };
   },
 
-  pokemonSpecies: async (_, { id }, { dataSources }) => {
+  pokemonSpeciesById: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
     if (!decoded || decoded.typename !== "PokemonSpecies") {
@@ -290,7 +290,7 @@ export const Query: QueryResolvers = {
     return dataSources.pokemon.getSpeciesById(numericId);
   },
 
-  pokemonSpeciesList: async (_, args, { dataSources }) => {
+  pokemonSpecies: async (_, args, { dataSources }) => {
     const { first, after } = args;
 
     // Validate pagination arguments
@@ -338,7 +338,7 @@ export const Query: QueryResolvers = {
     };
   },
 
-  pokemonForm: async (_, { id }, { dataSources }) => {
+  pokemonFormById: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
     if (!decoded || decoded.typename !== "PokemonForm") {

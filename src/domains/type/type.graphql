@@ -158,7 +158,7 @@ extend type Query {
   """
   Fetch a single Type by its global ID.
   """
-  type(id: ID!): Type
+  typeById(id: ID!): Type
   
   """
   Fetch a paginated list of Types using forward-only cursor-based pagination.

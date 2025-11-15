@@ -413,7 +413,7 @@ extend type Query {
   """
   Fetch a single Pokemon by its global ID.
   """
-  pokemon(id: ID!): Pokemon
+  pokemonById(id: ID!): Pokemon
   
   """
   Fetch a paginated list of Pokemon using forward-only cursor-based pagination.
@@ -883,12 +883,12 @@ extend type Query {
   """
   Fetch a single Pokemon Species by its global ID.
   """
-  pokemonSpecies(id: ID!): PokemonSpecies
+  pokemonSpeciesById(id: ID!): PokemonSpecies
   
   """
   Fetch a paginated list of Pokemon Species using forward-only cursor-based pagination.
   """
-  pokemonSpeciesList(
+  pokemonSpecies(
     """
     Returns the first n elements from the list. Must be between 1-50 when provided.
     """
@@ -903,7 +903,7 @@ extend type Query {
   """
   Fetch a single Pokemon Form by its global ID.
   """
-  pokemonForm(id: ID!): PokemonForm
+  pokemonFormById(id: ID!): PokemonForm
   
   """
   Fetch a paginated list of Pokemon Forms using forward-only cursor-based pagination.

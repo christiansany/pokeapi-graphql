@@ -264,7 +264,7 @@ extend type Query {
   """
   Get a single move by its global ID.
   """
-  move(id: ID!): Move
+  moveById(id: ID!): Move
 
   """
   Get a paginated list of moves.

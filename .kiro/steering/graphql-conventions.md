@@ -26,6 +26,26 @@ Example: `Query.pokemons` field implements full Connection spec with pagination 
 
 Example: `Pokemon.abilities` field uses `PokemonAbilityConnection` structure but doesn't implement full pagination (no cursors, no PageInfo) since all abilities are returned at once.
 
+### Query Field Naming Convention
+
+All Query fields MUST follow this naming pattern:
+
+**Single Entity Queries** (by ID):
+- Use `{entityName}ById` suffix for queries that fetch a single entity by its global ID
+- Examples: `pokemonById(id: ID!)`, `moveById(id: ID!)`, `typeById(id: ID!)`
+- This ensures the plural form is available for list/connection queries
+
+**List/Connection Queries**:
+- Use plural form without suffix for paginated list queries
+- Examples: `pokemons(first: Int, after: String)`, `moves(first: Int, after: String)`
+- Always return a Connection type with edges, pageInfo, and totalCount
+
+**Rationale:**
+- Keeps naming clean and predictable
+- Avoids awkward names like `pokemonSpeciesList`
+- Makes it clear which queries return single entities vs collections
+- Follows common GraphQL patterns
+
 ### Node Interface
 
 All types representing entities MUST implement the `Node` interface:
