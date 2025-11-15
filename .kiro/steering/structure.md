@@ -60,10 +60,27 @@ src/domains/ability/
 - **Relay Compliance**: Implements Node interface and Connection/Edge patterns
 
 ### Resolver Organization
-- Domain resolvers live within their domain folder
-- Root resolvers (Query, Node) in `src/resolvers/`
-- `resolvers/index.ts` aggregates all resolvers from domains
+- Domain resolvers live within their domain folder (e.g., `src/domains/pokemon/pokemon.resolver.ts`)
+- Root resolvers (Query, Node) in `src/resolvers/` directory
+- `src/resolvers/index.ts` is the **single source of truth** that aggregates ALL resolvers (both root and domain)
+- When adding new domain resolvers, they MUST be imported and exported in `src/resolvers/index.ts`
 - Resolvers are thin - delegate to domain DataSources for data fetching
+
+**Critical Pattern for Adding New Resolvers:**
+```typescript
+// In src/resolvers/index.ts
+import { NewType } from "../domains/newdomain/newtype.resolver.js";
+import { NewTypeEdge } from "../domains/newdomain/edges/newtypeEdge.edge.js";
+
+export const resolvers: Resolvers = {
+  Query,
+  Node,
+  // ... existing resolvers
+  NewType,        // Add new type resolver
+  NewTypeEdge,    // Add new edge resolver
+};
+```
+**Important:** The server imports from `src/resolvers/index.ts`, not from `src/domains/`. Forgetting to add resolvers here will cause GraphQL to use default resolvers, which can lead to issues like unencoded IDs.
 
 ### Context Pattern
 - Context created per-request in `createContext()`
@@ -83,8 +100,9 @@ src/domains/ability/
 - `src/context.ts` - Context factory with domain DataSource initialization
 - `src/domains/base/BasePokeAPIDataSource.ts` - Base class for all DataSources
 - `src/domains/base/common.dto.ts` - Shared DTO types across domains
-- `src/domains/index.ts` - Aggregates and exports all domain resolvers
-- `src/resolvers/index.ts` - Combines root and domain resolvers
+- `src/resolvers/index.ts` - **Single source of truth** - aggregates ALL resolvers (root + domain)
+- `src/resolvers/query.ts` - Root Query resolver with all query field implementations
+- `src/resolvers/node.ts` - Node interface resolver for global ID lookups
 - `codegen.ts` - GraphQL Code Generator configuration
 - `src/types/generated.ts` - Auto-generated types (do not edit manually)
 
