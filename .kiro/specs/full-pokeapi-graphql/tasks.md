@@ -165,6 +165,7 @@ When implementing ANY edge type, verify:
   - Create BasePokeAPIDataSource abstract class with shared fetch, cache, and DataLoader initialization logic in domains/base/
   - Create common DTOs (NamedAPIResource, APIResource, NamedAPIResourceList, etc.) in domains/base/common.dto.ts
   - Update pagination utilities to support nullable first argument (1-50 validation, 0 for default)
+  - Create `validatePaginationArgs` utility in src/utils/relay.ts for consistent pagination validation
   - Update Context interface to support multiple DataSources
   - Create domain index aggregation pattern in domains/index.ts
   - Update codegen.ts schema path to include domains/*/*.graphql
@@ -625,7 +626,7 @@ When implementing ANY edge type, verify:
     - Add JSDoc comments to all DataSource methods
     - Add JSDoc comments to all resolver functions
     - Add comments explaining edge patterns
-    - Add comments explaining pagination logic
+    - Document pagination pattern: ALL paginated resolvers MUST use `validatePaginationArgs` utility
     - _Requirements: 20.5, 21.5_
   
   - [ ] 18.3 Update README and API documentation
@@ -646,7 +647,7 @@ When implementing ANY edge type, verify:
   - [ ] 19.2 Implement input validation
     - Validate global IDs before decoding
     - Validate cursors before decoding
-    - Validate pagination arguments (first: 1-50)
+    - Validate pagination arguments (first: 1-50) using `validatePaginationArgs` utility
     - Sanitize numeric IDs
     - _Requirements: 17.3, 17.4, 19.1, 19.2, 19.3_
 

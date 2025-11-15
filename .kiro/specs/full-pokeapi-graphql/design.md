@@ -966,37 +966,17 @@ type Query {
 
 **Pagination Logic**:
 
+All paginated query resolvers MUST use the `validatePaginationArgs` utility from `src/utils/relay.ts` to ensure consistent validation and error handling:
+
 ```typescript
-async function resolvePaginatedList<T>(
-  fetchList: (limit: number, offset: number) => Promise<ListResponse<T>>,
-  first?: number | null,
-  after?: string | null
-): Promise<Connection<T>> {
-  // Validate first argument if provided
-  let limit: number;
-  if (first === null || first === undefined) {
-    limit = 0; // No limit - fetch all (PokeAPI will use its default)
-  } else {
-    // Validate first is between 1 and 50
-    if (first < 1 || first > 50) {
-      throw new GraphQLError('first must be between 1 and 50', {
-        extensions: { code: 'INVALID_PAGINATION_ARGS' },
-      });
-    }
-    limit = first;
-  }
+import { validatePaginationArgs } from "../utils/relay.js";
+
+// Example paginated query resolver
+pokemons: async (_, args, { dataSources }) => {
+  const { first, after } = args;
   
-  // Decode cursor to get offset
-  let offset = 0;
-  if (after) {
-    const decodedOffset = decodeCursor(after);
-    if (decodedOffset === null) {
-      throw new GraphQLError('Invalid cursor format', {
-        extensions: { code: 'INVALID_CURSOR' },
-      });
-    }
-    offset = decodedOffset;
-  }
+  // Validate pagination arguments using utility
+  const { limit, offset } = validatePaginationArgs(first, after);
   
   // Fetch data
   // If limit is 0, fetch with PokeAPI default (20)

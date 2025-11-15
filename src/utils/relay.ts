@@ -37,13 +37,13 @@ export function decodeGlobalId(globalId: string): { typename: string; id: string
 }
 
 /**
- * Validates and normalizes pagination arguments.
+ * Validates and normalizes pagination arguments for Relay-style cursor pagination.
  * - first: Optional, nullable. When provided, must be 1-50. When not provided, returns 0 (use PokeAPI default).
- * - after: Optional cursor for pagination.
+ * - after: Optional cursor for pagination. Returns offset starting AFTER the cursor position.
  *
  * @param first - Number of items to return (1-50), or null/undefined for default
  * @param after - Cursor for pagination
- * @returns Object with validated limit and offset
+ * @returns Object with validated limit and offset (offset is position AFTER cursor)
  * @throws GraphQLError if validation fails
  */
 export function validatePaginationArgs(
@@ -73,7 +73,8 @@ export function validatePaginationArgs(
         extensions: { code: "INVALID_CURSOR" },
       });
     }
-    offset = decodedOffset;
+    // Start AFTER the cursor position (Relay forward pagination semantics)
+    offset = decodedOffset + 1;
   }
 
   return { limit, offset };

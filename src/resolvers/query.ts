@@ -1,7 +1,7 @@
 import { GraphQLError } from "graphql";
 import type { QueryResolvers } from "../types/generated.js";
-import { decodeGlobalId } from "../utils/relay.js";
-import { decodeCursor, encodeCursor } from "../utils/cursor.js";
+import { decodeGlobalId, validatePaginationArgs } from "../utils/relay.js";
+import { encodeCursor } from "../utils/cursor.js";
 
 export const Query: QueryResolvers = {
   pokemon: async (_, { id }, { dataSources }) => {
@@ -24,26 +24,10 @@ export const Query: QueryResolvers = {
   },
 
   pokemons: async (_, args, { dataSources }) => {
-    const { first: limit, after } = args;
+    const { first, after } = args;
 
     // Validate pagination arguments
-    if (limit !== undefined && limit !== null && (limit <= 0 || limit > 50)) {
-      throw new GraphQLError('"limit" must be a positive integer, and no more than 50', {
-        extensions: { code: "INVALID_PAGINATION_ARGS" },
-      });
-    }
-
-    // Decode after cursor to get starting offset
-    let offset = 0;
-    if (after) {
-      const decodedOffset = decodeCursor(after);
-      if (decodedOffset === null) {
-        throw new GraphQLError("Invalid cursor format", {
-          extensions: { code: "INVALID_CURSOR" },
-        });
-      }
-      offset = decodedOffset + 1; // Start after the cursor position
-    }
+    const { limit, offset } = validatePaginationArgs(first, after);
 
     // Fetch Pokemon list from PokéAPI
     const listResponse = await dataSources.pokemon.getPokemonList(limit ?? 0, offset);
@@ -106,26 +90,10 @@ export const Query: QueryResolvers = {
   },
 
   stats: async (_, args, { dataSources }) => {
-    const { first: limit, after } = args;
+    const { first, after } = args;
 
     // Validate pagination arguments
-    if (limit !== undefined && limit !== null && (limit <= 0 || limit > 50)) {
-      throw new GraphQLError('"limit" must be a positive integer, and no more than 50', {
-        extensions: { code: "INVALID_PAGINATION_ARGS" },
-      });
-    }
-
-    // Decode after cursor to get starting offset
-    let offset = 0;
-    if (after) {
-      const decodedOffset = decodeCursor(after);
-      if (decodedOffset === null) {
-        throw new GraphQLError("Invalid cursor format", {
-          extensions: { code: "INVALID_CURSOR" },
-        });
-      }
-      offset = decodedOffset + 1; // Start after the cursor position
-    }
+    const { limit, offset } = validatePaginationArgs(first, after);
 
     // Fetch Stat list from PokéAPI
     const listResponse = await dataSources.stat.getStatList(limit ?? 0, offset);
@@ -189,26 +157,10 @@ export const Query: QueryResolvers = {
   },
 
   types: async (_, args, { dataSources }) => {
-    const { first: limit, after } = args;
+    const { first, after } = args;
 
     // Validate pagination arguments
-    if (limit !== undefined && limit !== null && (limit <= 0 || limit > 50)) {
-      throw new GraphQLError('"limit" must be a positive integer, and no more than 50', {
-        extensions: { code: "INVALID_PAGINATION_ARGS" },
-      });
-    }
-
-    // Decode after cursor to get starting offset
-    let offset = 0;
-    if (after) {
-      const decodedOffset = decodeCursor(after);
-      if (decodedOffset === null) {
-        throw new GraphQLError("Invalid cursor format", {
-          extensions: { code: "INVALID_CURSOR" },
-        });
-      }
-      offset = decodedOffset + 1; // Start after the cursor position
-    }
+    const { limit, offset } = validatePaginationArgs(first, after);
 
     // Fetch Type list from PokéAPI
     const listResponse = await dataSources.type.getTypeList(limit ?? 0, offset);
@@ -272,26 +224,10 @@ export const Query: QueryResolvers = {
   },
 
   moves: async (_, args, { dataSources }) => {
-    const { first: limit, after } = args;
+    const { first, after } = args;
 
     // Validate pagination arguments
-    if (limit !== undefined && limit !== null && (limit <= 0 || limit > 50)) {
-      throw new GraphQLError('"limit" must be a positive integer, and no more than 50', {
-        extensions: { code: "INVALID_PAGINATION_ARGS" },
-      });
-    }
-
-    // Decode after cursor to get starting offset
-    let offset = 0;
-    if (after) {
-      const decodedOffset = decodeCursor(after);
-      if (decodedOffset === null) {
-        throw new GraphQLError("Invalid cursor format", {
-          extensions: { code: "INVALID_CURSOR" },
-        });
-      }
-      offset = decodedOffset + 1; // Start after the cursor position
-    }
+    const { limit, offset } = validatePaginationArgs(first, after);
 
     // Fetch Move list from PokéAPI
     const listResponse = await dataSources.move.getMoveList(limit ?? 0, offset);

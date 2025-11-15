@@ -61,6 +61,33 @@ All types representing entities MUST implement the `Node` interface:
 - Pagination adds unnecessary complexity
 - Maintaining consistent naming is the priority
 
+### Pagination Validation
+
+All paginated query resolvers MUST use the `validatePaginationArgs` utility from `src/utils/relay.ts`:
+
+```typescript
+import { validatePaginationArgs } from "../utils/relay.js";
+
+pokemons: async (_, args, { dataSources }) => {
+  const { first, after } = args;
+  
+  // Validate pagination arguments
+  const { limit, offset } = validatePaginationArgs(first, after);
+  
+  // Fetch data using validated limit and offset
+  const listResponse = await dataSources.pokemon.getPokemonList(limit, offset);
+  // ... rest of resolver
+}
+```
+
+**Benefits:**
+- Consistent validation across all paginated queries
+- Proper error codes and messages
+- Handles nullable `first` argument (uses PokeAPI default when null/undefined)
+- Validates `first` is between 1-50 when provided
+- Decodes and validates cursor format
+- Returns offset starting AFTER cursor position (Relay forward pagination semantics)
+
 ### Error Handling
 
 Use specific error codes for Relay-related errors:
