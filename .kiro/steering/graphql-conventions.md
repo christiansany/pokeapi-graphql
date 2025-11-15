@@ -91,7 +91,61 @@ pokemons: async (_, args, { dataSources }) => {
 ### Error Handling
 
 Use specific error codes for Relay-related errors:
-- `INVALID_CURSOR` - Malformed or expired cursor
-- `INVALID_GLOBAL_ID` - Malformed global ID
-- `INVALID_PAGINATION_ARGS` - Invalid first/last/after/before combination
-- `NODE_NOT_FOUND` - Node ID doesn't exist
+- `INVALID_CURSOR` - Malformed or expired cursor (can't decode base64, invalid format)
+- `INVALID_GLOBAL_ID` - Malformed global ID (can't decode, wrong typename, non-numeric ID when number expected)
+- `INVALID_PAGINATION_ARGS` - Invalid first/last/after/before combination (e.g., first < 1 or first > 50)
+- `NODE_NOT_FOUND` - Node ID is valid but the resource doesn't exist (use null return for `node` resolver with unknown typename)
+
+**Error Handling Pattern:**
+
+```typescript
+// Specific query resolver (e.g., Query.pokemon)
+pokemon: async (_, { id }, { dataSources }) => {
+  const decoded = decodeGlobalId(id);
+  
+  // Throw error if can't decode or wrong typename
+  if (!decoded || decoded.typename !== "Pokemon") {
+    throw new GraphQLError("Invalid Pokemon ID format", {
+      extensions: { code: "INVALID_GLOBAL_ID" },
+    });
+  }
+  
+  // Throw error if ID isn't numeric when expected
+  const numericId = parseInt(decoded.id, 10);
+  if (isNaN(numericId)) {
+    throw new GraphQLError("Invalid Pokemon ID format", {
+      extensions: { code: "INVALID_GLOBAL_ID" },
+    });
+  }
+  
+  // Return null if resource doesn't exist (DataSource returns null)
+  return dataSources.pokemon.getPokemonById(numericId);
+},
+
+// Node resolver (generic)
+node: async (_, { id }, { dataSources }) => {
+  const decoded = decodeGlobalId(id);
+  
+  // Throw error if can't decode
+  if (!decoded) {
+    throw new GraphQLError("Invalid global ID format", {
+      extensions: { code: "INVALID_GLOBAL_ID" },
+    });
+  }
+  
+  // Return null for unknown typename (per Relay spec)
+  switch (decoded.typename) {
+    case "Pokemon": {
+      const numericId = parseInt(decoded.id, 10);
+      if (isNaN(numericId)) {
+        throw new GraphQLError("Invalid Pokemon ID format", {
+          extensions: { code: "INVALID_GLOBAL_ID" },
+        });
+      }
+      return dataSources.pokemon.getPokemonById(numericId);
+    }
+    default:
+      return null; // Unknown typename
+  }
+}
+```

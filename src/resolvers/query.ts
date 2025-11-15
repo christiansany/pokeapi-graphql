@@ -9,14 +9,14 @@ export const Query: QueryResolvers = {
 
     if (!decoded || decoded.typename !== "Pokemon") {
       throw new GraphQLError("Invalid Pokemon ID format", {
-        extensions: { code: "INVALID_ID" },
+        extensions: { code: "INVALID_GLOBAL_ID" },
       });
     }
 
     const numericId = parseInt(decoded.id, 10);
     if (isNaN(numericId)) {
       throw new GraphQLError("Invalid Pokemon ID format", {
-        extensions: { code: "INVALID_ID" },
+        extensions: { code: "INVALID_GLOBAL_ID" },
       });
     }
 
@@ -75,14 +75,14 @@ export const Query: QueryResolvers = {
 
     if (!decoded || decoded.typename !== "Stat") {
       throw new GraphQLError("Invalid Stat ID format", {
-        extensions: { code: "INVALID_ID" },
+        extensions: { code: "INVALID_GLOBAL_ID" },
       });
     }
 
     const numericId = parseInt(decoded.id, 10);
     if (isNaN(numericId)) {
       throw new GraphQLError("Invalid Stat ID format", {
-        extensions: { code: "INVALID_ID" },
+        extensions: { code: "INVALID_GLOBAL_ID" },
       });
     }
 
@@ -142,14 +142,14 @@ export const Query: QueryResolvers = {
 
     if (!decoded || decoded.typename !== "Type") {
       throw new GraphQLError("Invalid Type ID format", {
-        extensions: { code: "INVALID_ID" },
+        extensions: { code: "INVALID_GLOBAL_ID" },
       });
     }
 
     const numericId = parseInt(decoded.id, 10);
     if (isNaN(numericId)) {
       throw new GraphQLError("Invalid Type ID format", {
-        extensions: { code: "INVALID_ID" },
+        extensions: { code: "INVALID_GLOBAL_ID" },
       });
     }
 
@@ -209,14 +209,14 @@ export const Query: QueryResolvers = {
 
     if (!decoded || decoded.typename !== "Move") {
       throw new GraphQLError("Invalid Move ID format", {
-        extensions: { code: "INVALID_ID" },
+        extensions: { code: "INVALID_GLOBAL_ID" },
       });
     }
 
     const numericId = parseInt(decoded.id, 10);
     if (isNaN(numericId)) {
       throw new GraphQLError("Invalid Move ID format", {
-        extensions: { code: "INVALID_ID" },
+        extensions: { code: "INVALID_GLOBAL_ID" },
       });
     }
 
@@ -275,46 +275,59 @@ export const Query: QueryResolvers = {
     const decoded = decodeGlobalId(id);
 
     if (!decoded) {
-      return null;
+      throw new GraphQLError("Invalid global ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
     }
 
     switch (decoded.typename) {
       case "Pokemon": {
         const numericId = parseInt(decoded.id, 10);
         if (isNaN(numericId)) {
-          return null;
+          throw new GraphQLError("Invalid Pokemon ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
         }
         return dataSources.pokemon.getPokemonById(numericId);
       }
       case "Ability": {
         const numericId = parseInt(decoded.id, 10);
         if (isNaN(numericId)) {
-          return null;
+          throw new GraphQLError("Invalid Ability ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
         }
         return dataSources.ability.getAbilityById(numericId);
       }
       case "Stat": {
         const numericId = parseInt(decoded.id, 10);
         if (isNaN(numericId)) {
-          return null;
+          throw new GraphQLError("Invalid Stat ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
         }
         return dataSources.stat.getStatById(numericId);
       }
       case "Type": {
         const numericId = parseInt(decoded.id, 10);
         if (isNaN(numericId)) {
-          return null;
+          throw new GraphQLError("Invalid Type ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
         }
         return dataSources.type.getTypeById(numericId);
       }
       case "Move": {
         const numericId = parseInt(decoded.id, 10);
         if (isNaN(numericId)) {
-          return null;
+          throw new GraphQLError("Invalid Move ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
         }
         return dataSources.move.getMoveById(numericId);
       }
       default:
+        // Unknown typename - return null per Relay spec (node not found)
         return null;
     }
   },
