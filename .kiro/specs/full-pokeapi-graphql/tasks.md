@@ -239,8 +239,8 @@ When implementing ANY edge type, verify:
     - NOTE: Resolvers will be created when schema is updated in task 17.1
     - _Requirements: 3.1, 3.2_
 
-- [ ] 5. Implement PokemonSpecies and Forms
-  - [ ] 5.1 Implement PokemonSpecies type
+- [x] 5. Implement PokemonSpecies and Forms
+  - [x] 5.1 Implement PokemonSpecies type
     - Create PokemonSpecies DTOs in domains/pokemon/pokemon.dto.ts
     - Add species methods to PokemonDataSource with DataLoaders
     - Add PokemonSpecies type to pokemon.graphql schema implementing Node
@@ -250,7 +250,7 @@ When implementing ANY edge type, verify:
     - Update codegen.ts mappers for PokemonSpecies
     - _Requirements: 10.1, 10.5, 16.1_
   
-  - [ ] 5.2 Implement PokemonForm type
+  - [x] 5.2 Implement PokemonForm type
     - Create PokemonForm DTOs in domains/pokemon/pokemon.dto.ts
     - Add form methods to PokemonDataSource with DataLoaders
     - Add PokemonForm type to pokemon.graphql schema implementing Node
@@ -258,7 +258,7 @@ When implementing ANY edge type, verify:
     - Update Pokemon resolver to resolve forms references
     - _Requirements: 10.2, 16.1_
   
-  - [ ] 5.3 Implement PokemonSpecies varieties edge
+  - [x] 5.3 Implement PokemonSpecies varieties edge
     - Create PokemonVarietyEdge resolver in domains/pokemon/edges/pokemonVariety.edge.ts
     - Update PokemonSpecies resolver to return varieties connection with edges
     - _Requirements: 10.4, 18.5_

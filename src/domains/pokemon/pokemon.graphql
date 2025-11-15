@@ -430,3 +430,493 @@ extend type Query {
     after: String
   ): PokemonConnection!
 }
+
+
+"""
+A Pokemon Species from the PokéAPI.
+Represents species-level data including evolution, habitat, and varieties.
+"""
+type PokemonSpecies implements Node {
+  """
+  The globally unique identifier for this Pokemon Species.
+  """
+  id: ID!
+  
+  """
+  The name of this Pokemon Species.
+  """
+  name: String!
+  
+  """
+  The order in which species should be sorted.
+  """
+  order: Int!
+  
+  """
+  The chance of this Pokemon being female, in eighths; or -1 for genderless.
+  """
+  genderRate: Int!
+  
+  """
+  The base capture rate; up to 255.
+  """
+  captureRate: Int!
+  
+  """
+  The base happiness when caught by a normal Pokéball.
+  """
+  baseHappiness: Int!
+  
+  """
+  Whether this is a baby Pokemon.
+  """
+  isBaby: Boolean!
+  
+  """
+  Whether this is a legendary Pokemon.
+  """
+  isLegendary: Boolean!
+  
+  """
+  Whether this is a mythical Pokemon.
+  """
+  isMythical: Boolean!
+  
+  """
+  Initial hatch counter: one must walk this many steps before this egg hatches.
+  """
+  hatchCounter: Int!
+  
+  """
+  Whether this Pokemon has visual gender differences.
+  """
+  hasGenderDifferences: Boolean!
+  
+  """
+  Whether this Pokemon can switch forms.
+  """
+  formsSwitchable: Boolean!
+  
+  """
+  The growth rate of this Pokemon Species.
+  """
+  growthRate: NamedAPIResource!
+  
+  """
+  Pokedex numbers for this Pokemon Species across different Pokedexes.
+  """
+  pokedexNumbers: [PokemonSpeciesDexEntry!]!
+  
+  """
+  Egg groups this Pokemon Species belongs to.
+  """
+  eggGroups: [NamedAPIResource!]!
+  
+  """
+  The color of this Pokemon for Pokedex search.
+  """
+  color: NamedAPIResource!
+  
+  """
+  The shape of this Pokemon for Pokedex search.
+  """
+  shape: NamedAPIResource!
+  
+  """
+  The Pokemon Species that this Pokemon evolves from.
+  """
+  evolvesFromSpecies: NamedAPIResource
+  
+  """
+  The evolution chain this Pokemon Species belongs to.
+  """
+  evolutionChain: APIResource!
+  
+  """
+  The habitat this Pokemon Species can be encountered in.
+  """
+  habitat: NamedAPIResource
+  
+  """
+  The generation this Pokemon Species was introduced in.
+  """
+  generation: NamedAPIResource!
+  
+  """
+  The name of this Pokemon Species in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  Pal Park encounter areas for this Pokemon Species.
+  """
+  palParkEncounters: [PalParkEncounterArea!]!
+  
+  """
+  Flavor text entries for this Pokemon Species.
+  """
+  flavorTextEntries: [PokemonSpeciesFlavorText!]!
+  
+  """
+  Descriptions of this Pokemon Species in different languages.
+  """
+  formDescriptions: [Description!]!
+  
+  """
+  The genus (category) of this Pokemon Species in different languages.
+  """
+  genera: [Genus!]!
+  
+  """
+  The varieties (forms) of this Pokemon Species.
+  """
+  varieties: PokemonVarietyConnection!
+}
+
+"""
+A Pokedex entry for a Pokemon Species.
+"""
+type PokemonSpeciesDexEntry {
+  """
+  The entry number in the Pokedex.
+  """
+  entryNumber: Int!
+  
+  """
+  The Pokedex this entry is from.
+  """
+  pokedex: NamedAPIResource!
+}
+
+"""
+A Pal Park encounter area for a Pokemon Species.
+"""
+type PalParkEncounterArea {
+  """
+  The base score given to the player when this Pokemon is caught.
+  """
+  baseScore: Int!
+  
+  """
+  The base rate for encountering this Pokemon.
+  """
+  rate: Int!
+  
+  """
+  The Pal Park area where this Pokemon can be encountered.
+  """
+  area: NamedAPIResource!
+}
+
+"""
+A genus (category) for a Pokemon Species.
+"""
+type Genus {
+  """
+  The localized genus.
+  """
+  genus: String!
+  
+  """
+  The language this genus is in.
+  """
+  language: NamedAPIResource!
+}
+
+"""
+A flavor text entry for a Pokemon Species.
+"""
+type PokemonSpeciesFlavorText {
+  """
+  The localized flavor text.
+  """
+  flavorText: String!
+  
+  """
+  The language this flavor text is in.
+  """
+  language: NamedAPIResource!
+  
+  """
+  The game version this flavor text is from.
+  """
+  version: NamedAPIResource!
+}
+
+"""
+A description for a resource.
+"""
+type Description {
+  """
+  The localized description.
+  """
+  description: String!
+  
+  """
+  The language this description is in.
+  """
+  language: NamedAPIResource!
+}
+
+"""
+An API resource reference (without name).
+"""
+type APIResource {
+  """
+  The URL of the referenced resource.
+  """
+  url: String!
+}
+
+"""
+A connection to a list of Pokemon varieties.
+"""
+type PokemonVarietyConnection {
+  """
+  A list of edges containing variety information.
+  """
+  edges: [PokemonVarietyEdge!]!
+}
+
+"""
+An edge representing a variety of a Pokemon Species.
+"""
+type PokemonVarietyEdge {
+  """
+  Whether this is the default variety.
+  """
+  isDefault: Boolean!
+  
+  """
+  The Pokemon at the end of this edge.
+  """
+  node: Pokemon!
+}
+
+"""
+An edge in a Pokemon Species connection.
+"""
+type PokemonSpeciesEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Pokemon Species at the end of the edge.
+  """
+  node: PokemonSpecies!
+}
+
+"""
+A connection to a list of Pokemon Species.
+"""
+type PokemonSpeciesConnection {
+  """
+  A list of edges.
+  """
+  edges: [PokemonSpeciesEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Pokemon Species available.
+  """
+  totalCount: Int!
+}
+
+"""
+A Pokemon Form from the PokéAPI.
+Represents a specific form of a Pokemon.
+"""
+type PokemonForm implements Node {
+  """
+  The globally unique identifier for this Pokemon Form.
+  """
+  id: ID!
+  
+  """
+  The name of this Pokemon Form.
+  """
+  name: String!
+  
+  """
+  The order in which forms should be sorted within a species.
+  """
+  order: Int!
+  
+  """
+  The order in which forms should be sorted within all forms.
+  """
+  formOrder: Int!
+  
+  """
+  Whether this is the default form for this Pokemon.
+  """
+  isDefault: Boolean!
+  
+  """
+  Whether this form can only be used in battle.
+  """
+  isBattleOnly: Boolean!
+  
+  """
+  Whether this form is a mega evolution.
+  """
+  isMega: Boolean!
+  
+  """
+  The form name of this Pokemon Form.
+  """
+  formName: String!
+  
+  """
+  The Pokemon this form belongs to.
+  """
+  pokemon: NamedAPIResource!
+  
+  """
+  The types this Pokemon Form has.
+  """
+  types: [TypeReference!]!
+  
+  """
+  Sprites (images) for this Pokemon Form.
+  """
+  sprites: PokemonFormSprites!
+  
+  """
+  The version group this Pokemon Form was introduced in.
+  """
+  versionGroup: NamedAPIResource!
+  
+  """
+  The name of this Pokemon Form in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  The form name of this Pokemon Form in different languages.
+  """
+  formNames: [Name!]!
+}
+
+"""
+A type reference for a Pokemon Form.
+"""
+type TypeReference {
+  """
+  The slot this type occupies.
+  """
+  slot: Int!
+  
+  """
+  The type.
+  """
+  type: NamedAPIResource!
+}
+
+"""
+Sprites (images) for a Pokemon Form.
+"""
+type PokemonFormSprites {
+  """
+  The default front sprite.
+  """
+  frontDefault: String
+  
+  """
+  The shiny front sprite.
+  """
+  frontShiny: String
+  
+  """
+  The default back sprite.
+  """
+  backDefault: String
+  
+  """
+  The shiny back sprite.
+  """
+  backShiny: String
+}
+
+"""
+An edge in a Pokemon Form connection.
+"""
+type PokemonFormEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Pokemon Form at the end of the edge.
+  """
+  node: PokemonForm!
+}
+
+"""
+A connection to a list of Pokemon Forms.
+"""
+type PokemonFormConnection {
+  """
+  A list of edges.
+  """
+  edges: [PokemonFormEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Pokemon Forms available.
+  """
+  totalCount: Int!
+}
+
+extend type Query {
+  """
+  Fetch a single Pokemon Species by its global ID.
+  """
+  pokemonSpecies(id: ID!): PokemonSpecies
+  
+  """
+  Fetch a paginated list of Pokemon Species using forward-only cursor-based pagination.
+  """
+  pokemonSpeciesList(
+    """
+    Returns the first n elements from the list. Must be between 1-50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): PokemonSpeciesConnection!
+  
+  """
+  Fetch a single Pokemon Form by its global ID.
+  """
+  pokemonForm(id: ID!): PokemonForm
+  
+  """
+  Fetch a paginated list of Pokemon Forms using forward-only cursor-based pagination.
+  """
+  pokemonForms(
+    """
+    Returns the first n elements from the list. Must be between 1-50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): PokemonFormConnection!
+}

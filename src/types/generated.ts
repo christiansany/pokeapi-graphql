@@ -1,7 +1,7 @@
 /* eslint-disable */
 // @ts-nocheck
 import { GraphQLResolveInfo } from 'graphql';
-import { PokemonDTO } from '../domains/pokemon/pokemon.dto.js';
+import { PokemonDTO, PokemonSpeciesDTO, PokemonFormDTO } from '../domains/pokemon/pokemon.dto.js';
 import { AbilityDTO } from '../domains/ability/ability.dto.js';
 import { StatDTO } from '../domains/stat/stat.dto.js';
 import { TypeDTO } from '../domains/type/type.dto.js';
@@ -23,6 +23,13 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+};
+
+/** An API resource reference (without name). */
+export type ApiResource = {
+  __typename?: 'APIResource';
+  /** The URL of the referenced resource. */
+  url: Scalars['String']['output'];
 };
 
 /** An ability that Pokemon can have. */
@@ -56,6 +63,15 @@ export type DamageRelations = {
   noDamageFrom: Array<NamedApiResource>;
   /** Types that this type deals no damage to. */
   noDamageTo: Array<NamedApiResource>;
+};
+
+/** A description for a resource. */
+export type Description = {
+  __typename?: 'Description';
+  /** The localized description. */
+  description: Scalars['String']['output'];
+  /** The language this description is in. */
+  language: NamedApiResource;
 };
 
 /** Dream World sprites. */
@@ -94,6 +110,15 @@ export type GameIndex = {
   gameIndex: Scalars['Int']['output'];
   /** The version this game index is for. */
   version: NamedApiResource;
+};
+
+/** A genus (category) for a Pokemon Species. */
+export type Genus = {
+  __typename?: 'Genus';
+  /** The localized genus. */
+  genus: Scalars['String']['output'];
+  /** The language this genus is in. */
+  language: NamedApiResource;
 };
 
 /** An item that a Pokemon may hold in the wild. */
@@ -350,6 +375,17 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
+/** A Pal Park encounter area for a Pokemon Species. */
+export type PalParkEncounterArea = {
+  __typename?: 'PalParkEncounterArea';
+  /** The Pal Park area where this Pokemon can be encountered. */
+  area: NamedApiResource;
+  /** The base score given to the player when this Pokemon is caught. */
+  baseScore: Scalars['Int']['output'];
+  /** The base rate for encountering this Pokemon. */
+  rate: Scalars['Int']['output'];
+};
+
 /** Past damage relations for a type in a previous generation. */
 export type PastDamageRelations = {
   __typename?: 'PastDamageRelations';
@@ -436,6 +472,75 @@ export type PokemonEdge = {
   node: Pokemon;
 };
 
+/**
+ * A Pokemon Form from the PokéAPI.
+ * Represents a specific form of a Pokemon.
+ */
+export type PokemonForm = Node & {
+  __typename?: 'PokemonForm';
+  /** The form name of this Pokemon Form. */
+  formName: Scalars['String']['output'];
+  /** The form name of this Pokemon Form in different languages. */
+  formNames: Array<Name>;
+  /** The order in which forms should be sorted within all forms. */
+  formOrder: Scalars['Int']['output'];
+  /** The globally unique identifier for this Pokemon Form. */
+  id: Scalars['ID']['output'];
+  /** Whether this form can only be used in battle. */
+  isBattleOnly: Scalars['Boolean']['output'];
+  /** Whether this is the default form for this Pokemon. */
+  isDefault: Scalars['Boolean']['output'];
+  /** Whether this form is a mega evolution. */
+  isMega: Scalars['Boolean']['output'];
+  /** The name of this Pokemon Form. */
+  name: Scalars['String']['output'];
+  /** The name of this Pokemon Form in different languages. */
+  names: Array<Name>;
+  /** The order in which forms should be sorted within a species. */
+  order: Scalars['Int']['output'];
+  /** The Pokemon this form belongs to. */
+  pokemon: NamedApiResource;
+  /** Sprites (images) for this Pokemon Form. */
+  sprites: PokemonFormSprites;
+  /** The types this Pokemon Form has. */
+  types: Array<TypeReference>;
+  /** The version group this Pokemon Form was introduced in. */
+  versionGroup: NamedApiResource;
+};
+
+/** A connection to a list of Pokemon Forms. */
+export type PokemonFormConnection = {
+  __typename?: 'PokemonFormConnection';
+  /** A list of edges. */
+  edges: Array<PokemonFormEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The total count of Pokemon Forms available. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in a Pokemon Form connection. */
+export type PokemonFormEdge = {
+  __typename?: 'PokemonFormEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The Pokemon Form at the end of the edge. */
+  node: PokemonForm;
+};
+
+/** Sprites (images) for a Pokemon Form. */
+export type PokemonFormSprites = {
+  __typename?: 'PokemonFormSprites';
+  /** The default back sprite. */
+  backDefault?: Maybe<Scalars['String']['output']>;
+  /** The shiny back sprite. */
+  backShiny?: Maybe<Scalars['String']['output']>;
+  /** The default front sprite. */
+  frontDefault?: Maybe<Scalars['String']['output']>;
+  /** The shiny front sprite. */
+  frontShiny?: Maybe<Scalars['String']['output']>;
+};
+
 /** A connection to a list of Pokemon moves. */
 export type PokemonMoveConnection = {
   __typename?: 'PokemonMoveConnection';
@@ -450,6 +555,108 @@ export type PokemonMoveEdge = {
   node: Move;
   /** Version-specific details about how this Pokemon learns this move. */
   versionGroupDetails: Array<MoveVersionGroupDetail>;
+};
+
+/**
+ * A Pokemon Species from the PokéAPI.
+ * Represents species-level data including evolution, habitat, and varieties.
+ */
+export type PokemonSpecies = Node & {
+  __typename?: 'PokemonSpecies';
+  /** The base happiness when caught by a normal Pokéball. */
+  baseHappiness: Scalars['Int']['output'];
+  /** The base capture rate; up to 255. */
+  captureRate: Scalars['Int']['output'];
+  /** The color of this Pokemon for Pokedex search. */
+  color: NamedApiResource;
+  /** Egg groups this Pokemon Species belongs to. */
+  eggGroups: Array<NamedApiResource>;
+  /** The evolution chain this Pokemon Species belongs to. */
+  evolutionChain: ApiResource;
+  /** The Pokemon Species that this Pokemon evolves from. */
+  evolvesFromSpecies?: Maybe<NamedApiResource>;
+  /** Flavor text entries for this Pokemon Species. */
+  flavorTextEntries: Array<PokemonSpeciesFlavorText>;
+  /** Descriptions of this Pokemon Species in different languages. */
+  formDescriptions: Array<Description>;
+  /** Whether this Pokemon can switch forms. */
+  formsSwitchable: Scalars['Boolean']['output'];
+  /** The chance of this Pokemon being female, in eighths; or -1 for genderless. */
+  genderRate: Scalars['Int']['output'];
+  /** The genus (category) of this Pokemon Species in different languages. */
+  genera: Array<Genus>;
+  /** The generation this Pokemon Species was introduced in. */
+  generation: NamedApiResource;
+  /** The growth rate of this Pokemon Species. */
+  growthRate: NamedApiResource;
+  /** The habitat this Pokemon Species can be encountered in. */
+  habitat?: Maybe<NamedApiResource>;
+  /** Whether this Pokemon has visual gender differences. */
+  hasGenderDifferences: Scalars['Boolean']['output'];
+  /** Initial hatch counter: one must walk this many steps before this egg hatches. */
+  hatchCounter: Scalars['Int']['output'];
+  /** The globally unique identifier for this Pokemon Species. */
+  id: Scalars['ID']['output'];
+  /** Whether this is a baby Pokemon. */
+  isBaby: Scalars['Boolean']['output'];
+  /** Whether this is a legendary Pokemon. */
+  isLegendary: Scalars['Boolean']['output'];
+  /** Whether this is a mythical Pokemon. */
+  isMythical: Scalars['Boolean']['output'];
+  /** The name of this Pokemon Species. */
+  name: Scalars['String']['output'];
+  /** The name of this Pokemon Species in different languages. */
+  names: Array<Name>;
+  /** The order in which species should be sorted. */
+  order: Scalars['Int']['output'];
+  /** Pal Park encounter areas for this Pokemon Species. */
+  palParkEncounters: Array<PalParkEncounterArea>;
+  /** Pokedex numbers for this Pokemon Species across different Pokedexes. */
+  pokedexNumbers: Array<PokemonSpeciesDexEntry>;
+  /** The shape of this Pokemon for Pokedex search. */
+  shape: NamedApiResource;
+  /** The varieties (forms) of this Pokemon Species. */
+  varieties: PokemonVarietyConnection;
+};
+
+/** A connection to a list of Pokemon Species. */
+export type PokemonSpeciesConnection = {
+  __typename?: 'PokemonSpeciesConnection';
+  /** A list of edges. */
+  edges: Array<PokemonSpeciesEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** The total count of Pokemon Species available. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** A Pokedex entry for a Pokemon Species. */
+export type PokemonSpeciesDexEntry = {
+  __typename?: 'PokemonSpeciesDexEntry';
+  /** The entry number in the Pokedex. */
+  entryNumber: Scalars['Int']['output'];
+  /** The Pokedex this entry is from. */
+  pokedex: NamedApiResource;
+};
+
+/** An edge in a Pokemon Species connection. */
+export type PokemonSpeciesEdge = {
+  __typename?: 'PokemonSpeciesEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String']['output'];
+  /** The Pokemon Species at the end of the edge. */
+  node: PokemonSpecies;
+};
+
+/** A flavor text entry for a Pokemon Species. */
+export type PokemonSpeciesFlavorText = {
+  __typename?: 'PokemonSpeciesFlavorText';
+  /** The localized flavor text. */
+  flavorText: Scalars['String']['output'];
+  /** The language this flavor text is in. */
+  language: NamedApiResource;
+  /** The game version this flavor text is from. */
+  version: NamedApiResource;
 };
 
 /** Sprites (images) for a Pokemon. */
@@ -509,6 +716,22 @@ export type PokemonTypeEdge = {
   slot: Scalars['Int']['output'];
 };
 
+/** A connection to a list of Pokemon varieties. */
+export type PokemonVarietyConnection = {
+  __typename?: 'PokemonVarietyConnection';
+  /** A list of edges containing variety information. */
+  edges: Array<PokemonVarietyEdge>;
+};
+
+/** An edge representing a variety of a Pokemon Species. */
+export type PokemonVarietyEdge = {
+  __typename?: 'PokemonVarietyEdge';
+  /** Whether this is the default variety. */
+  isDefault: Scalars['Boolean']['output'];
+  /** The Pokemon at the end of this edge. */
+  node: Pokemon;
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Get a single move by its global ID. */
@@ -519,6 +742,14 @@ export type Query = {
   node?: Maybe<Node>;
   /** Fetch a single Pokemon by its global ID. */
   pokemon?: Maybe<Pokemon>;
+  /** Fetch a single Pokemon Form by its global ID. */
+  pokemonForm?: Maybe<PokemonForm>;
+  /** Fetch a paginated list of Pokemon Forms using forward-only cursor-based pagination. */
+  pokemonForms: PokemonFormConnection;
+  /** Fetch a single Pokemon Species by its global ID. */
+  pokemonSpecies?: Maybe<PokemonSpecies>;
+  /** Fetch a paginated list of Pokemon Species using forward-only cursor-based pagination. */
+  pokemonSpeciesList: PokemonSpeciesConnection;
   /** Fetch a paginated list of Pokemon using forward-only cursor-based pagination. */
   pokemons: PokemonConnection;
   /** Fetch a single Stat by its global ID. */
@@ -550,6 +781,28 @@ export type QueryNodeArgs = {
 
 export type QueryPokemonArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokemonFormArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokemonFormsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryPokemonSpeciesArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryPokemonSpeciesListArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -677,6 +930,15 @@ export type TypePokemon = {
   slot: Scalars['Int']['output'];
 };
 
+/** A type reference for a Pokemon Form. */
+export type TypeReference = {
+  __typename?: 'TypeReference';
+  /** The slot this type occupies. */
+  slot: Scalars['Int']['output'];
+  /** The type. */
+  type: NamedApiResource;
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -747,18 +1009,21 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  Node: ( AbilityDTO ) | ( MoveDTO ) | ( PokemonDTO ) | ( StatDTO ) | ( TypeDTO );
+  Node: ( AbilityDTO ) | ( MoveDTO ) | ( PokemonDTO ) | ( PokemonFormDTO ) | ( PokemonSpeciesDTO ) | ( StatDTO ) | ( TypeDTO );
 };
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  APIResource: ResolverTypeWrapper<ApiResource>;
   Ability: ResolverTypeWrapper<AbilityDTO>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   DamageRelations: ResolverTypeWrapper<DamageRelations>;
+  Description: ResolverTypeWrapper<Description>;
   DreamWorldSprites: ResolverTypeWrapper<DreamWorldSprites>;
   EffectEntry: ResolverTypeWrapper<EffectEntry>;
   FlavorTextEntry: ResolverTypeWrapper<FlavorTextEntry>;
   GameIndex: ResolverTypeWrapper<GameIndex>;
+  Genus: ResolverTypeWrapper<Genus>;
   HeldItem: ResolverTypeWrapper<HeldItem>;
   HeldItemVersion: ResolverTypeWrapper<HeldItemVersion>;
   HomeSprites: ResolverTypeWrapper<HomeSprites>;
@@ -781,19 +1046,31 @@ export type ResolversTypes = {
   OfficialArtworkSprites: ResolverTypeWrapper<OfficialArtworkSprites>;
   OtherPokemonSprites: ResolverTypeWrapper<OtherPokemonSprites>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
+  PalParkEncounterArea: ResolverTypeWrapper<PalParkEncounterArea>;
   PastDamageRelations: ResolverTypeWrapper<PastDamageRelations>;
   Pokemon: ResolverTypeWrapper<PokemonDTO>;
   PokemonAbilityConnection: ResolverTypeWrapper<Omit<PokemonAbilityConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonAbilityEdge']> }>;
   PokemonAbilityEdge: ResolverTypeWrapper<{ slot: number; isHidden: boolean; abilityName: string }>;
   PokemonConnection: ResolverTypeWrapper<Omit<PokemonConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonEdge']> }>;
   PokemonEdge: ResolverTypeWrapper<Omit<PokemonEdge, 'node'> & { node: ResolversTypes['Pokemon'] }>;
+  PokemonForm: ResolverTypeWrapper<PokemonFormDTO>;
+  PokemonFormConnection: ResolverTypeWrapper<Omit<PokemonFormConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonFormEdge']> }>;
+  PokemonFormEdge: ResolverTypeWrapper<Omit<PokemonFormEdge, 'node'> & { node: ResolversTypes['PokemonForm'] }>;
+  PokemonFormSprites: ResolverTypeWrapper<PokemonFormSprites>;
   PokemonMoveConnection: ResolverTypeWrapper<Omit<PokemonMoveConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonMoveEdge']> }>;
   PokemonMoveEdge: ResolverTypeWrapper<{ moveName: string; versionGroupDetails: Array<{ levelLearnedAt: number; moveLearnMethod: { name: string; url: string }; versionGroup: { name: string; url: string } }> }>;
+  PokemonSpecies: ResolverTypeWrapper<PokemonSpeciesDTO>;
+  PokemonSpeciesConnection: ResolverTypeWrapper<Omit<PokemonSpeciesConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonSpeciesEdge']> }>;
+  PokemonSpeciesDexEntry: ResolverTypeWrapper<PokemonSpeciesDexEntry>;
+  PokemonSpeciesEdge: ResolverTypeWrapper<Omit<PokemonSpeciesEdge, 'node'> & { node: ResolversTypes['PokemonSpecies'] }>;
+  PokemonSpeciesFlavorText: ResolverTypeWrapper<PokemonSpeciesFlavorText>;
   PokemonSprites: ResolverTypeWrapper<PokemonSprites>;
   PokemonStatConnection: ResolverTypeWrapper<Omit<PokemonStatConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonStatEdge']> }>;
   PokemonStatEdge: ResolverTypeWrapper<{ baseStat: number; effort: number; statName: string }>;
   PokemonTypeConnection: ResolverTypeWrapper<Omit<PokemonTypeConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonTypeEdge']> }>;
   PokemonTypeEdge: ResolverTypeWrapper<{ slot: number; typeName: string }>;
+  PokemonVarietyConnection: ResolverTypeWrapper<Omit<PokemonVarietyConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonVarietyEdge']> }>;
+  PokemonVarietyEdge: ResolverTypeWrapper<{ isDefault: boolean; pokemonName: string }>;
   Query: ResolverTypeWrapper<{}>;
   Stat: ResolverTypeWrapper<StatDTO>;
   StatConnection: ResolverTypeWrapper<Omit<StatConnection, 'edges'> & { edges: Array<ResolversTypes['StatEdge']> }>;
@@ -803,17 +1080,21 @@ export type ResolversTypes = {
   TypeConnection: ResolverTypeWrapper<Omit<TypeConnection, 'edges'> & { edges: Array<ResolversTypes['TypeEdge']> }>;
   TypeEdge: ResolverTypeWrapper<Omit<TypeEdge, 'node'> & { node: ResolversTypes['Type'] }>;
   TypePokemon: ResolverTypeWrapper<TypePokemon>;
+  TypeReference: ResolverTypeWrapper<TypeReference>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  APIResource: ApiResource;
   Ability: AbilityDTO;
   Boolean: Scalars['Boolean']['output'];
   DamageRelations: DamageRelations;
+  Description: Description;
   DreamWorldSprites: DreamWorldSprites;
   EffectEntry: EffectEntry;
   FlavorTextEntry: FlavorTextEntry;
   GameIndex: GameIndex;
+  Genus: Genus;
   HeldItem: HeldItem;
   HeldItemVersion: HeldItemVersion;
   HomeSprites: HomeSprites;
@@ -836,19 +1117,31 @@ export type ResolversParentTypes = {
   OfficialArtworkSprites: OfficialArtworkSprites;
   OtherPokemonSprites: OtherPokemonSprites;
   PageInfo: PageInfo;
+  PalParkEncounterArea: PalParkEncounterArea;
   PastDamageRelations: PastDamageRelations;
   Pokemon: PokemonDTO;
   PokemonAbilityConnection: Omit<PokemonAbilityConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonAbilityEdge']> };
   PokemonAbilityEdge: { slot: number; isHidden: boolean; abilityName: string };
   PokemonConnection: Omit<PokemonConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonEdge']> };
   PokemonEdge: Omit<PokemonEdge, 'node'> & { node: ResolversParentTypes['Pokemon'] };
+  PokemonForm: PokemonFormDTO;
+  PokemonFormConnection: Omit<PokemonFormConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonFormEdge']> };
+  PokemonFormEdge: Omit<PokemonFormEdge, 'node'> & { node: ResolversParentTypes['PokemonForm'] };
+  PokemonFormSprites: PokemonFormSprites;
   PokemonMoveConnection: Omit<PokemonMoveConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonMoveEdge']> };
   PokemonMoveEdge: { moveName: string; versionGroupDetails: Array<{ levelLearnedAt: number; moveLearnMethod: { name: string; url: string }; versionGroup: { name: string; url: string } }> };
+  PokemonSpecies: PokemonSpeciesDTO;
+  PokemonSpeciesConnection: Omit<PokemonSpeciesConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonSpeciesEdge']> };
+  PokemonSpeciesDexEntry: PokemonSpeciesDexEntry;
+  PokemonSpeciesEdge: Omit<PokemonSpeciesEdge, 'node'> & { node: ResolversParentTypes['PokemonSpecies'] };
+  PokemonSpeciesFlavorText: PokemonSpeciesFlavorText;
   PokemonSprites: PokemonSprites;
   PokemonStatConnection: Omit<PokemonStatConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonStatEdge']> };
   PokemonStatEdge: { baseStat: number; effort: number; statName: string };
   PokemonTypeConnection: Omit<PokemonTypeConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonTypeEdge']> };
   PokemonTypeEdge: { slot: number; typeName: string };
+  PokemonVarietyConnection: Omit<PokemonVarietyConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonVarietyEdge']> };
+  PokemonVarietyEdge: { isDefault: boolean; pokemonName: string };
   Query: {};
   Stat: StatDTO;
   StatConnection: Omit<StatConnection, 'edges'> & { edges: Array<ResolversParentTypes['StatEdge']> };
@@ -858,6 +1151,12 @@ export type ResolversParentTypes = {
   TypeConnection: Omit<TypeConnection, 'edges'> & { edges: Array<ResolversParentTypes['TypeEdge']> };
   TypeEdge: Omit<TypeEdge, 'node'> & { node: ResolversParentTypes['Type'] };
   TypePokemon: TypePokemon;
+  TypeReference: TypeReference;
+};
+
+export type ApiResourceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['APIResource'] = ResolversParentTypes['APIResource']> = {
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type AbilityResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Ability'] = ResolversParentTypes['Ability']> = {
@@ -875,6 +1174,12 @@ export type DamageRelationsResolvers<ContextType = Context, ParentType extends R
   halfDamageTo?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
   noDamageFrom?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
   noDamageTo?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DescriptionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Description'] = ResolversParentTypes['Description']> = {
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -901,6 +1206,12 @@ export type FlavorTextEntryResolvers<ContextType = Context, ParentType extends R
 export type GameIndexResolvers<ContextType = Context, ParentType extends ResolversParentTypes['GameIndex'] = ResolversParentTypes['GameIndex']> = {
   gameIndex?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   version?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type GenusResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Genus'] = ResolversParentTypes['Genus']> = {
+  genus?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1035,7 +1346,7 @@ export type NatureStatAffectSetsResolvers<ContextType = Context, ParentType exte
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Ability' | 'Move' | 'Pokemon' | 'Stat' | 'Type', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Ability' | 'Move' | 'Pokemon' | 'PokemonForm' | 'PokemonSpecies' | 'Stat' | 'Type', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -1057,6 +1368,13 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
   hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PalParkEncounterAreaResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PalParkEncounterArea'] = ResolversParentTypes['PalParkEncounterArea']> = {
+  area?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  baseScore?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  rate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1112,6 +1430,45 @@ export type PokemonEdgeResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PokemonFormResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonForm'] = ResolversParentTypes['PokemonForm']> = {
+  formName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  formNames?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  formOrder?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isBattleOnly?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isDefault?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isMega?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  pokemon?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  sprites?: Resolver<ResolversTypes['PokemonFormSprites'], ParentType, ContextType>;
+  types?: Resolver<Array<ResolversTypes['TypeReference']>, ParentType, ContextType>;
+  versionGroup?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonFormConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonFormConnection'] = ResolversParentTypes['PokemonFormConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['PokemonFormEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonFormEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonFormEdge'] = ResolversParentTypes['PokemonFormEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['PokemonForm'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonFormSpritesResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonFormSprites'] = ResolversParentTypes['PokemonFormSprites']> = {
+  backDefault?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  backShiny?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  frontDefault?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  frontShiny?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type PokemonMoveConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonMoveConnection'] = ResolversParentTypes['PokemonMoveConnection']> = {
   edges?: Resolver<Array<ResolversTypes['PokemonMoveEdge']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1120,6 +1477,63 @@ export type PokemonMoveConnectionResolvers<ContextType = Context, ParentType ext
 export type PokemonMoveEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonMoveEdge'] = ResolversParentTypes['PokemonMoveEdge']> = {
   node?: Resolver<ResolversTypes['Move'], ParentType, ContextType>;
   versionGroupDetails?: Resolver<Array<ResolversTypes['MoveVersionGroupDetail']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonSpeciesResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonSpecies'] = ResolversParentTypes['PokemonSpecies']> = {
+  baseHappiness?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  captureRate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  color?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  eggGroups?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  evolutionChain?: Resolver<ResolversTypes['APIResource'], ParentType, ContextType>;
+  evolvesFromSpecies?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  flavorTextEntries?: Resolver<Array<ResolversTypes['PokemonSpeciesFlavorText']>, ParentType, ContextType>;
+  formDescriptions?: Resolver<Array<ResolversTypes['Description']>, ParentType, ContextType>;
+  formsSwitchable?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  genderRate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  genera?: Resolver<Array<ResolversTypes['Genus']>, ParentType, ContextType>;
+  generation?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  growthRate?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  habitat?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  hasGenderDifferences?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hatchCounter?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  isBaby?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isLegendary?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isMythical?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  order?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  palParkEncounters?: Resolver<Array<ResolversTypes['PalParkEncounterArea']>, ParentType, ContextType>;
+  pokedexNumbers?: Resolver<Array<ResolversTypes['PokemonSpeciesDexEntry']>, ParentType, ContextType>;
+  shape?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  varieties?: Resolver<ResolversTypes['PokemonVarietyConnection'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonSpeciesConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonSpeciesConnection'] = ResolversParentTypes['PokemonSpeciesConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['PokemonSpeciesEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonSpeciesDexEntryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonSpeciesDexEntry'] = ResolversParentTypes['PokemonSpeciesDexEntry']> = {
+  entryNumber?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  pokedex?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonSpeciesEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonSpeciesEdge'] = ResolversParentTypes['PokemonSpeciesEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['PokemonSpecies'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonSpeciesFlavorTextResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonSpeciesFlavorText'] = ResolversParentTypes['PokemonSpeciesFlavorText']> = {
+  flavorText?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  language?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  version?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1159,11 +1573,26 @@ export type PokemonTypeEdgeResolvers<ContextType = Context, ParentType extends R
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PokemonVarietyConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonVarietyConnection'] = ResolversParentTypes['PokemonVarietyConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['PokemonVarietyEdge']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonVarietyEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonVarietyEdge'] = ResolversParentTypes['PokemonVarietyEdge']> = {
+  isDefault?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Pokemon'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   move?: Resolver<Maybe<ResolversTypes['Move']>, ParentType, ContextType, RequireFields<QueryMoveArgs, 'id'>>;
   moves?: Resolver<ResolversTypes['MoveConnection'], ParentType, ContextType, Partial<QueryMovesArgs>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
   pokemon?: Resolver<Maybe<ResolversTypes['Pokemon']>, ParentType, ContextType, RequireFields<QueryPokemonArgs, 'id'>>;
+  pokemonForm?: Resolver<Maybe<ResolversTypes['PokemonForm']>, ParentType, ContextType, RequireFields<QueryPokemonFormArgs, 'id'>>;
+  pokemonForms?: Resolver<ResolversTypes['PokemonFormConnection'], ParentType, ContextType, Partial<QueryPokemonFormsArgs>>;
+  pokemonSpecies?: Resolver<Maybe<ResolversTypes['PokemonSpecies']>, ParentType, ContextType, RequireFields<QueryPokemonSpeciesArgs, 'id'>>;
+  pokemonSpeciesList?: Resolver<ResolversTypes['PokemonSpeciesConnection'], ParentType, ContextType, Partial<QueryPokemonSpeciesListArgs>>;
   pokemons?: Resolver<ResolversTypes['PokemonConnection'], ParentType, ContextType, Partial<QueryPokemonsArgs>>;
   stat?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType, RequireFields<QueryStatArgs, 'id'>>;
   stats?: Resolver<ResolversTypes['StatConnection'], ParentType, ContextType, Partial<QueryStatsArgs>>;
@@ -1230,13 +1659,22 @@ export type TypePokemonResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TypeReferenceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['TypeReference'] = ResolversParentTypes['TypeReference']> = {
+  slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
+  APIResource?: ApiResourceResolvers<ContextType>;
   Ability?: AbilityResolvers<ContextType>;
   DamageRelations?: DamageRelationsResolvers<ContextType>;
+  Description?: DescriptionResolvers<ContextType>;
   DreamWorldSprites?: DreamWorldSpritesResolvers<ContextType>;
   EffectEntry?: EffectEntryResolvers<ContextType>;
   FlavorTextEntry?: FlavorTextEntryResolvers<ContextType>;
   GameIndex?: GameIndexResolvers<ContextType>;
+  Genus?: GenusResolvers<ContextType>;
   HeldItem?: HeldItemResolvers<ContextType>;
   HeldItemVersion?: HeldItemVersionResolvers<ContextType>;
   HomeSprites?: HomeSpritesResolvers<ContextType>;
@@ -1257,19 +1695,31 @@ export type Resolvers<ContextType = Context> = {
   OfficialArtworkSprites?: OfficialArtworkSpritesResolvers<ContextType>;
   OtherPokemonSprites?: OtherPokemonSpritesResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
+  PalParkEncounterArea?: PalParkEncounterAreaResolvers<ContextType>;
   PastDamageRelations?: PastDamageRelationsResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
   PokemonAbilityConnection?: PokemonAbilityConnectionResolvers<ContextType>;
   PokemonAbilityEdge?: PokemonAbilityEdgeResolvers<ContextType>;
   PokemonConnection?: PokemonConnectionResolvers<ContextType>;
   PokemonEdge?: PokemonEdgeResolvers<ContextType>;
+  PokemonForm?: PokemonFormResolvers<ContextType>;
+  PokemonFormConnection?: PokemonFormConnectionResolvers<ContextType>;
+  PokemonFormEdge?: PokemonFormEdgeResolvers<ContextType>;
+  PokemonFormSprites?: PokemonFormSpritesResolvers<ContextType>;
   PokemonMoveConnection?: PokemonMoveConnectionResolvers<ContextType>;
   PokemonMoveEdge?: PokemonMoveEdgeResolvers<ContextType>;
+  PokemonSpecies?: PokemonSpeciesResolvers<ContextType>;
+  PokemonSpeciesConnection?: PokemonSpeciesConnectionResolvers<ContextType>;
+  PokemonSpeciesDexEntry?: PokemonSpeciesDexEntryResolvers<ContextType>;
+  PokemonSpeciesEdge?: PokemonSpeciesEdgeResolvers<ContextType>;
+  PokemonSpeciesFlavorText?: PokemonSpeciesFlavorTextResolvers<ContextType>;
   PokemonSprites?: PokemonSpritesResolvers<ContextType>;
   PokemonStatConnection?: PokemonStatConnectionResolvers<ContextType>;
   PokemonStatEdge?: PokemonStatEdgeResolvers<ContextType>;
   PokemonTypeConnection?: PokemonTypeConnectionResolvers<ContextType>;
   PokemonTypeEdge?: PokemonTypeEdgeResolvers<ContextType>;
+  PokemonVarietyConnection?: PokemonVarietyConnectionResolvers<ContextType>;
+  PokemonVarietyEdge?: PokemonVarietyEdgeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;
   StatConnection?: StatConnectionResolvers<ContextType>;
@@ -1278,5 +1728,6 @@ export type Resolvers<ContextType = Context> = {
   TypeConnection?: TypeConnectionResolvers<ContextType>;
   TypeEdge?: TypeEdgeResolvers<ContextType>;
   TypePokemon?: TypePokemonResolvers<ContextType>;
+  TypeReference?: TypeReferenceResolvers<ContextType>;
 };
 

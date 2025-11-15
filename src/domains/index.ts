@@ -16,8 +16,11 @@ import type { Resolvers } from "../types/generated.js";
 import { Query } from "../resolvers/query.js";
 import { Node } from "../resolvers/node.js";
 import { Pokemon } from "./pokemon/pokemon.resolver.js";
+import { PokemonSpecies } from "./pokemon/pokemonSpecies.resolver.js";
+import { PokemonForm } from "./pokemon/pokemonForm.resolver.js";
 import { Ability } from "./ability/ability.resolver.js";
 import { PokemonAbilityEdge } from "./pokemon/edges/pokemonAbility.edge.js";
+import { PokemonVarietyEdge } from "./pokemon/edges/pokemonVariety.edge.js";
 
 /**
  * Combined resolver map for all GraphQL types.
@@ -42,6 +45,9 @@ export const resolvers: Resolvers = {
   Query,
   Node,
   Pokemon,
+  PokemonSpecies,
+  PokemonForm,
   Ability,
   PokemonAbilityEdge,
+  PokemonVarietyEdge,
 };

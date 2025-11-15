@@ -145,3 +145,148 @@ export interface PokemonListResponse {
   previous: string | null;
   results: NamedAPIResourceDTO[];
 }
+
+/**
+ * Pokemon Species DTO matching PokeAPI response structure.
+ * Represents species-level data including evolution, habitat, and varieties.
+ */
+export interface PokemonSpeciesDTO {
+  id: number;
+  name: string;
+  order: number;
+  gender_rate: number;
+  capture_rate: number;
+  base_happiness: number;
+  is_baby: boolean;
+  is_legendary: boolean;
+  is_mythical: boolean;
+  hatch_counter: number;
+  has_gender_differences: boolean;
+  forms_switchable: boolean;
+  growth_rate: NamedAPIResourceDTO;
+  pokedex_numbers: PokemonSpeciesDexEntryDTO[];
+  egg_groups: NamedAPIResourceDTO[];
+  color: NamedAPIResourceDTO;
+  shape: NamedAPIResourceDTO;
+  evolves_from_species: NamedAPIResourceDTO | null;
+  evolution_chain: {
+    url: string;
+  };
+  habitat: NamedAPIResourceDTO | null;
+  generation: NamedAPIResourceDTO;
+  names: NameDTO[];
+  pal_park_encounters: PalParkEncounterAreaDTO[];
+  flavor_text_entries: FlavorTextEntryDTO[];
+  form_descriptions: DescriptionDTO[];
+  genera: GenusDTO[];
+  varieties: PokemonSpeciesVarietyDTO[];
+}
+
+/**
+ * Pokedex entry for a Pokemon species.
+ */
+export interface PokemonSpeciesDexEntryDTO {
+  entry_number: number;
+  pokedex: NamedAPIResourceDTO;
+}
+
+/**
+ * Pal Park encounter area for a Pokemon species.
+ */
+export interface PalParkEncounterAreaDTO {
+  base_score: number;
+  rate: number;
+  area: NamedAPIResourceDTO;
+}
+
+/**
+ * Genus (category) for a Pokemon species in different languages.
+ */
+export interface GenusDTO {
+  genus: string;
+  language: NamedAPIResourceDTO;
+}
+
+/**
+ * Variety of a Pokemon species (different forms).
+ */
+export interface PokemonSpeciesVarietyDTO {
+  is_default: boolean;
+  pokemon: NamedAPIResourceDTO;
+}
+
+/**
+ * Localized name for a resource.
+ */
+export interface NameDTO {
+  name: string;
+  language: NamedAPIResourceDTO;
+}
+
+/**
+ * Flavor text entry for a resource.
+ */
+export interface FlavorTextEntryDTO {
+  flavor_text: string;
+  language: NamedAPIResourceDTO;
+  version: NamedAPIResourceDTO;
+}
+
+/**
+ * Description for a resource.
+ */
+export interface DescriptionDTO {
+  description: string;
+  language: NamedAPIResourceDTO;
+}
+
+/**
+ * Response structure for paginated Pokemon Species list endpoint.
+ */
+export interface PokemonSpeciesListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResourceDTO[];
+}
+
+/**
+ * Pokemon Form DTO matching PokeAPI response structure.
+ * Represents a specific form of a Pokemon.
+ */
+export interface PokemonFormDTO {
+  id: number;
+  name: string;
+  order: number;
+  form_order: number;
+  is_default: boolean;
+  is_battle_only: boolean;
+  is_mega: boolean;
+  form_name: string;
+  pokemon: NamedAPIResourceDTO;
+  types: TypeReferenceDTO[];
+  sprites: PokemonFormSpritesDTO;
+  version_group: NamedAPIResourceDTO;
+  names: NameDTO[];
+  form_names: NameDTO[];
+}
+
+/**
+ * Sprites for a Pokemon form.
+ */
+export interface PokemonFormSpritesDTO {
+  front_default: string | null;
+  front_shiny: string | null;
+  back_default: string | null;
+  back_shiny: string | null;
+}
+
+/**
+ * Response structure for paginated Pokemon Form list endpoint.
+ */
+export interface PokemonFormListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResourceDTO[];
+}

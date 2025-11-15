@@ -20,6 +20,8 @@ const config: CodegenConfig = {
         contextType: "../context.js#Context",
         mappers: {
           Pokemon: "../domains/pokemon/pokemon.dto.js#PokemonDTO",
+          PokemonSpecies: "../domains/pokemon/pokemon.dto.js#PokemonSpeciesDTO",
+          PokemonForm: "../domains/pokemon/pokemon.dto.js#PokemonFormDTO",
           Ability: "../domains/ability/ability.dto.js#AbilityDTO",
           Stat: "../domains/stat/stat.dto.js#StatDTO",
           Type: "../domains/type/type.dto.js#TypeDTO",
@@ -29,6 +31,7 @@ const config: CodegenConfig = {
           PokemonTypeEdge: "{ slot: number; typeName: string }",
           PokemonMoveEdge:
             "{ moveName: string; versionGroupDetails: Array<{ levelLearnedAt: number; moveLearnMethod: { name: string; url: string }; versionGroup: { name: string; url: string } }> }",
+          PokemonVarietyEdge: "{ isDefault: boolean; pokemonName: string }",
           // Future domain-specific mappers will be added here as domains are implemented:
           // Item: "../domains/item/item.dto.js#ItemDTO",
           // etc.

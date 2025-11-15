@@ -271,6 +271,140 @@ export const Query: QueryResolvers = {
     };
   },
 
+  pokemonSpecies: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "PokemonSpecies") {
+      throw new GraphQLError("Invalid PokemonSpecies ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid PokemonSpecies ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.pokemon.getSpeciesById(numericId);
+  },
+
+  pokemonSpeciesList: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch Pokemon Species list from PokéAPI
+    const listResponse = await dataSources.pokemon.getSpeciesList(limit ?? 0, offset);
+
+    // Fetch full Pokemon Species data for each result
+    const speciesPromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/pokemon-species/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.pokemon.getSpeciesById(id);
+    });
+
+    const species = await Promise.all(speciesPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = species
+      .map((speciesItem, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: speciesItem,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  pokemonForm: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "PokemonForm") {
+      throw new GraphQLError("Invalid PokemonForm ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid PokemonForm ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.pokemon.getFormById(numericId);
+  },
+
+  pokemonForms: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch Pokemon Form list from PokéAPI
+    const listResponse = await dataSources.pokemon.getFormList(limit ?? 0, offset);
+
+    // Fetch full Pokemon Form data for each result
+    const formPromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/pokemon-form/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.pokemon.getFormById(id);
+    });
+
+    const forms = await Promise.all(formPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = forms
+      .map((form, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: form,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
   node: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
@@ -289,6 +423,24 @@ export const Query: QueryResolvers = {
           });
         }
         return dataSources.pokemon.getPokemonById(numericId);
+      }
+      case "PokemonSpecies": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid PokemonSpecies ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.pokemon.getSpeciesById(numericId);
+      }
+      case "PokemonForm": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid PokemonForm ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.pokemon.getFormById(numericId);
       }
       case "Ability": {
         const numericId = parseInt(decoded.id, 10);
