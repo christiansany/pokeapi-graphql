@@ -87,7 +87,7 @@ type LocationArea implements Node {
   """
   Pokemon that can be encountered in this area.
   """
-  pokemonEncounters: [PokemonEncounter!]!
+  pokemonEncounters: PokemonEncounterConnection!
 }
 
 """
@@ -138,51 +138,27 @@ type EncounterVersionDetail {
 }
 
 """
-Pokemon encounter in a location area.
+Connection type for Pokemon encounters in a location area.
 """
-type PokemonEncounter {
+type PokemonEncounterConnection {
   """
-  The Pokemon that can be encountered.
+  List of encounter edges with metadata.
   """
-  pokemon: NamedAPIResource!
-
-  """
-  Version-specific encounter details.
-  """
-  versionDetails: [VersionEncounterDetail!]!
+  edges: [PokemonEncounterEdge!]!
 }
 
 """
-Version-specific encounter details.
+Edge type for Pokemon encounters with encounter metadata.
+Follows the edge pattern: metadata fields + node field for the actual Pokemon.
 """
-type VersionEncounterDetail {
+type PokemonEncounterEdge {
   """
-  The game version.
-  """
-  version: NamedAPIResource!
-
-  """
-  Maximum chance of encountering this Pokemon.
-  """
-  maxChance: Int!
-
-  """
-  Detailed encounter information.
-  """
-  encounterDetails: [EncounterDetail!]!
-}
-
-"""
-Detailed encounter information.
-"""
-type EncounterDetail {
-  """
-  Minimum level of the Pokemon.
+  Minimum level of the Pokemon in this encounter.
   """
   minLevel: Int!
 
   """
-  Maximum level of the Pokemon.
+  Maximum level of the Pokemon in this encounter.
   """
   maxLevel: Int!
 
@@ -192,14 +168,20 @@ type EncounterDetail {
   conditionValues: [NamedAPIResource!]!
 
   """
-  Chance of this specific encounter.
+  Chance of this specific encounter (percentage).
   """
   chance: Int!
 
   """
-  The encounter method.
+  The encounter method (e.g., walking, surfing).
   """
   method: NamedAPIResource!
+
+  """
+  The Pokemon that can be encountered.
+  This is the actual Pokemon node, not just a reference.
+  """
+  node: Pokemon!
 }
 
 """

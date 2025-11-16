@@ -35,12 +35,15 @@ const config: CodegenConfig = {
           LocationArea: "../domains/location/location.dto.js#LocationAreaDTO",
           Region: "../domains/location/location.dto.js#RegionDTO",
           PalParkArea: "../domains/location/location.dto.js#PalParkAreaDTO",
+          PalParkEncounter: "../domains/location/location.dto.js#PalParkEncounterDTO",
           PokemonAbilityEdge: "{ slot: number; isHidden: boolean; abilityName: string }",
           PokemonStatEdge: "{ baseStat: number; effort: number; statName: string }",
           PokemonTypeEdge: "{ slot: number; typeName: string }",
           PokemonMoveEdge:
             "{ moveName: string; versionGroupDetails: Array<{ levelLearnedAt: number; moveLearnMethod: { name: string; url: string }; versionGroup: { name: string; url: string } }> }",
           PokemonVarietyEdge: "{ isDefault: boolean; pokemonName: string }",
+          PokemonEncounterEdge:
+            "{ pokemonName: string; minLevel: number; maxLevel: number; conditionValues: Array<{ name: string; url: string }>; chance: number; method: { name: string; url: string } }",
           // Future domain-specific mappers will be added here as domains are implemented:
           // etc.
         },

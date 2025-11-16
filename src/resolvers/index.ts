@@ -13,12 +13,15 @@ import { ItemAttribute } from "../domains/item/itemAttribute.resolver.js";
 import { ItemFlingEffect } from "../domains/item/itemFlingEffect.resolver.js";
 import { ItemPocket } from "../domains/item/itemPocket.resolver.js";
 import { Location } from "../domains/location/location.resolver.js";
+import { LocationArea } from "../domains/location/locationArea.resolver.js";
 import { Region } from "../domains/location/region.resolver.js";
+import { PalParkArea, PalParkEncounter } from "../domains/location/palParkArea.resolver.js";
 import { PokemonAbilityEdge } from "../domains/pokemon/edges/pokemonAbility.edge.js";
 import { PokemonStatEdge } from "../domains/pokemon/edges/pokemonStat.edge.js";
 import { PokemonTypeEdge } from "../domains/pokemon/edges/pokemonType.edge.js";
 import { PokemonMoveEdge } from "../domains/pokemon/edges/pokemonMove.edge.js";
 import { PokemonVarietyEdge } from "../domains/pokemon/edges/pokemonVariety.edge.js";
+import { PokemonEncounterEdge } from "../domains/location/edges/pokemonEncounter.edge.js";
 import { Node } from "./node.js";
 
 export const resolvers: Resolvers = {
@@ -37,10 +40,14 @@ export const resolvers: Resolvers = {
   ItemFlingEffect,
   ItemPocket,
   Location,
+  LocationArea,
   Region,
+  PalParkArea,
+  PalParkEncounter,
   PokemonAbilityEdge,
   PokemonStatEdge,
   PokemonTypeEdge,
   PokemonMoveEdge,
   PokemonVarietyEdge,
+  PokemonEncounterEdge,
 };

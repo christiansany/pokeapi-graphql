@@ -39,6 +39,10 @@ type Query {
   # Location queries
   locationById(id: ID!): Location
   locations(first: Int, after: String): LocationConnection!
+  locationAreaById(id: ID!): LocationArea
+  locationAreas(first: Int, after: String): LocationAreaConnection!
   regionById(id: ID!): Region
   regions(first: Int, after: String): RegionConnection!
+  palParkAreaById(id: ID!): PalParkArea
+  palParkAreas(first: Int, after: String): PalParkAreaConnection!
 }

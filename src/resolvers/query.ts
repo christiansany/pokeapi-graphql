@@ -874,6 +874,140 @@ export const Query: QueryResolvers = {
     };
   },
 
+  locationAreaById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "LocationArea") {
+      throw new GraphQLError("Invalid LocationArea ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid LocationArea ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.location.getLocationAreaById(numericId);
+  },
+
+  locationAreas: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch LocationArea list from PokéAPI
+    const listResponse = await dataSources.location.getLocationAreaList(limit ?? 0, offset);
+
+    // Fetch full LocationArea data for each result
+    const areaPromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/location-area/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.location.getLocationAreaById(id);
+    });
+
+    const areas = await Promise.all(areaPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = areas
+      .map((area, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: area,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  palParkAreaById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "PalParkArea") {
+      throw new GraphQLError("Invalid PalParkArea ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid PalParkArea ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.location.getPalParkAreaById(numericId);
+  },
+
+  palParkAreas: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch PalParkArea list from PokéAPI
+    const listResponse = await dataSources.location.getPalParkAreaList(limit ?? 0, offset);
+
+    // Fetch full PalParkArea data for each result
+    const areaPromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/pal-park-area/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.location.getPalParkAreaById(id);
+    });
+
+    const areas = await Promise.all(areaPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = areas
+      .map((area, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: area,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
   node: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
@@ -1009,6 +1143,24 @@ export const Query: QueryResolvers = {
           });
         }
         return dataSources.location.getRegionById(numericId);
+      }
+      case "LocationArea": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid LocationArea ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.location.getLocationAreaById(numericId);
+      }
+      case "PalParkArea": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid PalParkArea ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.location.getPalParkAreaById(numericId);
       }
       default:
         // Unknown typename - return null per Relay spec (node not found)

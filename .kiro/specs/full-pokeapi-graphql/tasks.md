@@ -296,7 +296,7 @@ When implementing ANY edge type, verify:
     - Add Query.location(id: ID!), Query.locations(), Query.region(id: ID!), Query.regions() fields
     - _Requirements: 6.1, 6.5, 16.1_
   
-  - [ ] 7.2 Implement LocationArea type
+  - [x] 7.2 Implement LocationArea type
     - Create LocationArea DTOs in domains/location/location.dto.ts
     - Add LocationArea methods to LocationDataSource with DataLoaders
     - Add LocationArea type to location.graphql schema implementing Node
@@ -304,13 +304,13 @@ When implementing ANY edge type, verify:
     - Update Location resolver to resolve areas references
     - _Requirements: 6.2, 6.5, 16.1_
   
-  - [ ] 7.3 Implement Pokemon encounters edge
+  - [x] 7.3 Implement Pokemon encounters edge
     - Create PokemonEncounterEdge resolver in domains/location/edges/pokemonEncounter.edge.ts
     - Handle encounter data with chance, min/max level, conditions, and method
     - Update LocationArea resolver to return encounters connection with edges
     - _Requirements: 6.3, 18.5_
   
-  - [ ] 7.4 Implement PalParkArea type
+  - [x] 7.4 Implement PalParkArea type
     - Create PalParkArea DTOs in domains/location/location.dto.ts
     - Add PalParkArea methods to LocationDataSource with DataLoaders
     - Add PalParkArea type to location.graphql schema implementing Node
