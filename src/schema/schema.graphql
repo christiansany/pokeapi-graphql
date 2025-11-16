@@ -3,4 +3,42 @@ type Query {
   Fetch any object that implements the Node interface by its global ID.
   """
   node(id: ID!): Node
+
+  # Pokemon queries
+  pokemonById(id: ID!): Pokemon
+  pokemons(first: Int, after: String): PokemonConnection!
+  pokemonSpeciesById(id: ID!): PokemonSpecies
+  pokemonSpecies(first: Int, after: String): PokemonSpeciesConnection!
+  pokemonFormById(id: ID!): PokemonForm
+  pokemonForms(first: Int, after: String): PokemonFormConnection!
+
+  # Stat queries
+  statById(id: ID!): Stat
+  stats(first: Int, after: String): StatConnection!
+
+  # Type queries
+  typeById(id: ID!): Type
+  types(first: Int, after: String): TypeConnection!
+
+  # Move queries
+  moveById(id: ID!): Move
+  moves(first: Int, after: String): MoveConnection!
+
+  # Item queries
+  itemById(id: ID!): Item
+  items(first: Int, after: String): ItemConnection!
+  itemCategoryById(id: ID!): ItemCategory
+  itemCategories(first: Int, after: String): ItemCategoryConnection!
+  itemAttributeById(id: ID!): ItemAttribute
+  itemAttributes(first: Int, after: String): ItemAttributeConnection!
+  itemFlingEffectById(id: ID!): ItemFlingEffect
+  itemFlingEffects(first: Int, after: String): ItemFlingEffectConnection!
+  itemPocketById(id: ID!): ItemPocket
+  itemPockets(first: Int, after: String): ItemPocketConnection!
+
+  # Location queries
+  locationById(id: ID!): Location
+  locations(first: Int, after: String): LocationConnection!
+  regionById(id: ID!): Region
+  regions(first: Int, after: String): RegionConnection!
 }

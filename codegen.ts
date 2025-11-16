@@ -31,6 +31,10 @@ const config: CodegenConfig = {
           ItemAttribute: "../domains/item/item.dto.js#ItemAttributeDTO",
           ItemFlingEffect: "../domains/item/item.dto.js#ItemFlingEffectDTO",
           ItemPocket: "../domains/item/item.dto.js#ItemPocketDTO",
+          Location: "../domains/location/location.dto.js#LocationDTO",
+          LocationArea: "../domains/location/location.dto.js#LocationAreaDTO",
+          Region: "../domains/location/location.dto.js#RegionDTO",
+          PalParkArea: "../domains/location/location.dto.js#PalParkAreaDTO",
           PokemonAbilityEdge: "{ slot: number; isHidden: boolean; abilityName: string }",
           PokemonStatEdge: "{ baseStat: number; effort: number; statName: string }",
           PokemonTypeEdge: "{ slot: number; typeName: string }",
@@ -38,7 +42,6 @@ const config: CodegenConfig = {
             "{ moveName: string; versionGroupDetails: Array<{ levelLearnedAt: number; moveLearnMethod: { name: string; url: string }; versionGroup: { name: string; url: string } }> }",
           PokemonVarietyEdge: "{ isDefault: boolean; pokemonName: string }",
           // Future domain-specific mappers will be added here as domains are implemented:
-          // Location: "../domains/location/location.dto.js#LocationDTO",
           // etc.
         },
       },

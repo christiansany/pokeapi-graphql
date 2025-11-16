@@ -7,6 +7,7 @@ import { StatDTO } from '../domains/stat/stat.dto.js';
 import { TypeDTO } from '../domains/type/type.dto.js';
 import { MoveDTO } from '../domains/move/move.dto.js';
 import { ItemDTO, ItemCategoryDTO, ItemAttributeDTO, ItemFlingEffectDTO, ItemPocketDTO } from '../domains/item/item.dto.js';
+import { LocationDTO, LocationAreaDTO, RegionDTO, PalParkAreaDTO } from '../domains/location/location.dto.js';
 import { Context } from '../context.js';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -91,6 +92,39 @@ export type EffectEntry = {
   language: Scalars['String']['output'];
   /** A short effect description. */
   shortEffect: Scalars['String']['output'];
+};
+
+/** Detailed encounter information. */
+export type EncounterDetail = {
+  __typename?: 'EncounterDetail';
+  /** Chance of this specific encounter. */
+  chance: Scalars['Int']['output'];
+  /** Conditions required for this encounter. */
+  conditionValues: Array<NamedApiResource>;
+  /** Maximum level of the Pokemon. */
+  maxLevel: Scalars['Int']['output'];
+  /** The encounter method. */
+  method: NamedApiResource;
+  /** Minimum level of the Pokemon. */
+  minLevel: Scalars['Int']['output'];
+};
+
+/** Encounter method rate for a location area. */
+export type EncounterMethodRate = {
+  __typename?: 'EncounterMethodRate';
+  /** The encounter method. */
+  encounterMethod: NamedApiResource;
+  /** Version-specific encounter rates. */
+  versionDetails: Array<EncounterVersionDetail>;
+};
+
+/** Version-specific encounter rate. */
+export type EncounterVersionDetail = {
+  __typename?: 'EncounterVersionDetail';
+  /** The encounter rate percentage. */
+  rate: Scalars['Int']['output'];
+  /** The game version. */
+  version: NamedApiResource;
 };
 
 /** Flavor text for an ability from a specific game version. */
@@ -361,6 +395,72 @@ export type ItemSprites = {
   default?: Maybe<Scalars['String']['output']>;
 };
 
+/** A location in the Pokemon world where Pokemon can be found. */
+export type Location = Node & {
+  __typename?: 'Location';
+  /** Areas within this location. */
+  areas: Array<NamedApiResource>;
+  /** Game indices for this location across different versions. */
+  gameIndices: Array<GameIndex>;
+  /** The unique identifier for this location (base64 encoded). */
+  id: Scalars['ID']['output'];
+  /** The name of this location. */
+  name: Scalars['String']['output'];
+  /** The localized names for this location. */
+  names: Array<Name>;
+  /** The region this location is in. */
+  region: NamedApiResource;
+};
+
+/** A specific area within a location where Pokemon can be encountered. */
+export type LocationArea = Node & {
+  __typename?: 'LocationArea';
+  /** Encounter method rates for this location area. */
+  encounterMethodRates: Array<EncounterMethodRate>;
+  /** The internal game index for this location area. */
+  gameIndex: Scalars['Int']['output'];
+  /** The unique identifier for this location area (base64 encoded). */
+  id: Scalars['ID']['output'];
+  /** The location this area belongs to. */
+  location: NamedApiResource;
+  /** The name of this location area. */
+  name: Scalars['String']['output'];
+  /** The localized names for this location area. */
+  names: Array<Name>;
+  /** Pokemon that can be encountered in this area. */
+  pokemonEncounters: Array<PokemonEncounter>;
+};
+
+/** Connection type for paginated LocationArea lists. */
+export type LocationAreaConnection = {
+  __typename?: 'LocationAreaConnection';
+  edges: Array<LocationAreaEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge type for LocationArea connections. */
+export type LocationAreaEdge = {
+  __typename?: 'LocationAreaEdge';
+  cursor: Scalars['String']['output'];
+  node: LocationArea;
+};
+
+/** Connection type for paginated Location lists. */
+export type LocationConnection = {
+  __typename?: 'LocationConnection';
+  edges: Array<LocationEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge type for Location connections. */
+export type LocationEdge = {
+  __typename?: 'LocationEdge';
+  cursor: Scalars['String']['output'];
+  node: Location;
+};
+
 /** A move that Pokemon can learn and use in battle. */
 export type Move = Node & {
   __typename?: 'Move';
@@ -588,6 +688,45 @@ export type PageInfo = {
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
+/** An area in Pal Park where Pokemon can be found. */
+export type PalParkArea = Node & {
+  __typename?: 'PalParkArea';
+  /** The unique identifier for this Pal Park area (base64 encoded). */
+  id: Scalars['ID']['output'];
+  /** The name of this Pal Park area. */
+  name: Scalars['String']['output'];
+  /** The localized names for this Pal Park area. */
+  names: Array<Name>;
+  /** Pokemon that can be encountered in this Pal Park area. */
+  pokemonEncounters: Array<PalParkEncounter>;
+};
+
+/** Connection type for paginated PalParkArea lists. */
+export type PalParkAreaConnection = {
+  __typename?: 'PalParkAreaConnection';
+  edges: Array<PalParkAreaEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge type for PalParkArea connections. */
+export type PalParkAreaEdge = {
+  __typename?: 'PalParkAreaEdge';
+  cursor: Scalars['String']['output'];
+  node: PalParkArea;
+};
+
+/** Pokemon encounter in Pal Park. */
+export type PalParkEncounter = {
+  __typename?: 'PalParkEncounter';
+  /** Base score for catching this Pokemon. */
+  baseScore: Scalars['Int']['output'];
+  /** The Pokemon species that can be encountered. */
+  pokemonSpecies: NamedApiResource;
+  /** Rate of encountering this Pokemon. */
+  rate: Scalars['Int']['output'];
+};
+
 /** A Pal Park encounter area for a Pokemon Species. */
 export type PalParkEncounterArea = {
   __typename?: 'PalParkEncounterArea';
@@ -683,6 +822,15 @@ export type PokemonEdge = {
   cursor: Scalars['String']['output'];
   /** The Pokemon at the end of the edge. */
   node: Pokemon;
+};
+
+/** Pokemon encounter in a location area. */
+export type PokemonEncounter = {
+  __typename?: 'PokemonEncounter';
+  /** The Pokemon that can be encountered. */
+  pokemon: NamedApiResource;
+  /** Version-specific encounter details. */
+  versionDetails: Array<VersionEncounterDetail>;
 };
 
 /**
@@ -967,6 +1115,8 @@ export type Query = {
   itemPockets: ItemPocketConnection;
   /** Get a paginated list of items. */
   items: ItemConnection;
+  locationById?: Maybe<Location>;
+  locations: LocationConnection;
   /** Get a single move by its global ID. */
   moveById?: Maybe<Move>;
   /** Get a paginated list of moves. */
@@ -985,6 +1135,8 @@ export type Query = {
   pokemonSpeciesById?: Maybe<PokemonSpecies>;
   /** Fetch a paginated list of Pokemon using forward-only cursor-based pagination. */
   pokemons: PokemonConnection;
+  regionById?: Maybe<Region>;
+  regions: RegionConnection;
   /** Fetch a single Stat by its global ID. */
   statById?: Maybe<Stat>;
   /** Fetch a paginated list of Stats using forward-only cursor-based pagination. */
@@ -1051,6 +1203,17 @@ export type QueryItemsArgs = {
 };
 
 
+export type QueryLocationByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryLocationsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryMoveByIdArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1100,6 +1263,17 @@ export type QueryPokemonsArgs = {
 };
 
 
+export type QueryRegionByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryRegionsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
 export type QueryStatByIdArgs = {
   id: Scalars['ID']['input'];
 };
@@ -1119,6 +1293,40 @@ export type QueryTypeByIdArgs = {
 export type QueryTypesArgs = {
   after?: InputMaybe<Scalars['String']['input']>;
   first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** A region in the Pokemon world. */
+export type Region = Node & {
+  __typename?: 'Region';
+  /** The unique identifier for this region (base64 encoded). */
+  id: Scalars['ID']['output'];
+  /** Locations within this region. */
+  locations: Array<NamedApiResource>;
+  /** The main generation this region was introduced in. */
+  mainGeneration: NamedApiResource;
+  /** The name of this region. */
+  name: Scalars['String']['output'];
+  /** The localized names for this region. */
+  names: Array<Name>;
+  /** Pokedexes available in this region. */
+  pokedexes: Array<NamedApiResource>;
+  /** Version groups available in this region. */
+  versionGroups: Array<NamedApiResource>;
+};
+
+/** Connection type for paginated Region lists. */
+export type RegionConnection = {
+  __typename?: 'RegionConnection';
+  edges: Array<RegionEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int']['output'];
+};
+
+/** Edge type for Region connections. */
+export type RegionEdge = {
+  __typename?: 'RegionEdge';
+  cursor: Scalars['String']['output'];
+  node: Region;
 };
 
 /** A Stat that Pokemon can have (HP, Attack, Defense, etc.). */
@@ -1227,6 +1435,17 @@ export type TypeReference = {
   type: NamedApiResource;
 };
 
+/** Version-specific encounter details. */
+export type VersionEncounterDetail = {
+  __typename?: 'VersionEncounterDetail';
+  /** Detailed encounter information. */
+  encounterDetails: Array<EncounterDetail>;
+  /** Maximum chance of encountering this Pokemon. */
+  maxChance: Scalars['Int']['output'];
+  /** The game version. */
+  version: NamedApiResource;
+};
+
 
 
 export type ResolverTypeWrapper<T> = Promise<T> | T;
@@ -1297,7 +1516,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  Node: ( AbilityDTO ) | ( ItemDTO ) | ( ItemAttributeDTO ) | ( ItemCategoryDTO ) | ( ItemFlingEffectDTO ) | ( ItemPocketDTO ) | ( MoveDTO ) | ( PokemonDTO ) | ( PokemonFormDTO ) | ( PokemonSpeciesDTO ) | ( StatDTO ) | ( TypeDTO );
+  Node: ( AbilityDTO ) | ( ItemDTO ) | ( ItemAttributeDTO ) | ( ItemCategoryDTO ) | ( ItemFlingEffectDTO ) | ( ItemPocketDTO ) | ( LocationDTO ) | ( LocationAreaDTO ) | ( MoveDTO ) | ( PalParkAreaDTO ) | ( PokemonDTO ) | ( PokemonFormDTO ) | ( PokemonSpeciesDTO ) | ( RegionDTO ) | ( StatDTO ) | ( TypeDTO );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -1309,6 +1528,9 @@ export type ResolversTypes = {
   Description: ResolverTypeWrapper<Description>;
   DreamWorldSprites: ResolverTypeWrapper<DreamWorldSprites>;
   EffectEntry: ResolverTypeWrapper<EffectEntry>;
+  EncounterDetail: ResolverTypeWrapper<EncounterDetail>;
+  EncounterMethodRate: ResolverTypeWrapper<EncounterMethodRate>;
+  EncounterVersionDetail: ResolverTypeWrapper<EncounterVersionDetail>;
   FlavorTextEntry: ResolverTypeWrapper<FlavorTextEntry>;
   GameIndex: ResolverTypeWrapper<GameIndex>;
   Genus: ResolverTypeWrapper<Genus>;
@@ -1335,6 +1557,12 @@ export type ResolversTypes = {
   ItemPocketConnection: ResolverTypeWrapper<Omit<ItemPocketConnection, 'edges'> & { edges: Array<ResolversTypes['ItemPocketEdge']> }>;
   ItemPocketEdge: ResolverTypeWrapper<Omit<ItemPocketEdge, 'node'> & { node: ResolversTypes['ItemPocket'] }>;
   ItemSprites: ResolverTypeWrapper<ItemSprites>;
+  Location: ResolverTypeWrapper<LocationDTO>;
+  LocationArea: ResolverTypeWrapper<LocationAreaDTO>;
+  LocationAreaConnection: ResolverTypeWrapper<Omit<LocationAreaConnection, 'edges'> & { edges: Array<ResolversTypes['LocationAreaEdge']> }>;
+  LocationAreaEdge: ResolverTypeWrapper<Omit<LocationAreaEdge, 'node'> & { node: ResolversTypes['LocationArea'] }>;
+  LocationConnection: ResolverTypeWrapper<Omit<LocationConnection, 'edges'> & { edges: Array<ResolversTypes['LocationEdge']> }>;
+  LocationEdge: ResolverTypeWrapper<Omit<LocationEdge, 'node'> & { node: ResolversTypes['Location'] }>;
   Move: ResolverTypeWrapper<MoveDTO>;
   MoveConnection: ResolverTypeWrapper<Omit<MoveConnection, 'edges'> & { edges: Array<ResolversTypes['MoveEdge']> }>;
   MoveEdge: ResolverTypeWrapper<Omit<MoveEdge, 'node'> & { node: ResolversTypes['Move'] }>;
@@ -1352,6 +1580,10 @@ export type ResolversTypes = {
   OfficialArtworkSprites: ResolverTypeWrapper<OfficialArtworkSprites>;
   OtherPokemonSprites: ResolverTypeWrapper<OtherPokemonSprites>;
   PageInfo: ResolverTypeWrapper<PageInfo>;
+  PalParkArea: ResolverTypeWrapper<PalParkAreaDTO>;
+  PalParkAreaConnection: ResolverTypeWrapper<Omit<PalParkAreaConnection, 'edges'> & { edges: Array<ResolversTypes['PalParkAreaEdge']> }>;
+  PalParkAreaEdge: ResolverTypeWrapper<Omit<PalParkAreaEdge, 'node'> & { node: ResolversTypes['PalParkArea'] }>;
+  PalParkEncounter: ResolverTypeWrapper<PalParkEncounter>;
   PalParkEncounterArea: ResolverTypeWrapper<PalParkEncounterArea>;
   PastDamageRelations: ResolverTypeWrapper<PastDamageRelations>;
   Pokemon: ResolverTypeWrapper<PokemonDTO>;
@@ -1359,6 +1591,7 @@ export type ResolversTypes = {
   PokemonAbilityEdge: ResolverTypeWrapper<{ slot: number; isHidden: boolean; abilityName: string }>;
   PokemonConnection: ResolverTypeWrapper<Omit<PokemonConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonEdge']> }>;
   PokemonEdge: ResolverTypeWrapper<Omit<PokemonEdge, 'node'> & { node: ResolversTypes['Pokemon'] }>;
+  PokemonEncounter: ResolverTypeWrapper<PokemonEncounter>;
   PokemonForm: ResolverTypeWrapper<PokemonFormDTO>;
   PokemonFormConnection: ResolverTypeWrapper<Omit<PokemonFormConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonFormEdge']> }>;
   PokemonFormEdge: ResolverTypeWrapper<Omit<PokemonFormEdge, 'node'> & { node: ResolversTypes['PokemonForm'] }>;
@@ -1378,6 +1611,9 @@ export type ResolversTypes = {
   PokemonVarietyConnection: ResolverTypeWrapper<Omit<PokemonVarietyConnection, 'edges'> & { edges: Array<ResolversTypes['PokemonVarietyEdge']> }>;
   PokemonVarietyEdge: ResolverTypeWrapper<{ isDefault: boolean; pokemonName: string }>;
   Query: ResolverTypeWrapper<{}>;
+  Region: ResolverTypeWrapper<RegionDTO>;
+  RegionConnection: ResolverTypeWrapper<Omit<RegionConnection, 'edges'> & { edges: Array<ResolversTypes['RegionEdge']> }>;
+  RegionEdge: ResolverTypeWrapper<Omit<RegionEdge, 'node'> & { node: ResolversTypes['Region'] }>;
   Stat: ResolverTypeWrapper<StatDTO>;
   StatConnection: ResolverTypeWrapper<Omit<StatConnection, 'edges'> & { edges: Array<ResolversTypes['StatEdge']> }>;
   StatEdge: ResolverTypeWrapper<Omit<StatEdge, 'node'> & { node: ResolversTypes['Stat'] }>;
@@ -1387,6 +1623,7 @@ export type ResolversTypes = {
   TypeEdge: ResolverTypeWrapper<Omit<TypeEdge, 'node'> & { node: ResolversTypes['Type'] }>;
   TypePokemon: ResolverTypeWrapper<TypePokemon>;
   TypeReference: ResolverTypeWrapper<TypeReference>;
+  VersionEncounterDetail: ResolverTypeWrapper<VersionEncounterDetail>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -1398,6 +1635,9 @@ export type ResolversParentTypes = {
   Description: Description;
   DreamWorldSprites: DreamWorldSprites;
   EffectEntry: EffectEntry;
+  EncounterDetail: EncounterDetail;
+  EncounterMethodRate: EncounterMethodRate;
+  EncounterVersionDetail: EncounterVersionDetail;
   FlavorTextEntry: FlavorTextEntry;
   GameIndex: GameIndex;
   Genus: Genus;
@@ -1424,6 +1664,12 @@ export type ResolversParentTypes = {
   ItemPocketConnection: Omit<ItemPocketConnection, 'edges'> & { edges: Array<ResolversParentTypes['ItemPocketEdge']> };
   ItemPocketEdge: Omit<ItemPocketEdge, 'node'> & { node: ResolversParentTypes['ItemPocket'] };
   ItemSprites: ItemSprites;
+  Location: LocationDTO;
+  LocationArea: LocationAreaDTO;
+  LocationAreaConnection: Omit<LocationAreaConnection, 'edges'> & { edges: Array<ResolversParentTypes['LocationAreaEdge']> };
+  LocationAreaEdge: Omit<LocationAreaEdge, 'node'> & { node: ResolversParentTypes['LocationArea'] };
+  LocationConnection: Omit<LocationConnection, 'edges'> & { edges: Array<ResolversParentTypes['LocationEdge']> };
+  LocationEdge: Omit<LocationEdge, 'node'> & { node: ResolversParentTypes['Location'] };
   Move: MoveDTO;
   MoveConnection: Omit<MoveConnection, 'edges'> & { edges: Array<ResolversParentTypes['MoveEdge']> };
   MoveEdge: Omit<MoveEdge, 'node'> & { node: ResolversParentTypes['Move'] };
@@ -1441,6 +1687,10 @@ export type ResolversParentTypes = {
   OfficialArtworkSprites: OfficialArtworkSprites;
   OtherPokemonSprites: OtherPokemonSprites;
   PageInfo: PageInfo;
+  PalParkArea: PalParkAreaDTO;
+  PalParkAreaConnection: Omit<PalParkAreaConnection, 'edges'> & { edges: Array<ResolversParentTypes['PalParkAreaEdge']> };
+  PalParkAreaEdge: Omit<PalParkAreaEdge, 'node'> & { node: ResolversParentTypes['PalParkArea'] };
+  PalParkEncounter: PalParkEncounter;
   PalParkEncounterArea: PalParkEncounterArea;
   PastDamageRelations: PastDamageRelations;
   Pokemon: PokemonDTO;
@@ -1448,6 +1698,7 @@ export type ResolversParentTypes = {
   PokemonAbilityEdge: { slot: number; isHidden: boolean; abilityName: string };
   PokemonConnection: Omit<PokemonConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonEdge']> };
   PokemonEdge: Omit<PokemonEdge, 'node'> & { node: ResolversParentTypes['Pokemon'] };
+  PokemonEncounter: PokemonEncounter;
   PokemonForm: PokemonFormDTO;
   PokemonFormConnection: Omit<PokemonFormConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonFormEdge']> };
   PokemonFormEdge: Omit<PokemonFormEdge, 'node'> & { node: ResolversParentTypes['PokemonForm'] };
@@ -1467,6 +1718,9 @@ export type ResolversParentTypes = {
   PokemonVarietyConnection: Omit<PokemonVarietyConnection, 'edges'> & { edges: Array<ResolversParentTypes['PokemonVarietyEdge']> };
   PokemonVarietyEdge: { isDefault: boolean; pokemonName: string };
   Query: {};
+  Region: RegionDTO;
+  RegionConnection: Omit<RegionConnection, 'edges'> & { edges: Array<ResolversParentTypes['RegionEdge']> };
+  RegionEdge: Omit<RegionEdge, 'node'> & { node: ResolversParentTypes['Region'] };
   Stat: StatDTO;
   StatConnection: Omit<StatConnection, 'edges'> & { edges: Array<ResolversParentTypes['StatEdge']> };
   StatEdge: Omit<StatEdge, 'node'> & { node: ResolversParentTypes['Stat'] };
@@ -1476,6 +1730,7 @@ export type ResolversParentTypes = {
   TypeEdge: Omit<TypeEdge, 'node'> & { node: ResolversParentTypes['Type'] };
   TypePokemon: TypePokemon;
   TypeReference: TypeReference;
+  VersionEncounterDetail: VersionEncounterDetail;
 };
 
 export type ApiResourceResolvers<ContextType = Context, ParentType extends ResolversParentTypes['APIResource'] = ResolversParentTypes['APIResource']> = {
@@ -1517,6 +1772,27 @@ export type EffectEntryResolvers<ContextType = Context, ParentType extends Resol
   effect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   language?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   shortEffect?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EncounterDetailResolvers<ContextType = Context, ParentType extends ResolversParentTypes['EncounterDetail'] = ResolversParentTypes['EncounterDetail']> = {
+  chance?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  conditionValues?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  maxLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  method?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  minLevel?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EncounterMethodRateResolvers<ContextType = Context, ParentType extends ResolversParentTypes['EncounterMethodRate'] = ResolversParentTypes['EncounterMethodRate']> = {
+  encounterMethod?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  versionDetails?: Resolver<Array<ResolversTypes['EncounterVersionDetail']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type EncounterVersionDetailResolvers<ContextType = Context, ParentType extends ResolversParentTypes['EncounterVersionDetail'] = ResolversParentTypes['EncounterVersionDetail']> = {
+  rate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  version?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1692,6 +1968,53 @@ export type ItemSpritesResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type LocationResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Location'] = ResolversParentTypes['Location']> = {
+  areas?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  gameIndices?: Resolver<Array<ResolversTypes['GameIndex']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  region?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationAreaResolvers<ContextType = Context, ParentType extends ResolversParentTypes['LocationArea'] = ResolversParentTypes['LocationArea']> = {
+  encounterMethodRates?: Resolver<Array<ResolversTypes['EncounterMethodRate']>, ParentType, ContextType>;
+  gameIndex?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  location?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  pokemonEncounters?: Resolver<Array<ResolversTypes['PokemonEncounter']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationAreaConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['LocationAreaConnection'] = ResolversParentTypes['LocationAreaConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['LocationAreaEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationAreaEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['LocationAreaEdge'] = ResolversParentTypes['LocationAreaEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['LocationArea'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['LocationConnection'] = ResolversParentTypes['LocationConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['LocationEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LocationEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['LocationEdge'] = ResolversParentTypes['LocationEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Location'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MoveResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Move'] = ResolversParentTypes['Move']> = {
   accuracy?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   contestEffect?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
@@ -1803,7 +2126,7 @@ export type NatureStatAffectSetsResolvers<ContextType = Context, ParentType exte
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Ability' | 'Item' | 'ItemAttribute' | 'ItemCategory' | 'ItemFlingEffect' | 'ItemPocket' | 'Move' | 'Pokemon' | 'PokemonForm' | 'PokemonSpecies' | 'Stat' | 'Type', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Ability' | 'Item' | 'ItemAttribute' | 'ItemCategory' | 'ItemFlingEffect' | 'ItemPocket' | 'Location' | 'LocationArea' | 'Move' | 'PalParkArea' | 'Pokemon' | 'PokemonForm' | 'PokemonSpecies' | 'Region' | 'Stat' | 'Type', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -1825,6 +2148,34 @@ export type PageInfoResolvers<ContextType = Context, ParentType extends Resolver
   hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   hasPreviousPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   startCursor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PalParkAreaResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PalParkArea'] = ResolversParentTypes['PalParkArea']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  pokemonEncounters?: Resolver<Array<ResolversTypes['PalParkEncounter']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PalParkAreaConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PalParkAreaConnection'] = ResolversParentTypes['PalParkAreaConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['PalParkAreaEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PalParkAreaEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PalParkAreaEdge'] = ResolversParentTypes['PalParkAreaEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['PalParkArea'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PalParkEncounterResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PalParkEncounter'] = ResolversParentTypes['PalParkEncounter']> = {
+  baseScore?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  pokemonSpecies?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  rate?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1884,6 +2235,12 @@ export type PokemonConnectionResolvers<ContextType = Context, ParentType extends
 export type PokemonEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonEdge'] = ResolversParentTypes['PokemonEdge']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Pokemon'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PokemonEncounterResolvers<ContextType = Context, ParentType extends ResolversParentTypes['PokemonEncounter'] = ResolversParentTypes['PokemonEncounter']> = {
+  pokemon?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  versionDetails?: Resolver<Array<ResolversTypes['VersionEncounterDetail']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -2052,6 +2409,8 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   itemPocketById?: Resolver<Maybe<ResolversTypes['ItemPocket']>, ParentType, ContextType, RequireFields<QueryItemPocketByIdArgs, 'id'>>;
   itemPockets?: Resolver<ResolversTypes['ItemPocketConnection'], ParentType, ContextType, Partial<QueryItemPocketsArgs>>;
   items?: Resolver<ResolversTypes['ItemConnection'], ParentType, ContextType, Partial<QueryItemsArgs>>;
+  locationById?: Resolver<Maybe<ResolversTypes['Location']>, ParentType, ContextType, RequireFields<QueryLocationByIdArgs, 'id'>>;
+  locations?: Resolver<ResolversTypes['LocationConnection'], ParentType, ContextType, Partial<QueryLocationsArgs>>;
   moveById?: Resolver<Maybe<ResolversTypes['Move']>, ParentType, ContextType, RequireFields<QueryMoveByIdArgs, 'id'>>;
   moves?: Resolver<ResolversTypes['MoveConnection'], ParentType, ContextType, Partial<QueryMovesArgs>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
@@ -2061,10 +2420,36 @@ export type QueryResolvers<ContextType = Context, ParentType extends ResolversPa
   pokemonSpecies?: Resolver<ResolversTypes['PokemonSpeciesConnection'], ParentType, ContextType, Partial<QueryPokemonSpeciesArgs>>;
   pokemonSpeciesById?: Resolver<Maybe<ResolversTypes['PokemonSpecies']>, ParentType, ContextType, RequireFields<QueryPokemonSpeciesByIdArgs, 'id'>>;
   pokemons?: Resolver<ResolversTypes['PokemonConnection'], ParentType, ContextType, Partial<QueryPokemonsArgs>>;
+  regionById?: Resolver<Maybe<ResolversTypes['Region']>, ParentType, ContextType, RequireFields<QueryRegionByIdArgs, 'id'>>;
+  regions?: Resolver<ResolversTypes['RegionConnection'], ParentType, ContextType, Partial<QueryRegionsArgs>>;
   statById?: Resolver<Maybe<ResolversTypes['Stat']>, ParentType, ContextType, RequireFields<QueryStatByIdArgs, 'id'>>;
   stats?: Resolver<ResolversTypes['StatConnection'], ParentType, ContextType, Partial<QueryStatsArgs>>;
   typeById?: Resolver<Maybe<ResolversTypes['Type']>, ParentType, ContextType, RequireFields<QueryTypeByIdArgs, 'id'>>;
   types?: Resolver<ResolversTypes['TypeConnection'], ParentType, ContextType, Partial<QueryTypesArgs>>;
+};
+
+export type RegionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Region'] = ResolversParentTypes['Region']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  locations?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  mainGeneration?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  pokedexes?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  versionGroups?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RegionConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['RegionConnection'] = ResolversParentTypes['RegionConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['RegionEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type RegionEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['RegionEdge'] = ResolversParentTypes['RegionEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Region'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type StatResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Stat'] = ResolversParentTypes['Stat']> = {
@@ -2132,6 +2517,13 @@ export type TypeReferenceResolvers<ContextType = Context, ParentType extends Res
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type VersionEncounterDetailResolvers<ContextType = Context, ParentType extends ResolversParentTypes['VersionEncounterDetail'] = ResolversParentTypes['VersionEncounterDetail']> = {
+  encounterDetails?: Resolver<Array<ResolversTypes['EncounterDetail']>, ParentType, ContextType>;
+  maxChance?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  version?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = Context> = {
   APIResource?: ApiResourceResolvers<ContextType>;
   Ability?: AbilityResolvers<ContextType>;
@@ -2139,6 +2531,9 @@ export type Resolvers<ContextType = Context> = {
   Description?: DescriptionResolvers<ContextType>;
   DreamWorldSprites?: DreamWorldSpritesResolvers<ContextType>;
   EffectEntry?: EffectEntryResolvers<ContextType>;
+  EncounterDetail?: EncounterDetailResolvers<ContextType>;
+  EncounterMethodRate?: EncounterMethodRateResolvers<ContextType>;
+  EncounterVersionDetail?: EncounterVersionDetailResolvers<ContextType>;
   FlavorTextEntry?: FlavorTextEntryResolvers<ContextType>;
   GameIndex?: GameIndexResolvers<ContextType>;
   Genus?: GenusResolvers<ContextType>;
@@ -2163,6 +2558,12 @@ export type Resolvers<ContextType = Context> = {
   ItemPocketConnection?: ItemPocketConnectionResolvers<ContextType>;
   ItemPocketEdge?: ItemPocketEdgeResolvers<ContextType>;
   ItemSprites?: ItemSpritesResolvers<ContextType>;
+  Location?: LocationResolvers<ContextType>;
+  LocationArea?: LocationAreaResolvers<ContextType>;
+  LocationAreaConnection?: LocationAreaConnectionResolvers<ContextType>;
+  LocationAreaEdge?: LocationAreaEdgeResolvers<ContextType>;
+  LocationConnection?: LocationConnectionResolvers<ContextType>;
+  LocationEdge?: LocationEdgeResolvers<ContextType>;
   Move?: MoveResolvers<ContextType>;
   MoveConnection?: MoveConnectionResolvers<ContextType>;
   MoveEdge?: MoveEdgeResolvers<ContextType>;
@@ -2180,6 +2581,10 @@ export type Resolvers<ContextType = Context> = {
   OfficialArtworkSprites?: OfficialArtworkSpritesResolvers<ContextType>;
   OtherPokemonSprites?: OtherPokemonSpritesResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
+  PalParkArea?: PalParkAreaResolvers<ContextType>;
+  PalParkAreaConnection?: PalParkAreaConnectionResolvers<ContextType>;
+  PalParkAreaEdge?: PalParkAreaEdgeResolvers<ContextType>;
+  PalParkEncounter?: PalParkEncounterResolvers<ContextType>;
   PalParkEncounterArea?: PalParkEncounterAreaResolvers<ContextType>;
   PastDamageRelations?: PastDamageRelationsResolvers<ContextType>;
   Pokemon?: PokemonResolvers<ContextType>;
@@ -2187,6 +2592,7 @@ export type Resolvers<ContextType = Context> = {
   PokemonAbilityEdge?: PokemonAbilityEdgeResolvers<ContextType>;
   PokemonConnection?: PokemonConnectionResolvers<ContextType>;
   PokemonEdge?: PokemonEdgeResolvers<ContextType>;
+  PokemonEncounter?: PokemonEncounterResolvers<ContextType>;
   PokemonForm?: PokemonFormResolvers<ContextType>;
   PokemonFormConnection?: PokemonFormConnectionResolvers<ContextType>;
   PokemonFormEdge?: PokemonFormEdgeResolvers<ContextType>;
@@ -2206,6 +2612,9 @@ export type Resolvers<ContextType = Context> = {
   PokemonVarietyConnection?: PokemonVarietyConnectionResolvers<ContextType>;
   PokemonVarietyEdge?: PokemonVarietyEdgeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Region?: RegionResolvers<ContextType>;
+  RegionConnection?: RegionConnectionResolvers<ContextType>;
+  RegionEdge?: RegionEdgeResolvers<ContextType>;
   Stat?: StatResolvers<ContextType>;
   StatConnection?: StatConnectionResolvers<ContextType>;
   StatEdge?: StatEdgeResolvers<ContextType>;
@@ -2214,5 +2623,6 @@ export type Resolvers<ContextType = Context> = {
   TypeEdge?: TypeEdgeResolvers<ContextType>;
   TypePokemon?: TypePokemonResolvers<ContextType>;
   TypeReference?: TypeReferenceResolvers<ContextType>;
+  VersionEncounterDetail?: VersionEncounterDetailResolvers<ContextType>;
 };
 

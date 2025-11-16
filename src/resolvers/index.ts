@@ -12,6 +12,8 @@ import { ItemCategory } from "../domains/item/itemCategory.resolver.js";
 import { ItemAttribute } from "../domains/item/itemAttribute.resolver.js";
 import { ItemFlingEffect } from "../domains/item/itemFlingEffect.resolver.js";
 import { ItemPocket } from "../domains/item/itemPocket.resolver.js";
+import { Location } from "../domains/location/location.resolver.js";
+import { Region } from "../domains/location/region.resolver.js";
 import { PokemonAbilityEdge } from "../domains/pokemon/edges/pokemonAbility.edge.js";
 import { PokemonStatEdge } from "../domains/pokemon/edges/pokemonStat.edge.js";
 import { PokemonTypeEdge } from "../domains/pokemon/edges/pokemonType.edge.js";
@@ -34,6 +36,8 @@ export const resolvers: Resolvers = {
   ItemAttribute,
   ItemFlingEffect,
   ItemPocket,
+  Location,
+  Region,
   PokemonAbilityEdge,
   PokemonStatEdge,
   PokemonTypeEdge,

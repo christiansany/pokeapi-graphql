@@ -1,0 +1,322 @@
+"""
+A location in the Pokemon world where Pokemon can be found.
+"""
+type Location implements Node {
+  """
+  The unique identifier for this location (base64 encoded).
+  """
+  id: ID!
+
+  """
+  The name of this location.
+  """
+  name: String!
+
+  """
+  The region this location is in.
+  """
+  region: NamedAPIResource!
+
+  """
+  The localized names for this location.
+  """
+  names: [Name!]!
+
+  """
+  Game indices for this location across different versions.
+  """
+  gameIndices: [GameIndex!]!
+
+  """
+  Areas within this location.
+  """
+  areas: [NamedAPIResource!]!
+}
+
+"""
+Connection type for paginated Location lists.
+"""
+type LocationConnection {
+  edges: [LocationEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+Edge type for Location connections.
+"""
+type LocationEdge {
+  cursor: String!
+  node: Location!
+}
+
+"""
+A specific area within a location where Pokemon can be encountered.
+"""
+type LocationArea implements Node {
+  """
+  The unique identifier for this location area (base64 encoded).
+  """
+  id: ID!
+
+  """
+  The name of this location area.
+  """
+  name: String!
+
+  """
+  The internal game index for this location area.
+  """
+  gameIndex: Int!
+
+  """
+  Encounter method rates for this location area.
+  """
+  encounterMethodRates: [EncounterMethodRate!]!
+
+  """
+  The location this area belongs to.
+  """
+  location: NamedAPIResource!
+
+  """
+  The localized names for this location area.
+  """
+  names: [Name!]!
+
+  """
+  Pokemon that can be encountered in this area.
+  """
+  pokemonEncounters: [PokemonEncounter!]!
+}
+
+"""
+Connection type for paginated LocationArea lists.
+"""
+type LocationAreaConnection {
+  edges: [LocationAreaEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+Edge type for LocationArea connections.
+"""
+type LocationAreaEdge {
+  cursor: String!
+  node: LocationArea!
+}
+
+"""
+Encounter method rate for a location area.
+"""
+type EncounterMethodRate {
+  """
+  The encounter method.
+  """
+  encounterMethod: NamedAPIResource!
+
+  """
+  Version-specific encounter rates.
+  """
+  versionDetails: [EncounterVersionDetail!]!
+}
+
+"""
+Version-specific encounter rate.
+"""
+type EncounterVersionDetail {
+  """
+  The encounter rate percentage.
+  """
+  rate: Int!
+
+  """
+  The game version.
+  """
+  version: NamedAPIResource!
+}
+
+"""
+Pokemon encounter in a location area.
+"""
+type PokemonEncounter {
+  """
+  The Pokemon that can be encountered.
+  """
+  pokemon: NamedAPIResource!
+
+  """
+  Version-specific encounter details.
+  """
+  versionDetails: [VersionEncounterDetail!]!
+}
+
+"""
+Version-specific encounter details.
+"""
+type VersionEncounterDetail {
+  """
+  The game version.
+  """
+  version: NamedAPIResource!
+
+  """
+  Maximum chance of encountering this Pokemon.
+  """
+  maxChance: Int!
+
+  """
+  Detailed encounter information.
+  """
+  encounterDetails: [EncounterDetail!]!
+}
+
+"""
+Detailed encounter information.
+"""
+type EncounterDetail {
+  """
+  Minimum level of the Pokemon.
+  """
+  minLevel: Int!
+
+  """
+  Maximum level of the Pokemon.
+  """
+  maxLevel: Int!
+
+  """
+  Conditions required for this encounter.
+  """
+  conditionValues: [NamedAPIResource!]!
+
+  """
+  Chance of this specific encounter.
+  """
+  chance: Int!
+
+  """
+  The encounter method.
+  """
+  method: NamedAPIResource!
+}
+
+"""
+A region in the Pokemon world.
+"""
+type Region implements Node {
+  """
+  The unique identifier for this region (base64 encoded).
+  """
+  id: ID!
+
+  """
+  The name of this region.
+  """
+  name: String!
+
+  """
+  Locations within this region.
+  """
+  locations: [NamedAPIResource!]!
+
+  """
+  The localized names for this region.
+  """
+  names: [Name!]!
+
+  """
+  The main generation this region was introduced in.
+  """
+  mainGeneration: NamedAPIResource!
+
+  """
+  Pokedexes available in this region.
+  """
+  pokedexes: [NamedAPIResource!]!
+
+  """
+  Version groups available in this region.
+  """
+  versionGroups: [NamedAPIResource!]!
+}
+
+"""
+Connection type for paginated Region lists.
+"""
+type RegionConnection {
+  edges: [RegionEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+Edge type for Region connections.
+"""
+type RegionEdge {
+  cursor: String!
+  node: Region!
+}
+
+"""
+An area in Pal Park where Pokemon can be found.
+"""
+type PalParkArea implements Node {
+  """
+  The unique identifier for this Pal Park area (base64 encoded).
+  """
+  id: ID!
+
+  """
+  The name of this Pal Park area.
+  """
+  name: String!
+
+  """
+  The localized names for this Pal Park area.
+  """
+  names: [Name!]!
+
+  """
+  Pokemon that can be encountered in this Pal Park area.
+  """
+  pokemonEncounters: [PalParkEncounter!]!
+}
+
+"""
+Connection type for paginated PalParkArea lists.
+"""
+type PalParkAreaConnection {
+  edges: [PalParkAreaEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+"""
+Edge type for PalParkArea connections.
+"""
+type PalParkAreaEdge {
+  cursor: String!
+  node: PalParkArea!
+}
+
+"""
+Pokemon encounter in Pal Park.
+"""
+type PalParkEncounter {
+  """
+  Base score for catching this Pokemon.
+  """
+  baseScore: Int!
+
+  """
+  Rate of encountering this Pokemon.
+  """
+  rate: Int!
+
+  """
+  The Pokemon species that can be encountered.
+  """
+  pokemonSpecies: NamedAPIResource!
+}

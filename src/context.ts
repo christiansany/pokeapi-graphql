@@ -5,6 +5,7 @@ import { StatDataSource } from "./domains/stat/StatDataSource.js";
 import { TypeDataSource } from "./domains/type/TypeDataSource.js";
 import { MoveDataSource } from "./domains/move/MoveDataSource.js";
 import { ItemDataSource } from "./domains/item/ItemDataSource.js";
+import { LocationDataSource } from "./domains/location/LocationDataSource.js";
 
 /**
  * GraphQL context interface.
@@ -22,8 +23,8 @@ export interface Context {
     type: TypeDataSource;
     move: MoveDataSource;
     item: ItemDataSource;
+    location: LocationDataSource;
     // Future domain-specific DataSources will be added here:
-    // location: LocationDataSource;
     // evolution: EvolutionDataSource;
     // berry: BerryDataSource;
     // game: GameDataSource;
@@ -50,6 +51,7 @@ export function createContext(): Context {
       type: new TypeDataSource(config),
       move: new MoveDataSource(config),
       item: new ItemDataSource(config),
+      location: new LocationDataSource(config),
       // Future domain-specific DataSources will be initialized here
     },
   };
