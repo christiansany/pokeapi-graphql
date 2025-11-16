@@ -6,6 +6,7 @@ import { AbilityDTO } from '../domains/ability/ability.dto.js';
 import { StatDTO } from '../domains/stat/stat.dto.js';
 import { TypeDTO } from '../domains/type/type.dto.js';
 import { MoveDTO } from '../domains/move/move.dto.js';
+import { ItemDTO, ItemCategoryDTO, ItemAttributeDTO, ItemFlingEffectDTO, ItemPocketDTO } from '../domains/item/item.dto.js';
 import { Context } from '../context.js';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -146,6 +147,218 @@ export type HomeSprites = {
   frontFemale?: Maybe<Scalars['String']['output']>;
   frontShiny?: Maybe<Scalars['String']['output']>;
   frontShinyFemale?: Maybe<Scalars['String']['output']>;
+};
+
+/** An item that can be obtained, held, or used by Pokemon. */
+export type Item = Node & {
+  __typename?: 'Item';
+  /** Attributes that apply to this item. */
+  attributes: Array<NamedApiResource>;
+  /** The category this item belongs to. */
+  category: NamedApiResource;
+  /** The cost of the item in Pokedollars. */
+  cost: Scalars['Int']['output'];
+  /** Effect entries describing what this item does. */
+  effectEntries: Array<EffectEntry>;
+  /** Flavor text entries from various game versions. */
+  flavorTextEntries: Array<FlavorTextEntry>;
+  /** The effect of the move Fling when used with this item. */
+  flingEffect?: Maybe<NamedApiResource>;
+  /** The power of the move Fling when used with this item. */
+  flingPower?: Maybe<Scalars['Int']['output']>;
+  /** Game indices for this item across different games. */
+  gameIndices: Array<GameIndex>;
+  /** Pokemon that can hold this item. */
+  heldByPokemon: Array<ItemHolderPokemon>;
+  /** The globally unique identifier for this item. */
+  id: Scalars['ID']['output'];
+  /** The name of the item. */
+  name: Scalars['String']['output'];
+  /** Localized names for this item. */
+  names: Array<Name>;
+  /** Sprites for this item. */
+  sprites: ItemSprites;
+};
+
+/** An attribute that items can have. */
+export type ItemAttribute = Node & {
+  __typename?: 'ItemAttribute';
+  /** Descriptions of this attribute. */
+  descriptions: Array<Description>;
+  /** The globally unique identifier for this item attribute. */
+  id: Scalars['ID']['output'];
+  /** Items that have this attribute. */
+  items: Array<NamedApiResource>;
+  /** The name of the item attribute. */
+  name: Scalars['String']['output'];
+  /** Localized names for this attribute. */
+  names: Array<Name>;
+};
+
+/** A connection to a list of item attributes. */
+export type ItemAttributeConnection = {
+  __typename?: 'ItemAttributeConnection';
+  /** A list of edges. */
+  edges: Array<ItemAttributeEdge>;
+  /** Information about pagination. */
+  pageInfo: PageInfo;
+  /** The total count of item attributes. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in an item attribute connection. */
+export type ItemAttributeEdge = {
+  __typename?: 'ItemAttributeEdge';
+  /** A cursor for pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item attribute at the end of the edge. */
+  node: ItemAttribute;
+};
+
+/** A category of items. */
+export type ItemCategory = Node & {
+  __typename?: 'ItemCategory';
+  /** The globally unique identifier for this item category. */
+  id: Scalars['ID']['output'];
+  /** Items in this category. */
+  items: Array<NamedApiResource>;
+  /** The name of the item category. */
+  name: Scalars['String']['output'];
+  /** Localized names for this category. */
+  names: Array<Name>;
+  /** The pocket this category belongs to. */
+  pocket: NamedApiResource;
+};
+
+/** A connection to a list of item categories. */
+export type ItemCategoryConnection = {
+  __typename?: 'ItemCategoryConnection';
+  /** A list of edges. */
+  edges: Array<ItemCategoryEdge>;
+  /** Information about pagination. */
+  pageInfo: PageInfo;
+  /** The total count of item categories. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in an item category connection. */
+export type ItemCategoryEdge = {
+  __typename?: 'ItemCategoryEdge';
+  /** A cursor for pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item category at the end of the edge. */
+  node: ItemCategory;
+};
+
+/** A connection to a list of items. */
+export type ItemConnection = {
+  __typename?: 'ItemConnection';
+  /** A list of edges. */
+  edges: Array<ItemEdge>;
+  /** Information about pagination. */
+  pageInfo: PageInfo;
+  /** The total count of items. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in an item connection. */
+export type ItemEdge = {
+  __typename?: 'ItemEdge';
+  /** A cursor for pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item at the end of the edge. */
+  node: Item;
+};
+
+/** The effect of flinging an item in battle. */
+export type ItemFlingEffect = Node & {
+  __typename?: 'ItemFlingEffect';
+  /** Effect entries describing what this fling effect does. */
+  effectEntries: Array<EffectEntry>;
+  /** The globally unique identifier for this fling effect. */
+  id: Scalars['ID']['output'];
+  /** Items that have this fling effect. */
+  items: Array<NamedApiResource>;
+  /** The name of the fling effect. */
+  name: Scalars['String']['output'];
+};
+
+/** A connection to a list of item fling effects. */
+export type ItemFlingEffectConnection = {
+  __typename?: 'ItemFlingEffectConnection';
+  /** A list of edges. */
+  edges: Array<ItemFlingEffectEdge>;
+  /** Information about pagination. */
+  pageInfo: PageInfo;
+  /** The total count of item fling effects. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in an item fling effect connection. */
+export type ItemFlingEffectEdge = {
+  __typename?: 'ItemFlingEffectEdge';
+  /** A cursor for pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item fling effect at the end of the edge. */
+  node: ItemFlingEffect;
+};
+
+/** A Pokemon that can hold an item. */
+export type ItemHolderPokemon = {
+  __typename?: 'ItemHolderPokemon';
+  /** The Pokemon that can hold this item. */
+  pokemon: Scalars['String']['output'];
+  /** Version-specific details about this Pokemon holding the item. */
+  versionDetails: Array<ItemHolderPokemonVersionDetail>;
+};
+
+/** Version-specific details about a Pokemon holding an item. */
+export type ItemHolderPokemonVersionDetail = {
+  __typename?: 'ItemHolderPokemonVersionDetail';
+  /** How rare it is to find this item on this Pokemon. */
+  rarity: Scalars['Int']['output'];
+  /** The game version this applies to. */
+  version: Scalars['String']['output'];
+};
+
+/** A pocket in the bag where items are stored. */
+export type ItemPocket = Node & {
+  __typename?: 'ItemPocket';
+  /** Categories in this pocket. */
+  categories: Array<NamedApiResource>;
+  /** The globally unique identifier for this item pocket. */
+  id: Scalars['ID']['output'];
+  /** The name of the item pocket. */
+  name: Scalars['String']['output'];
+  /** Localized names for this pocket. */
+  names: Array<Name>;
+};
+
+/** A connection to a list of item pockets. */
+export type ItemPocketConnection = {
+  __typename?: 'ItemPocketConnection';
+  /** A list of edges. */
+  edges: Array<ItemPocketEdge>;
+  /** Information about pagination. */
+  pageInfo: PageInfo;
+  /** The total count of item pockets. */
+  totalCount: Scalars['Int']['output'];
+};
+
+/** An edge in an item pocket connection. */
+export type ItemPocketEdge = {
+  __typename?: 'ItemPocketEdge';
+  /** A cursor for pagination. */
+  cursor: Scalars['String']['output'];
+  /** The item pocket at the end of the edge. */
+  node: ItemPocket;
+};
+
+/** Sprites for an item. */
+export type ItemSprites = {
+  __typename?: 'ItemSprites';
+  /** The default sprite for this item. */
+  default?: Maybe<Scalars['String']['output']>;
 };
 
 /** A move that Pokemon can learn and use in battle. */
@@ -734,6 +947,26 @@ export type PokemonVarietyEdge = {
 
 export type Query = {
   __typename?: 'Query';
+  /** Get an item attribute by its global ID. */
+  itemAttributeById?: Maybe<ItemAttribute>;
+  /** Get a paginated list of item attributes. */
+  itemAttributes: ItemAttributeConnection;
+  /** Get an item by its global ID. */
+  itemById?: Maybe<Item>;
+  /** Get a paginated list of item categories. */
+  itemCategories: ItemCategoryConnection;
+  /** Get an item category by its global ID. */
+  itemCategoryById?: Maybe<ItemCategory>;
+  /** Get an item fling effect by its global ID. */
+  itemFlingEffectById?: Maybe<ItemFlingEffect>;
+  /** Get a paginated list of item fling effects. */
+  itemFlingEffects: ItemFlingEffectConnection;
+  /** Get an item pocket by its global ID. */
+  itemPocketById?: Maybe<ItemPocket>;
+  /** Get a paginated list of item pockets. */
+  itemPockets: ItemPocketConnection;
+  /** Get a paginated list of items. */
+  items: ItemConnection;
   /** Get a single move by its global ID. */
   moveById?: Maybe<Move>;
   /** Get a paginated list of moves. */
@@ -760,6 +993,61 @@ export type Query = {
   typeById?: Maybe<Type>;
   /** Fetch a paginated list of Types using forward-only cursor-based pagination. */
   types: TypeConnection;
+};
+
+
+export type QueryItemAttributeByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryItemAttributesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryItemByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryItemCategoriesArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryItemCategoryByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryItemFlingEffectByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryItemFlingEffectsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryItemPocketByIdArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryItemPocketsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryItemsArgs = {
+  after?: InputMaybe<Scalars['String']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -1009,7 +1297,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  Node: ( AbilityDTO ) | ( MoveDTO ) | ( PokemonDTO ) | ( PokemonFormDTO ) | ( PokemonSpeciesDTO ) | ( StatDTO ) | ( TypeDTO );
+  Node: ( AbilityDTO ) | ( ItemDTO ) | ( ItemAttributeDTO ) | ( ItemCategoryDTO ) | ( ItemFlingEffectDTO ) | ( ItemPocketDTO ) | ( MoveDTO ) | ( PokemonDTO ) | ( PokemonFormDTO ) | ( PokemonSpeciesDTO ) | ( StatDTO ) | ( TypeDTO );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -1029,6 +1317,24 @@ export type ResolversTypes = {
   HomeSprites: ResolverTypeWrapper<HomeSprites>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
+  Item: ResolverTypeWrapper<ItemDTO>;
+  ItemAttribute: ResolverTypeWrapper<ItemAttributeDTO>;
+  ItemAttributeConnection: ResolverTypeWrapper<Omit<ItemAttributeConnection, 'edges'> & { edges: Array<ResolversTypes['ItemAttributeEdge']> }>;
+  ItemAttributeEdge: ResolverTypeWrapper<Omit<ItemAttributeEdge, 'node'> & { node: ResolversTypes['ItemAttribute'] }>;
+  ItemCategory: ResolverTypeWrapper<ItemCategoryDTO>;
+  ItemCategoryConnection: ResolverTypeWrapper<Omit<ItemCategoryConnection, 'edges'> & { edges: Array<ResolversTypes['ItemCategoryEdge']> }>;
+  ItemCategoryEdge: ResolverTypeWrapper<Omit<ItemCategoryEdge, 'node'> & { node: ResolversTypes['ItemCategory'] }>;
+  ItemConnection: ResolverTypeWrapper<Omit<ItemConnection, 'edges'> & { edges: Array<ResolversTypes['ItemEdge']> }>;
+  ItemEdge: ResolverTypeWrapper<Omit<ItemEdge, 'node'> & { node: ResolversTypes['Item'] }>;
+  ItemFlingEffect: ResolverTypeWrapper<ItemFlingEffectDTO>;
+  ItemFlingEffectConnection: ResolverTypeWrapper<Omit<ItemFlingEffectConnection, 'edges'> & { edges: Array<ResolversTypes['ItemFlingEffectEdge']> }>;
+  ItemFlingEffectEdge: ResolverTypeWrapper<Omit<ItemFlingEffectEdge, 'node'> & { node: ResolversTypes['ItemFlingEffect'] }>;
+  ItemHolderPokemon: ResolverTypeWrapper<ItemHolderPokemon>;
+  ItemHolderPokemonVersionDetail: ResolverTypeWrapper<ItemHolderPokemonVersionDetail>;
+  ItemPocket: ResolverTypeWrapper<ItemPocketDTO>;
+  ItemPocketConnection: ResolverTypeWrapper<Omit<ItemPocketConnection, 'edges'> & { edges: Array<ResolversTypes['ItemPocketEdge']> }>;
+  ItemPocketEdge: ResolverTypeWrapper<Omit<ItemPocketEdge, 'node'> & { node: ResolversTypes['ItemPocket'] }>;
+  ItemSprites: ResolverTypeWrapper<ItemSprites>;
   Move: ResolverTypeWrapper<MoveDTO>;
   MoveConnection: ResolverTypeWrapper<Omit<MoveConnection, 'edges'> & { edges: Array<ResolversTypes['MoveEdge']> }>;
   MoveEdge: ResolverTypeWrapper<Omit<MoveEdge, 'node'> & { node: ResolversTypes['Move'] }>;
@@ -1100,6 +1406,24 @@ export type ResolversParentTypes = {
   HomeSprites: HomeSprites;
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
+  Item: ItemDTO;
+  ItemAttribute: ItemAttributeDTO;
+  ItemAttributeConnection: Omit<ItemAttributeConnection, 'edges'> & { edges: Array<ResolversParentTypes['ItemAttributeEdge']> };
+  ItemAttributeEdge: Omit<ItemAttributeEdge, 'node'> & { node: ResolversParentTypes['ItemAttribute'] };
+  ItemCategory: ItemCategoryDTO;
+  ItemCategoryConnection: Omit<ItemCategoryConnection, 'edges'> & { edges: Array<ResolversParentTypes['ItemCategoryEdge']> };
+  ItemCategoryEdge: Omit<ItemCategoryEdge, 'node'> & { node: ResolversParentTypes['ItemCategory'] };
+  ItemConnection: Omit<ItemConnection, 'edges'> & { edges: Array<ResolversParentTypes['ItemEdge']> };
+  ItemEdge: Omit<ItemEdge, 'node'> & { node: ResolversParentTypes['Item'] };
+  ItemFlingEffect: ItemFlingEffectDTO;
+  ItemFlingEffectConnection: Omit<ItemFlingEffectConnection, 'edges'> & { edges: Array<ResolversParentTypes['ItemFlingEffectEdge']> };
+  ItemFlingEffectEdge: Omit<ItemFlingEffectEdge, 'node'> & { node: ResolversParentTypes['ItemFlingEffect'] };
+  ItemHolderPokemon: ItemHolderPokemon;
+  ItemHolderPokemonVersionDetail: ItemHolderPokemonVersionDetail;
+  ItemPocket: ItemPocketDTO;
+  ItemPocketConnection: Omit<ItemPocketConnection, 'edges'> & { edges: Array<ResolversParentTypes['ItemPocketEdge']> };
+  ItemPocketEdge: Omit<ItemPocketEdge, 'node'> & { node: ResolversParentTypes['ItemPocket'] };
+  ItemSprites: ItemSprites;
   Move: MoveDTO;
   MoveConnection: Omit<MoveConnection, 'edges'> & { edges: Array<ResolversParentTypes['MoveEdge']> };
   MoveEdge: Omit<MoveEdge, 'node'> & { node: ResolversParentTypes['Move'] };
@@ -1235,6 +1559,139 @@ export type HomeSpritesResolvers<ContextType = Context, ParentType extends Resol
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ItemResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Item'] = ResolversParentTypes['Item']> = {
+  attributes?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  category?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  cost?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  effectEntries?: Resolver<Array<ResolversTypes['EffectEntry']>, ParentType, ContextType>;
+  flavorTextEntries?: Resolver<Array<ResolversTypes['FlavorTextEntry']>, ParentType, ContextType>;
+  flingEffect?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  flingPower?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  gameIndices?: Resolver<Array<ResolversTypes['GameIndex']>, ParentType, ContextType>;
+  heldByPokemon?: Resolver<Array<ResolversTypes['ItemHolderPokemon']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  sprites?: Resolver<ResolversTypes['ItemSprites'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemAttributeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemAttribute'] = ResolversParentTypes['ItemAttribute']> = {
+  descriptions?: Resolver<Array<ResolversTypes['Description']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  items?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemAttributeConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemAttributeConnection'] = ResolversParentTypes['ItemAttributeConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['ItemAttributeEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemAttributeEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemAttributeEdge'] = ResolversParentTypes['ItemAttributeEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['ItemAttribute'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemCategoryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemCategory'] = ResolversParentTypes['ItemCategory']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  items?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  pocket?: Resolver<ResolversTypes['NamedAPIResource'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemCategoryConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemCategoryConnection'] = ResolversParentTypes['ItemCategoryConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['ItemCategoryEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemCategoryEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemCategoryEdge'] = ResolversParentTypes['ItemCategoryEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['ItemCategory'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemConnection'] = ResolversParentTypes['ItemConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['ItemEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemEdge'] = ResolversParentTypes['ItemEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Item'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemFlingEffectResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemFlingEffect'] = ResolversParentTypes['ItemFlingEffect']> = {
+  effectEntries?: Resolver<Array<ResolversTypes['EffectEntry']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  items?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemFlingEffectConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemFlingEffectConnection'] = ResolversParentTypes['ItemFlingEffectConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['ItemFlingEffectEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemFlingEffectEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemFlingEffectEdge'] = ResolversParentTypes['ItemFlingEffectEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['ItemFlingEffect'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemHolderPokemonResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemHolderPokemon'] = ResolversParentTypes['ItemHolderPokemon']> = {
+  pokemon?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  versionDetails?: Resolver<Array<ResolversTypes['ItemHolderPokemonVersionDetail']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemHolderPokemonVersionDetailResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemHolderPokemonVersionDetail'] = ResolversParentTypes['ItemHolderPokemonVersionDetail']> = {
+  rarity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  version?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemPocketResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemPocket'] = ResolversParentTypes['ItemPocket']> = {
+  categories?: Resolver<Array<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  names?: Resolver<Array<ResolversTypes['Name']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemPocketConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemPocketConnection'] = ResolversParentTypes['ItemPocketConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['ItemPocketEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemPocketEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemPocketEdge'] = ResolversParentTypes['ItemPocketEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['ItemPocket'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ItemSpritesResolvers<ContextType = Context, ParentType extends ResolversParentTypes['ItemSprites'] = ResolversParentTypes['ItemSprites']> = {
+  default?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MoveResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Move'] = ResolversParentTypes['Move']> = {
   accuracy?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   contestEffect?: Resolver<Maybe<ResolversTypes['NamedAPIResource']>, ParentType, ContextType>;
@@ -1346,7 +1803,7 @@ export type NatureStatAffectSetsResolvers<ContextType = Context, ParentType exte
 };
 
 export type NodeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'Ability' | 'Move' | 'Pokemon' | 'PokemonForm' | 'PokemonSpecies' | 'Stat' | 'Type', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'Ability' | 'Item' | 'ItemAttribute' | 'ItemCategory' | 'ItemFlingEffect' | 'ItemPocket' | 'Move' | 'Pokemon' | 'PokemonForm' | 'PokemonSpecies' | 'Stat' | 'Type', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
@@ -1585,6 +2042,16 @@ export type PokemonVarietyEdgeResolvers<ContextType = Context, ParentType extend
 };
 
 export type QueryResolvers<ContextType = Context, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  itemAttributeById?: Resolver<Maybe<ResolversTypes['ItemAttribute']>, ParentType, ContextType, RequireFields<QueryItemAttributeByIdArgs, 'id'>>;
+  itemAttributes?: Resolver<ResolversTypes['ItemAttributeConnection'], ParentType, ContextType, Partial<QueryItemAttributesArgs>>;
+  itemById?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryItemByIdArgs, 'id'>>;
+  itemCategories?: Resolver<ResolversTypes['ItemCategoryConnection'], ParentType, ContextType, Partial<QueryItemCategoriesArgs>>;
+  itemCategoryById?: Resolver<Maybe<ResolversTypes['ItemCategory']>, ParentType, ContextType, RequireFields<QueryItemCategoryByIdArgs, 'id'>>;
+  itemFlingEffectById?: Resolver<Maybe<ResolversTypes['ItemFlingEffect']>, ParentType, ContextType, RequireFields<QueryItemFlingEffectByIdArgs, 'id'>>;
+  itemFlingEffects?: Resolver<ResolversTypes['ItemFlingEffectConnection'], ParentType, ContextType, Partial<QueryItemFlingEffectsArgs>>;
+  itemPocketById?: Resolver<Maybe<ResolversTypes['ItemPocket']>, ParentType, ContextType, RequireFields<QueryItemPocketByIdArgs, 'id'>>;
+  itemPockets?: Resolver<ResolversTypes['ItemPocketConnection'], ParentType, ContextType, Partial<QueryItemPocketsArgs>>;
+  items?: Resolver<ResolversTypes['ItemConnection'], ParentType, ContextType, Partial<QueryItemsArgs>>;
   moveById?: Resolver<Maybe<ResolversTypes['Move']>, ParentType, ContextType, RequireFields<QueryMoveByIdArgs, 'id'>>;
   moves?: Resolver<ResolversTypes['MoveConnection'], ParentType, ContextType, Partial<QueryMovesArgs>>;
   node?: Resolver<Maybe<ResolversTypes['Node']>, ParentType, ContextType, RequireFields<QueryNodeArgs, 'id'>>;
@@ -1678,6 +2145,24 @@ export type Resolvers<ContextType = Context> = {
   HeldItem?: HeldItemResolvers<ContextType>;
   HeldItemVersion?: HeldItemVersionResolvers<ContextType>;
   HomeSprites?: HomeSpritesResolvers<ContextType>;
+  Item?: ItemResolvers<ContextType>;
+  ItemAttribute?: ItemAttributeResolvers<ContextType>;
+  ItemAttributeConnection?: ItemAttributeConnectionResolvers<ContextType>;
+  ItemAttributeEdge?: ItemAttributeEdgeResolvers<ContextType>;
+  ItemCategory?: ItemCategoryResolvers<ContextType>;
+  ItemCategoryConnection?: ItemCategoryConnectionResolvers<ContextType>;
+  ItemCategoryEdge?: ItemCategoryEdgeResolvers<ContextType>;
+  ItemConnection?: ItemConnectionResolvers<ContextType>;
+  ItemEdge?: ItemEdgeResolvers<ContextType>;
+  ItemFlingEffect?: ItemFlingEffectResolvers<ContextType>;
+  ItemFlingEffectConnection?: ItemFlingEffectConnectionResolvers<ContextType>;
+  ItemFlingEffectEdge?: ItemFlingEffectEdgeResolvers<ContextType>;
+  ItemHolderPokemon?: ItemHolderPokemonResolvers<ContextType>;
+  ItemHolderPokemonVersionDetail?: ItemHolderPokemonVersionDetailResolvers<ContextType>;
+  ItemPocket?: ItemPocketResolvers<ContextType>;
+  ItemPocketConnection?: ItemPocketConnectionResolvers<ContextType>;
+  ItemPocketEdge?: ItemPocketEdgeResolvers<ContextType>;
+  ItemSprites?: ItemSpritesResolvers<ContextType>;
   Move?: MoveResolvers<ContextType>;
   MoveConnection?: MoveConnectionResolvers<ContextType>;
   MoveEdge?: MoveEdgeResolvers<ContextType>;

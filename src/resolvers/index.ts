@@ -7,6 +7,11 @@ import { Ability } from "../domains/ability/ability.resolver.js";
 import { Stat } from "../domains/stat/stat.resolver.js";
 import { Type } from "../domains/type/type.resolver.js";
 import { Move } from "../domains/move/move.resolver.js";
+import { Item } from "../domains/item/item.resolver.js";
+import { ItemCategory } from "../domains/item/itemCategory.resolver.js";
+import { ItemAttribute } from "../domains/item/itemAttribute.resolver.js";
+import { ItemFlingEffect } from "../domains/item/itemFlingEffect.resolver.js";
+import { ItemPocket } from "../domains/item/itemPocket.resolver.js";
 import { PokemonAbilityEdge } from "../domains/pokemon/edges/pokemonAbility.edge.js";
 import { PokemonStatEdge } from "../domains/pokemon/edges/pokemonStat.edge.js";
 import { PokemonTypeEdge } from "../domains/pokemon/edges/pokemonType.edge.js";
@@ -24,6 +29,11 @@ export const resolvers: Resolvers = {
   Stat,
   Type,
   Move,
+  Item,
+  ItemCategory,
+  ItemAttribute,
+  ItemFlingEffect,
+  ItemPocket,
   PokemonAbilityEdge,
   PokemonStatEdge,
   PokemonTypeEdge,

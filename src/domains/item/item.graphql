@@ -1,0 +1,492 @@
+"""
+An item that can be obtained, held, or used by Pokemon.
+"""
+type Item implements Node {
+  """
+  The globally unique identifier for this item.
+  """
+  id: ID!
+  
+  """
+  The name of the item.
+  """
+  name: String!
+  
+  """
+  The cost of the item in Pokedollars.
+  """
+  cost: Int!
+  
+  """
+  The power of the move Fling when used with this item.
+  """
+  flingPower: Int
+  
+  """
+  The effect of the move Fling when used with this item.
+  """
+  flingEffect: NamedAPIResource
+  
+  """
+  Attributes that apply to this item.
+  """
+  attributes: [NamedAPIResource!]!
+  
+  """
+  The category this item belongs to.
+  """
+  category: NamedAPIResource!
+  
+  """
+  Effect entries describing what this item does.
+  """
+  effectEntries: [EffectEntry!]!
+  
+  """
+  Flavor text entries from various game versions.
+  """
+  flavorTextEntries: [FlavorTextEntry!]!
+  
+  """
+  Game indices for this item across different games.
+  """
+  gameIndices: [GameIndex!]!
+  
+  """
+  Localized names for this item.
+  """
+  names: [Name!]!
+  
+  """
+  Sprites for this item.
+  """
+  sprites: ItemSprites!
+  
+  """
+  Pokemon that can hold this item.
+  """
+  heldByPokemon: [ItemHolderPokemon!]!
+}
+
+"""
+Sprites for an item.
+"""
+type ItemSprites {
+  """
+  The default sprite for this item.
+  """
+  default: String
+}
+
+"""
+A Pokemon that can hold an item.
+"""
+type ItemHolderPokemon {
+  """
+  The Pokemon that can hold this item.
+  """
+  pokemon: String!
+  
+  """
+  Version-specific details about this Pokemon holding the item.
+  """
+  versionDetails: [ItemHolderPokemonVersionDetail!]!
+}
+
+"""
+Version-specific details about a Pokemon holding an item.
+"""
+type ItemHolderPokemonVersionDetail {
+  """
+  How rare it is to find this item on this Pokemon.
+  """
+  rarity: Int!
+  
+  """
+  The game version this applies to.
+  """
+  version: String!
+}
+
+"""
+A category of items.
+"""
+type ItemCategory implements Node {
+  """
+  The globally unique identifier for this item category.
+  """
+  id: ID!
+  
+  """
+  The name of the item category.
+  """
+  name: String!
+  
+  """
+  Items in this category.
+  """
+  items: [NamedAPIResource!]!
+  
+  """
+  Localized names for this category.
+  """
+  names: [Name!]!
+  
+  """
+  The pocket this category belongs to.
+  """
+  pocket: NamedAPIResource!
+}
+
+"""
+An attribute that items can have.
+"""
+type ItemAttribute implements Node {
+  """
+  The globally unique identifier for this item attribute.
+  """
+  id: ID!
+  
+  """
+  The name of the item attribute.
+  """
+  name: String!
+  
+  """
+  Items that have this attribute.
+  """
+  items: [NamedAPIResource!]!
+  
+  """
+  Localized names for this attribute.
+  """
+  names: [Name!]!
+  
+  """
+  Descriptions of this attribute.
+  """
+  descriptions: [Description!]!
+}
+
+"""
+The effect of flinging an item in battle.
+"""
+type ItemFlingEffect implements Node {
+  """
+  The globally unique identifier for this fling effect.
+  """
+  id: ID!
+  
+  """
+  The name of the fling effect.
+  """
+  name: String!
+  
+  """
+  Effect entries describing what this fling effect does.
+  """
+  effectEntries: [EffectEntry!]!
+  
+  """
+  Items that have this fling effect.
+  """
+  items: [NamedAPIResource!]!
+}
+
+"""
+A pocket in the bag where items are stored.
+"""
+type ItemPocket implements Node {
+  """
+  The globally unique identifier for this item pocket.
+  """
+  id: ID!
+  
+  """
+  The name of the item pocket.
+  """
+  name: String!
+  
+  """
+  Categories in this pocket.
+  """
+  categories: [NamedAPIResource!]!
+  
+  """
+  Localized names for this pocket.
+  """
+  names: [Name!]!
+}
+
+"""
+A connection to a list of items.
+"""
+type ItemConnection {
+  """
+  A list of edges.
+  """
+  edges: [ItemEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of items.
+  """
+  totalCount: Int!
+}
+
+"""
+An edge in an item connection.
+"""
+type ItemEdge {
+  """
+  A cursor for pagination.
+  """
+  cursor: String!
+  
+  """
+  The item at the end of the edge.
+  """
+  node: Item!
+}
+
+"""
+A connection to a list of item categories.
+"""
+type ItemCategoryConnection {
+  """
+  A list of edges.
+  """
+  edges: [ItemCategoryEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of item categories.
+  """
+  totalCount: Int!
+}
+
+"""
+An edge in an item category connection.
+"""
+type ItemCategoryEdge {
+  """
+  A cursor for pagination.
+  """
+  cursor: String!
+  
+  """
+  The item category at the end of the edge.
+  """
+  node: ItemCategory!
+}
+
+"""
+A connection to a list of item attributes.
+"""
+type ItemAttributeConnection {
+  """
+  A list of edges.
+  """
+  edges: [ItemAttributeEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of item attributes.
+  """
+  totalCount: Int!
+}
+
+"""
+An edge in an item attribute connection.
+"""
+type ItemAttributeEdge {
+  """
+  A cursor for pagination.
+  """
+  cursor: String!
+  
+  """
+  The item attribute at the end of the edge.
+  """
+  node: ItemAttribute!
+}
+
+"""
+A connection to a list of item fling effects.
+"""
+type ItemFlingEffectConnection {
+  """
+  A list of edges.
+  """
+  edges: [ItemFlingEffectEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of item fling effects.
+  """
+  totalCount: Int!
+}
+
+"""
+An edge in an item fling effect connection.
+"""
+type ItemFlingEffectEdge {
+  """
+  A cursor for pagination.
+  """
+  cursor: String!
+  
+  """
+  The item fling effect at the end of the edge.
+  """
+  node: ItemFlingEffect!
+}
+
+"""
+A connection to a list of item pockets.
+"""
+type ItemPocketConnection {
+  """
+  A list of edges.
+  """
+  edges: [ItemPocketEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of item pockets.
+  """
+  totalCount: Int!
+}
+
+"""
+An edge in an item pocket connection.
+"""
+type ItemPocketEdge {
+  """
+  A cursor for pagination.
+  """
+  cursor: String!
+  
+  """
+  The item pocket at the end of the edge.
+  """
+  node: ItemPocket!
+}
+
+extend type Query {
+  """
+  Get an item by its global ID.
+  """
+  itemById(id: ID!): Item
+  
+  """
+  Get a paginated list of items.
+  """
+  items(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): ItemConnection!
+  
+  """
+  Get an item category by its global ID.
+  """
+  itemCategoryById(id: ID!): ItemCategory
+  
+  """
+  Get a paginated list of item categories.
+  """
+  itemCategories(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): ItemCategoryConnection!
+  
+  """
+  Get an item attribute by its global ID.
+  """
+  itemAttributeById(id: ID!): ItemAttribute
+  
+  """
+  Get a paginated list of item attributes.
+  """
+  itemAttributes(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): ItemAttributeConnection!
+  
+  """
+  Get an item fling effect by its global ID.
+  """
+  itemFlingEffectById(id: ID!): ItemFlingEffect
+  
+  """
+  Get a paginated list of item fling effects.
+  """
+  itemFlingEffects(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): ItemFlingEffectConnection!
+  
+  """
+  Get an item pocket by its global ID.
+  """
+  itemPocketById(id: ID!): ItemPocket
+  
+  """
+  Get a paginated list of item pockets.
+  """
+  itemPockets(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): ItemPocketConnection!
+}
+

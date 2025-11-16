@@ -263,8 +263,8 @@ When implementing ANY edge type, verify:
     - Update PokemonSpecies resolver to return varieties connection with edges
     - _Requirements: 10.4, 18.5_
 
-- [ ] 6. Implement Item System
-  - [ ] 6.1 Create Item domain structure
+- [x] 6. Implement Item System
+  - [x] 6.1 Create Item domain structure
     - Create Item DTOs in domains/item/item.dto.ts (ItemDTO, ItemCategoryDTO, ItemAttributeDTO, etc.)
     - Create ItemDataSource with DataLoaders for items, categories, and attributes
     - Create item.graphql schema with Item, ItemCategory, ItemAttribute types implementing Node
@@ -272,14 +272,14 @@ When implementing ANY edge type, verify:
     - Add Query.item(id: ID!) and Query.items(first: Int, after: String) fields
     - _Requirements: 5.1, 5.2, 5.3, 5.5, 16.1_
   
-  - [ ] 6.2 Implement ItemCategory and ItemAttribute types
+  - [x] 6.2 Implement ItemCategory and ItemAttribute types
     - Create ItemCategory resolver in domains/item/itemCategory.resolver.ts
     - Create ItemAttribute resolver in domains/item/itemAttribute.resolver.ts
     - Add Query fields for categories and attributes with pagination
     - Update Item resolver to resolve category and attributes references
     - _Requirements: 5.3, 5.4, 5.5, 16.1_
   
-  - [ ] 6.3 Implement ItemFlingEffect and ItemPocket types
+  - [x] 6.3 Implement ItemFlingEffect and ItemPocket types
     - Create DTOs for ItemFlingEffect and ItemPocket
     - Add DataLoader methods to ItemDataSource
     - Create resolvers for ItemFlingEffect and ItemPocket
