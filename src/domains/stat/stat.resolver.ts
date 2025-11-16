@@ -22,21 +22,48 @@ export const Stat: StatResolvers = {
       },
     })),
   }),
-  affectingNatures: (parent) => ({
-    increase: parent.affecting_natures.increase.map((nature) => ({
-      name: nature.name,
-      url: nature.url,
-    })),
-    decrease: parent.affecting_natures.decrease.map((nature) => ({
-      name: nature.name,
-      url: nature.url,
-    })),
-  }),
-  characteristics: (parent) =>
-    parent.characteristics.map((characteristic) => ({
-      name: characteristic.name,
-      url: characteristic.url,
-    })),
+  affectingNatures: async (parent, _args, context) => {
+    // Fetch all increasing natures
+    const increasePromises = parent.affecting_natures.increase.map((nature) =>
+      context.dataSources.stat.getNatureByName(nature.name)
+    );
+
+    // Fetch all decreasing natures
+    const decreasePromises = parent.affecting_natures.decrease.map((nature) =>
+      context.dataSources.stat.getNatureByName(nature.name)
+    );
+
+    const [increaseNatures, decreaseNatures] = await Promise.all([
+      Promise.all(increasePromises),
+      Promise.all(decreasePromises),
+    ]);
+
+    return {
+      increase: increaseNatures.filter(
+        (nature): nature is NonNullable<typeof nature> => nature !== null
+      ),
+      decrease: decreaseNatures.filter(
+        (nature): nature is NonNullable<typeof nature> => nature !== null
+      ),
+    };
+  },
+  characteristics: async (parent, _args, context) => {
+    // Extract IDs from characteristic URLs and fetch them
+    const characteristicIds = parent.characteristics
+      .map((char) => {
+        const match = char.url.match(/\/characteristic\/(\d+)\//);
+        return match ? parseInt(match[1], 10) : null;
+      })
+      .filter((id): id is number => id !== null);
+
+    // Fetch all characteristics using DataLoader for batching
+    const characteristics = await Promise.all(
+      characteristicIds.map((id) => context.dataSources.stat.getCharacteristicById(id))
+    );
+
+    // Filter out nulls and return
+    return characteristics.filter((char): char is NonNullable<typeof char> => char !== null);
+  },
   moveDamageClass: (parent) =>
     parent.move_damage_class
       ? {

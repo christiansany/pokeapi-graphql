@@ -45,4 +45,28 @@ type Query {
   regions(first: Int, after: String): RegionConnection!
   palParkAreaById(id: ID!): PalParkArea
   palParkAreas(first: Int, after: String): PalParkAreaConnection!
+
+  # Evolution queries
+  evolutionChainById(id: ID!): EvolutionChain
+  evolutionChains(first: Int, after: String): EvolutionChainConnection!
+  evolutionTriggerById(id: ID!): EvolutionTrigger
+  evolutionTriggers(first: Int, after: String): EvolutionTriggerConnection!
+
+  # Berry queries
+  berryById(id: ID!): Berry
+  berries(first: Int, after: String): BerryConnection!
+  berryFlavorById(id: ID!): BerryFlavor
+  berryFlavors(first: Int, after: String): BerryFlavorConnection!
+  berryFirmnessById(id: ID!): BerryFirmness
+  berryFirmnesses(first: Int, after: String): BerryFirmnessConnection!
+
+  # Game queries
+  generationById(id: ID!): Generation
+  generations(first: Int, after: String): GenerationConnection!
+  versionById(id: ID!): Version
+  versions(first: Int, after: String): VersionConnection!
+  versionGroupById(id: ID!): VersionGroup
+  versionGroups(first: Int, after: String): VersionGroupConnection!
+  pokedexById(id: ID!): Pokedex
+  pokedexes(first: Int, after: String): PokedexConnection!
 }

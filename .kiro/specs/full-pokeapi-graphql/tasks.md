@@ -317,8 +317,8 @@ When implementing ANY edge type, verify:
     - Create PalParkArea resolver in domains/location/palParkArea.resolver.ts
     - _Requirements: 6.5, 16.1_
 
-- [ ] 8. Implement Evolution System
-  - [ ] 8.1 Create Evolution domain structure
+- [x] 8. Implement Evolution System
+  - [x] 8.1 Create Evolution domain structure
     - Create Evolution DTOs in domains/evolution/evolution.dto.ts (EvolutionChainDTO, ChainLinkDTO, etc.)
     - Create EvolutionDataSource with DataLoaders for evolution chains and triggers
     - Create evolution.graphql schema with EvolutionChain and EvolutionTrigger types implementing Node
@@ -326,7 +326,7 @@ When implementing ANY edge type, verify:
     - Add Query.evolutionChain(id: ID!) and Query.evolutionChains() fields
     - _Requirements: 7.1, 7.4, 7.5, 16.1_
   
-  - [ ] 8.2 Implement EvolutionTrigger type
+  - [x] 8.2 Implement EvolutionTrigger type
     - Create EvolutionTrigger DTOs in domains/evolution/evolution.dto.ts
     - Add EvolutionTrigger methods to EvolutionDataSource with DataLoaders
     - Add EvolutionTrigger type to evolution.graphql schema implementing Node
@@ -334,14 +334,14 @@ When implementing ANY edge type, verify:
     - Update EvolutionChain resolver to resolve trigger references
     - _Requirements: 7.3, 7.4, 16.1_
   
-  - [ ] 8.3 Implement evolution details and requirements
+  - [x] 8.3 Implement evolution details and requirements
     - Update EvolutionChain resolver to handle nested evolution chains
     - Implement evolution detail fields (min level, item, held item, known move, location, time of day, gender, etc.)
     - Resolve all evolution requirement references using appropriate DataLoaders
     - _Requirements: 7.2, 7.4_
 
-- [ ] 9. Implement Berry System
-  - [ ] 9.1 Create Berry domain structure
+- [x] 9. Implement Berry System
+  - [x] 9.1 Create Berry domain structure
     - Create Berry DTOs in domains/berry/berry.dto.ts (BerryDTO, BerryFlavorDTO, BerryFirmnessDTO)
     - Create BerryDataSource with DataLoaders for berries, flavors, and firmness
     - Create berry.graphql schema with Berry, BerryFlavor, BerryFirmness types implementing Node
@@ -349,20 +349,20 @@ When implementing ANY edge type, verify:
     - Add Query.berry(id: ID!) and Query.berries() fields
     - _Requirements: 8.1, 8.3, 8.4, 16.1_
   
-  - [ ] 9.2 Implement BerryFlavor and BerryFirmness types
+  - [x] 9.2 Implement BerryFlavor and BerryFirmness types
     - Create BerryFlavor resolver in domains/berry/berryFlavor.resolver.ts
     - Create BerryFirmness resolver in domains/berry/berryFirmness.resolver.ts
     - Add Query fields for flavors and firmness with pagination
     - _Requirements: 8.3, 8.4, 8.5, 16.1_
   
-  - [ ] 9.3 Implement Berry flavors edge
+  - [x] 9.3 Implement Berry flavors edge
     - Create BerryFlavorEdge resolver in domains/berry/edges/berryFlavor.edge.ts
     - Handle flavor potency metadata
     - Update Berry resolver to return flavors connection with edges
     - _Requirements: 8.2, 18.5_
 
-- [ ] 10. Implement Game Version System
-  - [ ] 10.1 Create Game domain structure
+- [x] 10. Implement Game Version System
+  - [x] 10.1 Create Game domain structure
     - Create Game DTOs in domains/game/game.dto.ts (GenerationDTO, VersionDTO, VersionGroupDTO, PokedexDTO)
     - Create GameDataSource with DataLoaders for all game-related types
     - Create game.graphql schema with Generation, Version, VersionGroup, Pokedex types implementing Node
@@ -370,21 +370,21 @@ When implementing ANY edge type, verify:
     - Add Query.generation(id: ID!) and Query.generations() fields
     - _Requirements: 9.1, 9.4, 9.5, 16.1_
   
-  - [ ] 10.2 Implement Version and VersionGroup types
+  - [x] 10.2 Implement Version and VersionGroup types
     - Create Version resolver in domains/game/version.resolver.ts
     - Create VersionGroup resolver in domains/game/versionGroup.resolver.ts
     - Add Query fields for versions and version groups with pagination
     - Update resolvers to resolve cross-references between versions, groups, and generations
     - _Requirements: 9.2, 9.3, 9.5, 16.1_
   
-  - [ ] 10.3 Implement Pokedex type
+  - [x] 10.3 Implement Pokedex type
     - Create Pokedex resolver in domains/game/pokedex.resolver.ts
     - Add Query.pokedex(id: ID!) and Query.pokedexes() fields
     - Update Generation resolver to resolve pokedexes references
     - _Requirements: 9.5, 16.1_
 
-- [ ] 11. Complete Stat System with Characteristics and Natures
-  - [ ] 11.1 Implement Characteristic type
+- [x] 11. Complete Stat System with Characteristics and Natures
+  - [x] 11.1 Implement Characteristic type
     - Create Characteristic DTOs in domains/stat/stat.dto.ts
     - Add Characteristic methods to StatDataSource with DataLoaders
     - Add Characteristic type to stat.graphql schema implementing Node
@@ -392,7 +392,7 @@ When implementing ANY edge type, verify:
     - Update Stat resolver to resolve characteristics references
     - _Requirements: 11.2, 11.4, 16.1_
   
-  - [ ] 11.2 Implement Nature type
+  - [x] 11.2 Implement Nature type
     - Create Nature DTOs in domains/stat/stat.dto.ts
     - Add Nature methods to StatDataSource with DataLoaders
     - Add Nature type to stat.graphql schema implementing Node
@@ -400,7 +400,7 @@ When implementing ANY edge type, verify:
     - Add Query.nature(id: ID!) and Query.natures() fields
     - _Requirements: 11.4, 11.5, 16.1_
   
-  - [ ] 11.3 Implement Stat affecting natures connections
+  - [x] 11.3 Implement Stat affecting natures connections
     - Update Stat resolver to return increase and decrease nature connections
     - Update Nature resolver to resolve stat references
     - _Requirements: 11.4, 18.5_

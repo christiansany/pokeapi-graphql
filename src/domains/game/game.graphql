@@ -1,0 +1,320 @@
+"""
+A Pokedex entry for a Pokemon species.
+"""
+type PokemonEntry {
+  """
+  The entry number of the Pokemon species in this Pokedex.
+  """
+  entryNumber: Int!
+  
+  """
+  The Pokemon species referenced by this entry.
+  """
+  pokemonSpecies: NamedAPIResource!
+}
+
+"""
+A Pokedex in the Pokemon games.
+"""
+type Pokedex implements Node {
+  """
+  The globally unique identifier for this Pokedex.
+  """
+  id: ID!
+  
+  """
+  The name of this Pokedex.
+  """
+  name: String!
+  
+  """
+  Whether this is a main series Pokedex.
+  """
+  isMainSeries: Boolean!
+  
+  """
+  Descriptions of this Pokedex in different languages.
+  """
+  descriptions: [Description!]!
+  
+  """
+  The name of this Pokedex in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  A list of Pokemon species catalogued in this Pokedex.
+  """
+  pokemonEntries: [PokemonEntry!]!
+  
+  """
+  The region this Pokedex catalogues Pokemon for.
+  """
+  region: NamedAPIResource
+  
+  """
+  A list of version groups this Pokedex is relevant to.
+  """
+  versionGroups: [NamedAPIResource!]!
+}
+
+"""
+Connection type for Pokedex pagination.
+"""
+type PokedexConnection {
+  """
+  A list of edges.
+  """
+  edges: [PokedexEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  Total count of Pokedexes.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for Pokedex.
+"""
+type PokedexEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+  
+  """
+  The Pokedex node.
+  """
+  node: Pokedex!
+}
+
+"""
+A generation of Pokemon games.
+"""
+type Generation implements Node {
+  """
+  The globally unique identifier for this Generation.
+  """
+  id: ID!
+  
+  """
+  The name of this Generation.
+  """
+  name: String!
+  
+  """
+  A list of abilities that were introduced in this generation.
+  """
+  abilities: [NamedAPIResource!]!
+  
+  """
+  The main region travelled in this generation.
+  """
+  mainRegion: NamedAPIResource!
+  
+  """
+  A list of moves that were introduced in this generation.
+  """
+  moves: [NamedAPIResource!]!
+  
+  """
+  The name of this Generation in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  A list of Pokemon species that were introduced in this generation.
+  """
+  pokemonSpecies: [NamedAPIResource!]!
+  
+  """
+  A list of types that were introduced in this generation.
+  """
+  types: [NamedAPIResource!]!
+  
+  """
+  A list of version groups that were introduced in this generation.
+  """
+  versionGroups: [NamedAPIResource!]!
+}
+
+"""
+Connection type for Generation pagination.
+"""
+type GenerationConnection {
+  """
+  A list of edges.
+  """
+  edges: [GenerationEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  Total count of Generations.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for Generation.
+"""
+type GenerationEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+  
+  """
+  The Generation node.
+  """
+  node: Generation!
+}
+
+"""
+A specific game version.
+"""
+type Version implements Node {
+  """
+  The globally unique identifier for this Version.
+  """
+  id: ID!
+  
+  """
+  The name of this Version.
+  """
+  name: String!
+  
+  """
+  The name of this Version in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  The version group this version belongs to.
+  """
+  versionGroup: NamedAPIResource!
+}
+
+"""
+Connection type for Version pagination.
+"""
+type VersionConnection {
+  """
+  A list of edges.
+  """
+  edges: [VersionEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  Total count of Versions.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for Version.
+"""
+type VersionEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+  
+  """
+  The Version node.
+  """
+  node: Version!
+}
+
+"""
+A group of game versions.
+"""
+type VersionGroup implements Node {
+  """
+  The globally unique identifier for this VersionGroup.
+  """
+  id: ID!
+  
+  """
+  The name of this VersionGroup.
+  """
+  name: String!
+  
+  """
+  Order for sorting.
+  """
+  order: Int!
+  
+  """
+  The generation this version group belongs to.
+  """
+  generation: NamedAPIResource!
+  
+  """
+  A list of methods by which Pokemon can learn moves in this version group.
+  """
+  moveLearnMethods: [NamedAPIResource!]!
+  
+  """
+  A list of Pokedexes that are relevant to this version group.
+  """
+  pokedexes: [NamedAPIResource!]!
+  
+  """
+  A list of regions that can be visited in this version group.
+  """
+  regions: [NamedAPIResource!]!
+  
+  """
+  The versions this version group owns.
+  """
+  versions: [NamedAPIResource!]!
+}
+
+"""
+Connection type for VersionGroup pagination.
+"""
+type VersionGroupConnection {
+  """
+  A list of edges.
+  """
+  edges: [VersionGroupEdge!]!
+  
+  """
+  Information about pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  Total count of VersionGroups.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for VersionGroup.
+"""
+type VersionGroupEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+  
+  """
+  The VersionGroup node.
+  """
+  node: VersionGroup!
+}
+

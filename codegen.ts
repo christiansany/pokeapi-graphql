@@ -24,6 +24,8 @@ const config: CodegenConfig = {
           PokemonForm: "../domains/pokemon/pokemon.dto.js#PokemonFormDTO",
           Ability: "../domains/ability/ability.dto.js#AbilityDTO",
           Stat: "../domains/stat/stat.dto.js#StatDTO",
+          Characteristic: "../domains/stat/stat.dto.js#CharacteristicDTO",
+          Nature: "../domains/stat/stat.dto.js#NatureDTO",
           Type: "../domains/type/type.dto.js#TypeDTO",
           Move: "../domains/move/move.dto.js#MoveDTO",
           Item: "../domains/item/item.dto.js#ItemDTO",
@@ -44,6 +46,18 @@ const config: CodegenConfig = {
           PokemonVarietyEdge: "{ isDefault: boolean; pokemonName: string }",
           PokemonEncounterEdge:
             "{ pokemonName: string; minLevel: number; maxLevel: number; conditionValues: Array<{ name: string; url: string }>; chance: number; method: { name: string; url: string } }",
+          EvolutionChain: "../domains/evolution/evolution.dto.js#EvolutionChainDTO",
+          EvolutionTrigger: "../domains/evolution/evolution.dto.js#EvolutionTriggerDTO",
+          ChainLink: "../domains/evolution/evolution.dto.js#ChainLinkDTO",
+          EvolutionDetail: "../domains/evolution/evolution.dto.js#EvolutionDetailDTO",
+          Berry: "../domains/berry/berry.dto.js#BerryDTO",
+          BerryFlavor: "../domains/berry/berry.dto.js#BerryFlavorDTO",
+          BerryFirmness: "../domains/berry/berry.dto.js#BerryFirmnessDTO",
+          BerryFlavorEdge: "{ potency: number; flavorName: string }",
+          Generation: "../domains/game/game.dto.js#GenerationDTO",
+          Pokedex: "../domains/game/game.dto.js#PokedexDTO",
+          Version: "../domains/game/game.dto.js#VersionDTO",
+          VersionGroup: "../domains/game/game.dto.js#VersionGroupDTO",
           // Future domain-specific mappers will be added here as domains are implemented:
           // etc.
         },

@@ -35,7 +35,7 @@ type Stat implements Node {
   """
   Characteristics that are determined by this stat.
   """
-  characteristics: [NamedAPIResource!]!
+  characteristics: [Characteristic!]!
   
   """
   The class of damage this stat is directly related to (null for most stats).
@@ -100,12 +100,12 @@ type NatureStatAffectSets {
   """
   Natures that increase this stat.
   """
-  increase: [NamedAPIResource!]!
+  increase: [Nature!]!
   
   """
   Natures that decrease this stat.
   """
-  decrease: [NamedAPIResource!]!
+  decrease: [Nature!]!
 }
 
 """
@@ -143,6 +143,206 @@ type StatConnection {
   totalCount: Int!
 }
 
+"""
+A Characteristic that is determined by a Pokemon's highest stat.
+"""
+type Characteristic implements Node {
+  """
+  The globally unique identifier for this Characteristic.
+  """
+  id: ID!
+  
+  """
+  The remainder of the highest stat divided by 5 (gene modulo).
+  """
+  geneModulo: Int!
+  
+  """
+  The possible values of the highest stat that would result in this characteristic.
+  """
+  possibleValues: [Int!]!
+  
+  """
+  The stat that this characteristic is determined by.
+  """
+  highestStat: Stat!
+  
+  """
+  Localized descriptions for this characteristic.
+  """
+  descriptions: [Description!]!
+}
+
+"""
+A localized description for a resource.
+"""
+type Description {
+  """
+  The localized description.
+  """
+  description: String!
+  
+  """
+  The language this description is in.
+  """
+  language: NamedAPIResource!
+}
+
+"""
+An edge in a Characteristic connection.
+"""
+type CharacteristicEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Characteristic at the end of the edge.
+  """
+  node: Characteristic!
+}
+
+"""
+A connection to a list of Characteristics.
+"""
+type CharacteristicConnection {
+  """
+  A list of edges.
+  """
+  edges: [CharacteristicEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Characteristics available.
+  """
+  totalCount: Int!
+}
+
+"""
+A Nature that affects Pokemon stats and preferences.
+"""
+type Nature implements Node {
+  """
+  The globally unique identifier for this Nature.
+  """
+  id: ID!
+  
+  """
+  The name of this Nature.
+  """
+  name: String!
+  
+  """
+  The stat that is decreased by this nature (null for neutral natures).
+  """
+  decreasedStat: Stat
+  
+  """
+  The stat that is increased by this nature (null for neutral natures).
+  """
+  increasedStat: Stat
+  
+  """
+  The berry flavor this nature hates (null if none).
+  """
+  hatesFlavor: NamedAPIResource
+  
+  """
+  The berry flavor this nature likes (null if none).
+  """
+  likesFlavor: NamedAPIResource
+  
+  """
+  Changes to Pokeathlon stats caused by this nature.
+  """
+  pokeathlonStatChanges: [PokeathlonStatChange!]!
+  
+  """
+  Move battle style preferences for this nature.
+  """
+  moveBattleStylePreferences: [MoveBattleStylePreference!]!
+  
+  """
+  Localized names for this nature.
+  """
+  names: [Name!]!
+}
+
+"""
+A change to a Pokeathlon stat caused by a nature.
+"""
+type PokeathlonStatChange {
+  """
+  The maximum change to the stat.
+  """
+  maxChange: Int!
+  
+  """
+  The Pokeathlon stat that is affected.
+  """
+  pokeathlonStat: NamedAPIResource!
+}
+
+"""
+A move battle style preference for a nature.
+"""
+type MoveBattleStylePreference {
+  """
+  Preference when HP is low.
+  """
+  lowHpPreference: Int!
+  
+  """
+  Preference when HP is high.
+  """
+  highHpPreference: Int!
+  
+  """
+  The move battle style.
+  """
+  moveBattleStyle: NamedAPIResource!
+}
+
+"""
+An edge in a Nature connection.
+"""
+type NatureEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Nature at the end of the edge.
+  """
+  node: Nature!
+}
+
+"""
+A connection to a list of Natures.
+"""
+type NatureConnection {
+  """
+  A list of edges.
+  """
+  edges: [NatureEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Natures available.
+  """
+  totalCount: Int!
+}
+
 extend type Query {
   """
   Fetch a single Stat by its global ID.
@@ -164,4 +364,46 @@ extend type Query {
     """
     after: String
   ): StatConnection!
+  
+  """
+  Fetch a single Characteristic by its global ID.
+  """
+  characteristicById(id: ID!): Characteristic
+  
+  """
+  Fetch a paginated list of Characteristics using forward-only cursor-based pagination.
+  """
+  characteristics(
+    """
+    Returns the first n elements from the list. If not provided, uses PokeAPI default (20).
+    Must be between 1 and 50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): CharacteristicConnection!
+  
+  """
+  Fetch a single Nature by its global ID.
+  """
+  natureById(id: ID!): Nature
+  
+  """
+  Fetch a paginated list of Natures using forward-only cursor-based pagination.
+  """
+  natures(
+    """
+    Returns the first n elements from the list. If not provided, uses PokeAPI default (20).
+    Must be between 1 and 50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): NatureConnection!
 }
