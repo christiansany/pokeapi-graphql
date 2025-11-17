@@ -45,6 +45,7 @@ const config: CodegenConfig = {
           PalParkArea: "../domains/location/location.dto.js#PalParkAreaDTO",
           PalParkEncounter: "../domains/location/location.dto.js#PalParkEncounterDTO",
           PokemonAbilityEdge: "{ slot: number; isHidden: boolean; abilityName: string }",
+          AbilityPokemonEdge: "{ slot: number; isHidden: boolean; pokemonName: string }",
           PokemonStatEdge: "{ baseStat: number; effort: number; statName: string }",
           PokemonTypeEdge: "{ slot: number; typeName: string }",
           PokemonMoveEdge:

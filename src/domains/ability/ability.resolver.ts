@@ -16,4 +16,11 @@ export const Ability: AbilityResolvers = {
       language: entry.language.name,
       versionGroup: entry.version_group.name,
     })),
+  pokemon: (parent) => ({
+    edges: parent.pokemon.map((pokemonRef) => ({
+      slot: pokemonRef.slot,
+      isHidden: pokemonRef.is_hidden,
+      pokemonName: pokemonRef.pokemon.name, // Just the name for DataLoader batching
+    })),
+  }),
 };

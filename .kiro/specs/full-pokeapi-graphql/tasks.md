@@ -514,8 +514,8 @@ When implementing ANY edge type, verify:
     - Update Machine resolver to resolve item, move, and version group references
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 16.1_
 
-- [ ] 16. Implement Ability Pokemon Edge
-  - [ ] 16.1 Create AbilityPokemonEdge resolver
+- [x] 16. Implement Ability Pokemon Edge
+  - [x] 16.1 Create AbilityPokemonEdge resolver
     - Create AbilityPokemonEdge resolver in domains/ability/edges/abilityPokemon.edge.ts
     - Handle slot and hidden status metadata
     - Update Ability resolver to return pokemon connection with edges

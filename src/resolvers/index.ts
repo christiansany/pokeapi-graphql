@@ -25,6 +25,7 @@ import { LocationArea } from "../domains/location/locationArea.resolver.js";
 import { Region } from "../domains/location/region.resolver.js";
 import { PalParkArea, PalParkEncounter } from "../domains/location/palParkArea.resolver.js";
 import { PokemonAbilityEdge } from "../domains/pokemon/edges/pokemonAbility.edge.js";
+import { AbilityPokemonEdge } from "../domains/ability/edges/abilityPokemon.edge.js";
 import { PokemonStatEdge } from "../domains/pokemon/edges/pokemonStat.edge.js";
 import { PokemonTypeEdge } from "../domains/pokemon/edges/pokemonType.edge.js";
 import { PokemonMoveEdge } from "../domains/pokemon/edges/pokemonMove.edge.js";
@@ -82,6 +83,7 @@ export const resolvers: Resolvers = {
   PalParkArea,
   PalParkEncounter,
   PokemonAbilityEdge,
+  AbilityPokemonEdge,
   PokemonStatEdge,
   PokemonTypeEdge,
   PokemonMoveEdge,

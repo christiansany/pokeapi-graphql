@@ -21,6 +21,11 @@ type Ability implements Node {
   Flavor text entries from various game versions.
   """
   flavorTextEntries: [FlavorTextEntry!]!
+  
+  """
+  Pokemon that have this ability.
+  """
+  pokemon: AbilityPokemonConnection!
 }
 
 """
@@ -61,4 +66,34 @@ type FlavorTextEntry {
   The game version group this text is from.
   """
   versionGroup: String!
+}
+
+"""
+Connection type for Pokemon that have this ability.
+"""
+type AbilityPokemonConnection {
+  """
+  List of edges containing Pokemon and metadata.
+  """
+  edges: [AbilityPokemonEdge!]!
+}
+
+"""
+Edge type representing a Pokemon that has this ability with metadata.
+"""
+type AbilityPokemonEdge {
+  """
+  The slot this ability occupies in the Pokemon's ability list.
+  """
+  slot: Int!
+  
+  """
+  Whether this is a hidden ability for the Pokemon.
+  """
+  isHidden: Boolean!
+  
+  """
+  The Pokemon that has this ability.
+  """
+  node: Pokemon!
 }

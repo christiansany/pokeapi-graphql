@@ -51,6 +51,26 @@ export type Ability = Node & {
   id: Scalars['ID']['output'];
   /** The name of the ability. */
   name: Scalars['String']['output'];
+  /** Pokemon that have this ability. */
+  pokemon: AbilityPokemonConnection;
+};
+
+/** Connection type for Pokemon that have this ability. */
+export type AbilityPokemonConnection = {
+  __typename?: 'AbilityPokemonConnection';
+  /** List of edges containing Pokemon and metadata. */
+  edges: Array<AbilityPokemonEdge>;
+};
+
+/** Edge type representing a Pokemon that has this ability with metadata. */
+export type AbilityPokemonEdge = {
+  __typename?: 'AbilityPokemonEdge';
+  /** Whether this is a hidden ability for the Pokemon. */
+  isHidden: Scalars['Boolean']['output'];
+  /** The Pokemon that has this ability. */
+  node: Pokemon;
+  /** The slot this ability occupies in the Pokemon's ability list. */
+  slot: Scalars['Int']['output'];
 };
 
 /** An awesome name for a Pokemon Shape. */
@@ -2912,6 +2932,8 @@ export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
 export type ResolversTypes = {
   APIResource: ResolverTypeWrapper<ApiResource>;
   Ability: ResolverTypeWrapper<AbilityDTO>;
+  AbilityPokemonConnection: ResolverTypeWrapper<Omit<AbilityPokemonConnection, 'edges'> & { edges: Array<ResolversTypes['AbilityPokemonEdge']> }>;
+  AbilityPokemonEdge: ResolverTypeWrapper<{ slot: number; isHidden: boolean; pokemonName: string }>;
   AwesomeName: ResolverTypeWrapper<AwesomeName>;
   Berry: ResolverTypeWrapper<BerryDTO>;
   BerryConnection: ResolverTypeWrapper<Omit<BerryConnection, 'edges'> & { edges: Array<ResolversTypes['BerryEdge']> }>;
@@ -3102,6 +3124,8 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   APIResource: ApiResource;
   Ability: AbilityDTO;
+  AbilityPokemonConnection: Omit<AbilityPokemonConnection, 'edges'> & { edges: Array<ResolversParentTypes['AbilityPokemonEdge']> };
+  AbilityPokemonEdge: { slot: number; isHidden: boolean; pokemonName: string };
   AwesomeName: AwesomeName;
   Berry: BerryDTO;
   BerryConnection: Omit<BerryConnection, 'edges'> & { edges: Array<ResolversParentTypes['BerryEdge']> };
@@ -3298,6 +3322,19 @@ export type AbilityResolvers<ContextType = Context, ParentType extends Resolvers
   flavorTextEntries?: Resolver<Array<ResolversTypes['FlavorTextEntry']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  pokemon?: Resolver<ResolversTypes['AbilityPokemonConnection'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AbilityPokemonConnectionResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AbilityPokemonConnection'] = ResolversParentTypes['AbilityPokemonConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['AbilityPokemonEdge']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AbilityPokemonEdgeResolvers<ContextType = Context, ParentType extends ResolversParentTypes['AbilityPokemonEdge'] = ResolversParentTypes['AbilityPokemonEdge']> = {
+  isHidden?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Pokemon'], ParentType, ContextType>;
+  slot?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -4751,6 +4788,8 @@ export type VersionGroupEdgeResolvers<ContextType = Context, ParentType extends 
 export type Resolvers<ContextType = Context> = {
   APIResource?: ApiResourceResolvers<ContextType>;
   Ability?: AbilityResolvers<ContextType>;
+  AbilityPokemonConnection?: AbilityPokemonConnectionResolvers<ContextType>;
+  AbilityPokemonEdge?: AbilityPokemonEdgeResolvers<ContextType>;
   AwesomeName?: AwesomeNameResolvers<ContextType>;
   Berry?: BerryResolvers<ContextType>;
   BerryConnection?: BerryConnectionResolvers<ContextType>;
