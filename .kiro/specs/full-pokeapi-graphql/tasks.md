@@ -18,6 +18,42 @@ Tasks are organized to:
 - ❌ WRONG: `Pokemon`, `Ability`, `NamedAPIResource`, `Sprites`
 - **Rationale**: GraphQL Code Generator creates types from schema (e.g., `Pokemon`), while DTOs represent PokeAPI REST responses with different structures. Without the suffix, TypeScript will have naming conflicts.
 
+**Query Resolver Organization**: ALL Query field resolvers MUST be organized by domain to keep the codebase maintainable.
+- ✅ CORRECT: Create `{domain}.query.ts` file in each domain folder (e.g., `src/domains/machine/machine.query.ts`)
+- ✅ CORRECT: Export query resolvers using `Pick<QueryResolvers, "field1" | "field2">` type
+- ✅ CORRECT: Import and spread domain queries into `src/resolvers/query.ts` using `...machineQueries`
+- ❌ WRONG: Adding query resolvers directly to `src/resolvers/query.ts` (file is too large)
+- **Rationale**: The main query.ts file was growing too large (3000+ lines). Domain-specific query files keep code organized and maintainable.
+
+**Query Resolver Pattern**:
+```typescript
+// In src/domains/machine/machine.query.ts
+import type { QueryResolvers } from "../../types/generated.js";
+import { decodeGlobalId, validatePaginationArgs } from "../../utils/relay.js";
+import { encodeCursor } from "../../utils/cursor.js";
+
+export const machineQueries: Pick<QueryResolvers, "machineById" | "machines"> = {
+  machineById: async (_, { id }, { dataSources }) => {
+    // Decode and validate global ID
+    // Fetch from DataSource
+  },
+  machines: async (_, args, { dataSources }) => {
+    // Validate pagination args
+    // Fetch list and create connection
+  },
+};
+
+// In src/resolvers/query.ts
+import { machineQueries } from "../domains/machine/machine.query.js";
+
+export const Query: QueryResolvers = {
+  // ... other queries
+  
+  // Machine queries
+  ...machineQueries,
+};
+```
+
 **GraphQL Code Generator Mappers**: Each task that introduces new GraphQL types MUST update the `codegen.ts` mappers configuration to map GraphQL types to their corresponding DTOs. This ensures type-safe resolvers with proper parent types.
 
 Example mapper entries:
@@ -199,7 +235,8 @@ When implementing ANY edge type, verify:
     - Create stat.graphql schema with Stat type implementing Node
     - Create PokemonStatEdge resolver in domains/pokemon/edges/pokemonStat.edge.ts
     - Create Stat resolver in domains/stat/stat.resolver.ts
-    - Add Query.stat(id: ID!) and Query.stats(first: Int, after: String) fields
+    - Create stat.query.ts with statById and stats query resolvers
+    - Import and spread statQueries into src/resolvers/query.ts
     - Update Pokemon resolver to return stats connection with edges
     - Update codegen.ts mappers: Stat → domains/stat/stat.dto.ts#StatDTO, PokemonStatEdge → inline type
     - _Requirements: 1.3, 11.1, 11.2, 11.5, 16.1, 18.4_
@@ -210,7 +247,8 @@ When implementing ANY edge type, verify:
     - Create type.graphql schema with Type type implementing Node and damage relations
     - Create PokemonTypeEdge resolver in domains/pokemon/edges/pokemonType.edge.ts
     - Create Type resolver in domains/type/type.resolver.ts with damage relations connections
-    - Add Query.type(id: ID!) and Query.types(first: Int, after: String) fields
+    - Create type.query.ts with typeById and types query resolvers
+    - Import and spread typeQueries into src/resolvers/query.ts
     - Update Pokemon resolver to return types connection with edges
     - Update codegen.ts mappers: Type → domains/type/type.dto.ts#TypeDTO, PokemonTypeEdge → inline type
     - _Requirements: 1.4, 4.1, 4.2, 4.3, 4.4, 16.1, 18.2_
@@ -221,7 +259,8 @@ When implementing ANY edge type, verify:
     - Create MoveDataSource with DataLoaders for moves by ID and name
     - Create move.graphql schema with Move type implementing Node
     - Create Move resolver in domains/move/move.resolver.ts
-    - Add Query.move(id: ID!) and Query.moves(first: Int, after: String) fields
+    - Create move.query.ts with moveById and moves query resolvers
+    - Import and spread moveQueries into src/resolvers/query.ts
     - Update codegen.ts mappers: Move → domains/move/move.dto.ts#MoveDTO
     - _Requirements: 3.1, 3.2, 3.5, 16.1_
   
@@ -245,7 +284,8 @@ When implementing ANY edge type, verify:
     - Add species methods to PokemonDataSource with DataLoaders
     - Add PokemonSpecies type to pokemon.graphql schema implementing Node
     - Create PokemonSpecies resolver in domains/pokemon/pokemonSpecies.resolver.ts
-    - Add Query.pokemonSpecies(id: ID!) and Query.pokemonSpecies(first: Int, after: String) fields
+    - Create pokemonSpecies.query.ts with pokemonSpeciesById and pokemonSpecies query resolvers
+    - Import and spread pokemonSpeciesQueries into src/resolvers/query.ts
     - Update Pokemon resolver to resolve species reference
     - Update codegen.ts mappers for PokemonSpecies
     - _Requirements: 10.1, 10.5, 16.1_
@@ -269,7 +309,8 @@ When implementing ANY edge type, verify:
     - Create ItemDataSource with DataLoaders for items, categories, and attributes
     - Create item.graphql schema with Item, ItemCategory, ItemAttribute types implementing Node
     - Create Item resolver in domains/item/item.resolver.ts
-    - Add Query.item(id: ID!) and Query.items(first: Int, after: String) fields
+    - Create item.query.ts with itemById and items query resolvers
+    - Import and spread itemQueries into src/resolvers/query.ts
     - _Requirements: 5.1, 5.2, 5.3, 5.5, 16.1_
   
   - [x] 6.2 Implement ItemCategory and ItemAttribute types
@@ -293,7 +334,8 @@ When implementing ANY edge type, verify:
     - Create location.graphql schema with Location and Region types implementing Node
     - Create Location resolver in domains/location/location.resolver.ts
     - Create Region resolver in domains/location/region.resolver.ts
-    - Add Query.location(id: ID!), Query.locations(), Query.region(id: ID!), Query.regions() fields
+    - Create location.query.ts with locationById, locations, regionById, and regions query resolvers
+    - Import and spread locationQueries into src/resolvers/query.ts
     - _Requirements: 6.1, 6.5, 16.1_
   
   - [x] 7.2 Implement LocationArea type
@@ -323,7 +365,8 @@ When implementing ANY edge type, verify:
     - Create EvolutionDataSource with DataLoaders for evolution chains and triggers
     - Create evolution.graphql schema with EvolutionChain and EvolutionTrigger types implementing Node
     - Create EvolutionChain resolver in domains/evolution/evolutionChain.resolver.ts
-    - Add Query.evolutionChain(id: ID!) and Query.evolutionChains() fields
+    - Create evolution.query.ts with evolutionChainById and evolutionChains query resolvers
+    - Import and spread evolutionQueries into src/resolvers/query.ts
     - _Requirements: 7.1, 7.4, 7.5, 16.1_
   
   - [x] 8.2 Implement EvolutionTrigger type
@@ -346,7 +389,8 @@ When implementing ANY edge type, verify:
     - Create BerryDataSource with DataLoaders for berries, flavors, and firmness
     - Create berry.graphql schema with Berry, BerryFlavor, BerryFirmness types implementing Node
     - Create Berry resolver in domains/berry/berry.resolver.ts
-    - Add Query.berry(id: ID!) and Query.berries() fields
+    - Create berry.query.ts with berryById and berries query resolvers
+    - Import and spread berryQueries into src/resolvers/query.ts
     - _Requirements: 8.1, 8.3, 8.4, 16.1_
   
   - [x] 9.2 Implement BerryFlavor and BerryFirmness types
@@ -367,7 +411,8 @@ When implementing ANY edge type, verify:
     - Create GameDataSource with DataLoaders for all game-related types
     - Create game.graphql schema with Generation, Version, VersionGroup, Pokedex types implementing Node
     - Create Generation resolver in domains/game/generation.resolver.ts
-    - Add Query.generation(id: ID!) and Query.generations() fields
+    - Create game.query.ts with generationById and generations query resolvers
+    - Import and spread gameQueries into src/resolvers/query.ts
     - _Requirements: 9.1, 9.4, 9.5, 16.1_
   
   - [x] 10.2 Implement Version and VersionGroup types
@@ -379,7 +424,8 @@ When implementing ANY edge type, verify:
   
   - [x] 10.3 Implement Pokedex type
     - Create Pokedex resolver in domains/game/pokedex.resolver.ts
-    - Add Query.pokedex(id: ID!) and Query.pokedexes() fields
+    - Create pokedex.query.ts with pokedexById and pokedexes query resolvers (or add to game.query.ts)
+    - Import and spread pokedexQueries into src/resolvers/query.ts
     - Update Generation resolver to resolve pokedexes references
     - _Requirements: 9.5, 16.1_
 
@@ -397,7 +443,8 @@ When implementing ANY edge type, verify:
     - Add Nature methods to StatDataSource with DataLoaders
     - Add Nature type to stat.graphql schema implementing Node
     - Create Nature resolver in domains/stat/nature.resolver.ts
-    - Add Query.nature(id: ID!) and Query.natures() fields
+    - Create nature.query.ts with natureById and natures query resolvers (or add to stat.query.ts)
+    - Import and spread natureQueries into src/resolvers/query.ts
     - _Requirements: 11.4, 11.5, 16.1_
   
   - [x] 11.3 Implement Stat affecting natures connections
@@ -405,8 +452,8 @@ When implementing ANY edge type, verify:
     - Update Nature resolver to resolve stat references
     - _Requirements: 11.4, 18.5_
 
-- [ ] 12. Implement Pokemon Taxonomy Types
-  - [ ] 12.1 Implement EggGroup, GrowthRate, and Gender types
+- [x] 12. Implement Pokemon Taxonomy Types
+  - [x] 12.1 Implement EggGroup, GrowthRate, and Gender types
     - Create DTOs for EggGroup, GrowthRate, Gender in domains/pokemon/pokemon.dto.ts
     - Add methods to PokemonDataSource with DataLoaders for these types
     - Add types to pokemon.graphql schema implementing Node
@@ -414,7 +461,7 @@ When implementing ANY edge type, verify:
     - Update PokemonSpecies resolver to resolve these references
     - _Requirements: 10.3, 16.1_
   
-  - [ ] 12.2 Implement PokemonColor, PokemonShape, PokemonHabitat types
+  - [x] 12.2 Implement PokemonColor, PokemonShape, PokemonHabitat types
     - Create DTOs for PokemonColor, PokemonShape, PokemonHabitat in domains/pokemon/pokemon.dto.ts
     - Add methods to PokemonDataSource with DataLoaders for these types
     - Add types to pokemon.graphql schema implementing Node
@@ -422,45 +469,48 @@ When implementing ANY edge type, verify:
     - Update PokemonSpecies resolver to resolve these references
     - _Requirements: 10.3, 16.1_
 
-- [ ] 13. Implement Contest System
-  - [ ] 13.1 Create Contest domain structure
+- [x] 13. Implement Contest System
+  - [x] 13.1 Create Contest domain structure
     - Create Contest DTOs in domains/contest/contest.dto.ts (ContestTypeDTO, ContestEffectDTO, SuperContestEffectDTO)
     - Create ContestDataSource with DataLoaders for all contest types
     - Create contest.graphql schema with ContestType, ContestEffect, SuperContestEffect types implementing Node
     - Create ContestType resolver in domains/contest/contestType.resolver.ts
-    - Add Query.contestType(id: ID!) and Query.contestTypes() fields
+    - Create contest.query.ts with contestTypeById and contestTypes query resolvers
+    - Import and spread contestQueries into src/resolvers/query.ts
     - _Requirements: 12.1, 12.4, 12.5, 16.1_
   
-  - [ ] 13.2 Implement ContestEffect and SuperContestEffect types
+  - [x] 13.2 Implement ContestEffect and SuperContestEffect types
     - Create ContestEffect resolver in domains/contest/contestEffect.resolver.ts
     - Create SuperContestEffect resolver in domains/contest/superContestEffect.resolver.ts
     - Add Query fields for contest effects with pagination
     - Update Move resolver to resolve contest effect references
     - _Requirements: 12.2, 12.3, 12.5, 16.1_
 
-- [ ] 14. Implement Encounter System
-  - [ ] 14.1 Create Encounter domain structure
+- [x] 14. Implement Encounter System
+  - [x] 14.1 Create Encounter domain structure
     - Create Encounter DTOs in domains/encounter/encounter.dto.ts (EncounterMethodDTO, EncounterConditionDTO, EncounterConditionValueDTO)
     - Create EncounterDataSource with DataLoaders for all encounter types
     - Create encounter.graphql schema with EncounterMethod, EncounterCondition, EncounterConditionValue types implementing Node
     - Create EncounterMethod resolver in domains/encounter/encounterMethod.resolver.ts
-    - Add Query.encounterMethod(id: ID!) and Query.encounterMethods() fields
+    - Create encounter.query.ts with encounterMethodById and encounterMethods query resolvers
+    - Import and spread encounterQueries into src/resolvers/query.ts
     - _Requirements: 13.1, 13.4, 13.5, 16.1_
   
-  - [ ] 14.2 Implement EncounterCondition and EncounterConditionValue types
+  - [x] 14.2 Implement EncounterCondition and EncounterConditionValue types
     - Create EncounterCondition resolver in domains/encounter/encounterCondition.resolver.ts
     - Create EncounterConditionValue resolver in domains/encounter/encounterConditionValue.resolver.ts
     - Add Query fields for encounter conditions with pagination
     - Update resolvers to resolve cross-references between conditions and values
     - _Requirements: 13.2, 13.3, 13.5, 16.1_
 
-- [ ] 15. Implement Machine System
-  - [ ] 15.1 Create Machine domain structure
+- [x] 15. Implement Machine System
+  - [x] 15.1 Create Machine domain structure
     - Create Machine DTOs in domains/machine/machine.dto.ts
     - Create MachineDataSource with DataLoaders for machines by ID
     - Create machine.graphql schema with Machine type implementing Node
     - Create Machine resolver in domains/machine/machine.resolver.ts
-    - Add Query.machine(id: ID!) and Query.machines() fields
+    - Create machine.query.ts with machineById and machines query resolvers
+    - Import and spread machineQueries into src/resolvers/query.ts
     - Update Machine resolver to resolve item, move, and version group references
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 16.1_
 

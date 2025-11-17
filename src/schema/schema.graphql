@@ -69,4 +69,89 @@ type Query {
   versionGroups(first: Int, after: String): VersionGroupConnection!
   pokedexById(id: ID!): Pokedex
   pokedexes(first: Int, after: String): PokedexConnection!
+
+  # Contest queries
+  contestTypeById(id: ID!): ContestType
+  contestTypes(first: Int, after: String): ContestTypeConnection!
+  contestEffectById(id: ID!): ContestEffect
+  contestEffects(first: Int, after: String): ContestEffectConnection!
+  superContestEffectById(id: ID!): SuperContestEffect
+  superContestEffects(first: Int, after: String): SuperContestEffectConnection!
+
+  """
+  Fetch a single encounter method by its global ID.
+  """
+  encounterMethodById(id: ID!): EncounterMethod
+
+  """
+  Fetch a paginated list of encounter methods.
+  """
+  encounterMethods(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): EncounterMethodConnection!
+
+  """
+  Fetch a single encounter condition by its global ID.
+  """
+  encounterConditionById(id: ID!): EncounterCondition
+
+  """
+  Fetch a paginated list of encounter conditions.
+  """
+  encounterConditions(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): EncounterConditionConnection!
+
+  """
+  Fetch a single encounter condition value by its global ID.
+  """
+  encounterConditionValueById(id: ID!): EncounterConditionValue
+
+  """
+  Fetch a paginated list of encounter condition values.
+  """
+  encounterConditionValues(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): EncounterConditionValueConnection!
+
+  # Machine queries
+  """
+  Fetch a single machine by its global ID.
+  """
+  machineById(id: ID!): Machine
+
+  """
+  Fetch a paginated list of machines.
+  """
+  machines(
+    """
+    Number of items to return (1-50). If not provided, uses PokeAPI default (20).
+    """
+    first: Int
+    """
+    Cursor for pagination. Returns items after this cursor.
+    """
+    after: String
+  ): MachineConnection!
 }

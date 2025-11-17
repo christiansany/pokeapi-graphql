@@ -290,3 +290,156 @@ export interface PokemonFormListResponse {
   previous: string | null;
   results: NamedAPIResourceDTO[];
 }
+
+/**
+ * Egg Group DTO matching PokeAPI response structure.
+ * Represents an egg group that Pokemon species can belong to for breeding.
+ */
+export interface EggGroupDTO {
+  id: number;
+  name: string;
+  names: NameDTO[];
+  pokemon_species: NamedAPIResourceDTO[];
+}
+
+/**
+ * Response structure for paginated Egg Group list endpoint.
+ */
+export interface EggGroupListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResourceDTO[];
+}
+
+/**
+ * Growth Rate DTO matching PokeAPI response structure.
+ * Represents the rate at which a Pokemon species gains levels.
+ */
+export interface GrowthRateDTO {
+  id: number;
+  name: string;
+  formula: string;
+  descriptions: DescriptionDTO[];
+  levels: GrowthRateLevelDTO[];
+  pokemon_species: NamedAPIResourceDTO[];
+}
+
+/**
+ * Level data for a growth rate.
+ */
+export interface GrowthRateLevelDTO {
+  level: number;
+  experience: number;
+}
+
+/**
+ * Response structure for paginated Growth Rate list endpoint.
+ */
+export interface GrowthRateListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResourceDTO[];
+}
+
+/**
+ * Gender DTO matching PokeAPI response structure.
+ * Represents a gender and the Pokemon species that have that gender.
+ */
+export interface GenderDTO {
+  id: number;
+  name: string;
+  pokemon_species_details: GenderPokemonSpeciesDTO[];
+  required_for_evolution: NamedAPIResourceDTO[];
+}
+
+/**
+ * Pokemon species details for a gender.
+ */
+export interface GenderPokemonSpeciesDTO {
+  rate: number;
+  pokemon_species: NamedAPIResourceDTO;
+}
+
+/**
+ * Response structure for paginated Gender list endpoint.
+ */
+export interface GenderListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResourceDTO[];
+}
+
+/**
+ * Pokemon Color DTO matching PokeAPI response structure.
+ * Represents a color that Pokemon species can have.
+ */
+export interface PokemonColorDTO {
+  id: number;
+  name: string;
+  names: NameDTO[];
+  pokemon_species: NamedAPIResourceDTO[];
+}
+
+/**
+ * Response structure for paginated Pokemon Color list endpoint.
+ */
+export interface PokemonColorListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResourceDTO[];
+}
+
+/**
+ * Pokemon Shape DTO matching PokeAPI response structure.
+ * Represents a shape that Pokemon species can have.
+ */
+export interface PokemonShapeDTO {
+  id: number;
+  name: string;
+  awesome_names: AwesomeNameDTO[];
+  names: NameDTO[];
+  pokemon_species: NamedAPIResourceDTO[];
+}
+
+/**
+ * Awesome name for a Pokemon shape.
+ */
+export interface AwesomeNameDTO {
+  awesome_name: string;
+  language: NamedAPIResourceDTO;
+}
+
+/**
+ * Response structure for paginated Pokemon Shape list endpoint.
+ */
+export interface PokemonShapeListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResourceDTO[];
+}
+
+/**
+ * Pokemon Habitat DTO matching PokeAPI response structure.
+ * Represents a habitat where Pokemon species can be found.
+ */
+export interface PokemonHabitatDTO {
+  id: number;
+  name: string;
+  names: NameDTO[];
+  pokemon_species: NamedAPIResourceDTO[];
+}
+
+/**
+ * Response structure for paginated Pokemon Habitat list endpoint.
+ */
+export interface PokemonHabitatListResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NamedAPIResourceDTO[];
+}

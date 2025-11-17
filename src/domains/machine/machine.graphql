@@ -1,0 +1,59 @@
+"""
+Machine (TM/HM) that teaches a move to Pokemon
+"""
+type Machine implements Node {
+  """
+  Global unique identifier for this machine
+  """
+  id: ID!
+
+  """
+  The item that corresponds to this machine (TM or HM)
+  """
+  item: NamedAPIResource!
+
+  """
+  The move that this machine teaches
+  """
+  move: NamedAPIResource!
+
+  """
+  The version group this machine applies to
+  """
+  versionGroup: NamedAPIResource!
+}
+
+"""
+Connection type for paginated Machine lists
+"""
+type MachineConnection {
+  """
+  List of machine edges
+  """
+  edges: [MachineEdge!]!
+
+  """
+  Pagination information
+  """
+  pageInfo: PageInfo!
+
+  """
+  Total count of machines
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for Machine connections
+"""
+type MachineEdge {
+  """
+  Cursor for this edge
+  """
+  cursor: String!
+
+  """
+  The machine node
+  """
+  node: Machine!
+}

@@ -1,0 +1,179 @@
+"""
+A method by which a Pokemon can be encountered in the wild.
+"""
+type EncounterMethod implements Node {
+  """
+  The globally unique identifier for this encounter method.
+  """
+  id: ID!
+
+  """
+  The name of this encounter method.
+  """
+  name: String!
+
+  """
+  A good value for sorting.
+  """
+  order: Int!
+
+  """
+  The localized names for this encounter method.
+  """
+  names: [Name!]!
+}
+
+"""
+Connection type for EncounterMethod pagination.
+"""
+type EncounterMethodConnection {
+  """
+  List of encounter method edges.
+  """
+  edges: [EncounterMethodEdge!]!
+
+  """
+  Pagination information.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Total count of encounter methods.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for EncounterMethod pagination.
+"""
+type EncounterMethodEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+
+  """
+  The encounter method node.
+  """
+  node: EncounterMethod!
+}
+
+"""
+A condition that affects Pokemon encounters.
+"""
+type EncounterCondition implements Node {
+  """
+  The globally unique identifier for this encounter condition.
+  """
+  id: ID!
+
+  """
+  The name of this encounter condition.
+  """
+  name: String!
+
+  """
+  The localized names for this encounter condition.
+  """
+  names: [Name!]!
+
+  """
+  A list of possible values for this encounter condition.
+  """
+  values: [NamedAPIResource!]!
+}
+
+"""
+Connection type for EncounterCondition pagination.
+"""
+type EncounterConditionConnection {
+  """
+  List of encounter condition edges.
+  """
+  edges: [EncounterConditionEdge!]!
+
+  """
+  Pagination information.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Total count of encounter conditions.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for EncounterCondition pagination.
+"""
+type EncounterConditionEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+
+  """
+  The encounter condition node.
+  """
+  node: EncounterCondition!
+}
+
+"""
+A specific value for an encounter condition.
+"""
+type EncounterConditionValue implements Node {
+  """
+  The globally unique identifier for this encounter condition value.
+  """
+  id: ID!
+
+  """
+  The name of this encounter condition value.
+  """
+  name: String!
+
+  """
+  The condition this value pertains to.
+  """
+  condition: NamedAPIResource!
+
+  """
+  The localized names for this encounter condition value.
+  """
+  names: [Name!]!
+}
+
+"""
+Connection type for EncounterConditionValue pagination.
+"""
+type EncounterConditionValueConnection {
+  """
+  List of encounter condition value edges.
+  """
+  edges: [EncounterConditionValueEdge!]!
+
+  """
+  Pagination information.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Total count of encounter condition values.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for EncounterConditionValue pagination.
+"""
+type EncounterConditionValueEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+
+  """
+  The encounter condition value node.
+  """
+  node: EncounterConditionValue!
+}

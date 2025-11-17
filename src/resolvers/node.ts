@@ -30,6 +30,10 @@ export const Node: NodeResolvers = {
     if ("damage_relations" in parent && "move_damage_class" in parent) {
       return "Type";
     }
+    // Check if it's a Machine by looking for machine-specific fields
+    if ("item" in parent && "move" in parent && "version_group" in parent) {
+      return "Machine";
+    }
     return null;
   },
 };

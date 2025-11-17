@@ -9,6 +9,9 @@ import { LocationDataSource } from "./domains/location/LocationDataSource.js";
 import { EvolutionDataSource } from "./domains/evolution/EvolutionDataSource.js";
 import { BerryDataSource } from "./domains/berry/BerryDataSource.js";
 import { GameDataSource } from "./domains/game/GameDataSource.js";
+import { ContestDataSource } from "./domains/contest/ContestDataSource.js";
+import { EncounterDataSource } from "./domains/encounter/EncounterDataSource.js";
+import { MachineDataSource } from "./domains/machine/MachineDataSource.js";
 
 /**
  * GraphQL context interface.
@@ -30,10 +33,9 @@ export interface Context {
     evolution: EvolutionDataSource;
     berry: BerryDataSource;
     game: GameDataSource;
-    // Future domain-specific DataSources will be added here:
-    // contest: ContestDataSource;
-    // encounter: EncounterDataSource;
-    // machine: MachineDataSource;
+    contest: ContestDataSource;
+    encounter: EncounterDataSource;
+    machine: MachineDataSource;
   };
 }
 
@@ -58,7 +60,9 @@ export function createContext(): Context {
       evolution: new EvolutionDataSource(config),
       berry: new BerryDataSource(config),
       game: new GameDataSource(config),
-      // Future domain-specific DataSources will be initialized here
+      contest: new ContestDataSource(config),
+      encounter: new EncounterDataSource(config),
+      machine: new MachineDataSource(config),
     },
   };
 }

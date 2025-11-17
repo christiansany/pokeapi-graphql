@@ -3,6 +3,12 @@ import { Query } from "./query.js";
 import { Pokemon } from "../domains/pokemon/pokemon.resolver.js";
 import { PokemonSpecies } from "../domains/pokemon/pokemonSpecies.resolver.js";
 import { PokemonForm } from "../domains/pokemon/pokemonForm.resolver.js";
+import { EggGroup } from "../domains/pokemon/eggGroup.resolver.js";
+import { GrowthRate } from "../domains/pokemon/growthRate.resolver.js";
+import { Gender } from "../domains/pokemon/gender.resolver.js";
+import { PokemonColor } from "../domains/pokemon/pokemonColor.resolver.js";
+import { PokemonShape } from "../domains/pokemon/pokemonShape.resolver.js";
+import { PokemonHabitat } from "../domains/pokemon/pokemonHabitat.resolver.js";
 import { Ability } from "../domains/ability/ability.resolver.js";
 import { Stat } from "../domains/stat/stat.resolver.js";
 import { Characteristic } from "../domains/stat/characteristic.resolver.js";
@@ -38,6 +44,13 @@ import { Generation } from "../domains/game/generation.resolver.js";
 import { Version } from "../domains/game/version.resolver.js";
 import { VersionGroup } from "../domains/game/versionGroup.resolver.js";
 import { Pokedex } from "../domains/game/pokedex.resolver.js";
+import { ContestType } from "../domains/contest/contestType.resolver.js";
+import { ContestEffect } from "../domains/contest/contestEffect.resolver.js";
+import { SuperContestEffect } from "../domains/contest/superContestEffect.resolver.js";
+import { EncounterMethod } from "../domains/encounter/encounterMethod.resolver.js";
+import { EncounterCondition } from "../domains/encounter/encounterCondition.resolver.js";
+import { EncounterConditionValue } from "../domains/encounter/encounterConditionValue.resolver.js";
+import { Machine } from "../domains/machine/machine.resolver.js";
 import { Node } from "./node.js";
 
 export const resolvers: Resolvers = {
@@ -46,6 +59,12 @@ export const resolvers: Resolvers = {
   Pokemon,
   PokemonSpecies,
   PokemonForm,
+  EggGroup,
+  GrowthRate,
+  Gender,
+  PokemonColor,
+  PokemonShape,
+  PokemonHabitat,
   Ability,
   Stat,
   Characteristic,
@@ -80,4 +99,11 @@ export const resolvers: Resolvers = {
   Version,
   VersionGroup,
   Pokedex,
+  ContestType,
+  ContestEffect,
+  SuperContestEffect,
+  EncounterMethod,
+  EncounterCondition,
+  EncounterConditionValue,
+  Machine,
 };

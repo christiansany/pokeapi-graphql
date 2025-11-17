@@ -88,6 +88,7 @@ src/
 │   │   ├── pokemon.graphql    # GraphQL schema for Pokemon types
 │   │   ├── PokemonDataSource.ts  # DataSource for Pokemon domain
 │   │   ├── pokemon.resolver.ts   # Pokemon type resolver
+│   │   ├── pokemon.query.ts      # Query field resolvers (pokemonById, pokemons)
 │   │   ├── pokemonSpecies.resolver.ts  # PokemonSpecies resolver
 │   │   ├── pokemonForm.resolver.ts     # PokemonForm resolver
 │   │   └── edges/
@@ -95,6 +96,12 @@ src/
 │   │       ├── pokemonType.edge.ts     # PokemonTypeEdge resolver
 │   │       ├── pokemonMove.edge.ts     # PokemonMoveEdge resolver
 │   │       └── pokemonStat.edge.ts     # PokemonStatEdge resolver
+│   ├── machine/
+│   │   ├── machine.dto.ts
+│   │   ├── machine.graphql
+│   │   ├── MachineDataSource.ts
+│   │   ├── machine.resolver.ts   # Machine type resolver
+│   │   └── machine.query.ts      # Query field resolvers (machineById, machines)
 │   ├── ability/
 │   │   ├── ability.dto.ts
 │   │   ├── ability.graphql
@@ -796,11 +803,43 @@ export class PokeAPIDataSource {
 ### 4. Resolver Organization
 
 Resolvers are co-located with their domain code (see directory structure in section 1). Each domain directory contains:
-- Type resolvers (e.g., pokemon.resolver.ts, pokemonSpecies.resolver.ts)
-- Edge resolvers in edges/ subdirectory (e.g., pokemonAbility.edge.ts)
+- **Type resolvers** (e.g., pokemon.resolver.ts, pokemonSpecies.resolver.ts) - Resolve fields on GraphQL types
+- **Query resolvers** (e.g., pokemon.query.ts) - Resolve Query fields for this domain
+- **Edge resolvers** in edges/ subdirectory (e.g., pokemonAbility.edge.ts) - Resolve edge types
 - All resolvers for that domain's types
 
-The main resolver aggregation happens in `src/domains/index.ts`:
+The main type resolver aggregation happens in `src/resolvers/index.ts`:
+
+```typescript
+// src/resolvers/index.ts
+import type { Resolvers } from "../types/generated.js";
+import { Query } from "./query.js";
+import { Node } from "./node.js";
+
+// Import type resolvers from each domain
+import { Pokemon, PokemonSpecies, PokemonForm } from "../domains/pokemon/pokemon.resolver.js";
+import { PokemonAbilityEdge, PokemonTypeEdge } from "../domains/pokemon/edges/index.js";
+import { Ability } from "../domains/ability/ability.resolver.js";
+import { Move } from "../domains/move/move.resolver.js";
+import { Machine } from "../domains/machine/machine.resolver.js";
+// ... more imports
+
+export const resolvers: Resolvers = {
+  Query,
+  Node,
+  Pokemon,
+  PokemonSpecies,
+  PokemonForm,
+  PokemonAbilityEdge,
+  PokemonTypeEdge,
+  Ability,
+  Move,
+  Machine,
+  // ... all other type resolvers
+};
+```
+
+Query field resolvers are aggregated in `src/resolvers/query.ts` using the spread operator:
 
 ```typescript
 // src/domains/index.ts
@@ -829,11 +868,37 @@ export const resolvers: Resolvers = {
 };
 ```
 
-**Resolver Pattern**:
+**Query Resolver Aggregation Pattern**:
 
 ```typescript
-import type { PokemonResolvers } from "../types/generated.js";
-import { encodeGlobalId } from "../utils/relay.js";
+// src/resolvers/query.ts
+import type { QueryResolvers } from "../types/generated.js";
+import { machineQueries } from "../domains/machine/machine.query.js";
+import { pokemonQueries } from "../domains/pokemon/pokemon.query.js";
+import { abilityQueries } from "../domains/ability/ability.query.js";
+// ... more imports
+
+export const Query: QueryResolvers = {
+  // Node interface resolver
+  node: async (_, { id }, { dataSources }) => {
+    // Decode global ID and route to appropriate DataSource
+    // (implementation details in section 6)
+  },
+  
+  // Domain query resolvers (spread pattern)
+  ...pokemonQueries,
+  ...abilityQueries,
+  ...machineQueries,
+  // ... more domain queries
+};
+```
+
+**Type Resolver Pattern**:
+
+```typescript
+// src/domains/pokemon/pokemon.resolver.ts
+import type { PokemonResolvers } from "../../types/generated.js";
+import { encodeGlobalId } from "../../utils/relay.js";
 
 export const Pokemon: PokemonResolvers = {
   // Scalar fields - direct mapping from DTO
@@ -855,6 +920,70 @@ export const Pokemon: PokemonResolvers = {
       abilityName: abilityRef.ability.name, // Store name for edge resolver
     })),
   }),
+};
+```
+
+**Query Resolver Pattern**:
+
+```typescript
+// src/domains/machine/machine.query.ts
+import type { QueryResolvers } from "../../types/generated.js";
+import { decodeGlobalId, validatePaginationArgs } from "../../utils/relay.js";
+import { encodeCursor } from "../../utils/cursor.js";
+
+export const machineQueries: Pick<QueryResolvers, "machineById" | "machines"> = {
+  machineById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+    
+    if (!decoded || decoded.typename !== "Machine") {
+      throw new GraphQLError("Invalid Machine ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+    
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid Machine ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+    
+    return dataSources.machine.getMachineById(numericId);
+  },
+  
+  machines: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+    const { limit, offset } = validatePaginationArgs(first, after);
+    
+    const listResponse = await dataSources.machine.getMachineList(limit ?? 0, offset);
+    
+    // Fetch full data for each result
+    const machinePromises = listResponse.results.map((result) => {
+      const id = parseInt(result.url.split("/").slice(-2)[0], 10);
+      return dataSources.machine.getMachineById(id);
+    });
+    
+    const machines = await Promise.all(machinePromises);
+    
+    // Create edges with cursors
+    const edges = machines
+      .map((machine, index) => ({
+        cursor: encodeCursor(offset + index),
+        node: machine,
+      }))
+      .filter((edge) => edge.node !== null);
+    
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage: offset + (limit ?? 0) < listResponse.count,
+        hasPreviousPage: offset > 0,
+        startCursor: edges[0]?.cursor ?? null,
+        endCursor: edges[edges.length - 1]?.cursor ?? null,
+      },
+      totalCount: listResponse.count,
+    };
+  },
 };
 ```
 

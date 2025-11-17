@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 import type { QueryResolvers } from "../types/generated.js";
 import { decodeGlobalId, validatePaginationArgs } from "../utils/relay.js";
 import { encodeCursor } from "../utils/cursor.js";
+import { machineQueries } from "../domains/machine/machine.query.js";
 
 export const Query: QueryResolvers = {
   pokemonById: async (_, { id }, { dataSources }) => {
@@ -1747,6 +1748,408 @@ export const Query: QueryResolvers = {
     };
   },
 
+  eggGroupById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "EggGroup") {
+      throw new GraphQLError("Invalid EggGroup ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid EggGroup ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.pokemon.getEggGroupById(numericId);
+  },
+
+  eggGroups: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch EggGroup list from PokéAPI
+    const listResponse = await dataSources.pokemon.getEggGroupList(limit ?? 0, offset);
+
+    // Fetch full EggGroup data for each result
+    const eggGroupPromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/egg-group/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.pokemon.getEggGroupById(id);
+    });
+
+    const eggGroups = await Promise.all(eggGroupPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = eggGroups
+      .map((eggGroup, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: eggGroup,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  growthRateById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "GrowthRate") {
+      throw new GraphQLError("Invalid GrowthRate ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid GrowthRate ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.pokemon.getGrowthRateById(numericId);
+  },
+
+  growthRates: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch GrowthRate list from PokéAPI
+    const listResponse = await dataSources.pokemon.getGrowthRateList(limit ?? 0, offset);
+
+    // Fetch full GrowthRate data for each result
+    const growthRatePromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/growth-rate/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.pokemon.getGrowthRateById(id);
+    });
+
+    const growthRates = await Promise.all(growthRatePromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = growthRates
+      .map((growthRate, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: growthRate,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  genderById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "Gender") {
+      throw new GraphQLError("Invalid Gender ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid Gender ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.pokemon.getGenderById(numericId);
+  },
+
+  genders: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch Gender list from PokéAPI
+    const listResponse = await dataSources.pokemon.getGenderList(limit ?? 0, offset);
+
+    // Fetch full Gender data for each result
+    const genderPromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/gender/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.pokemon.getGenderById(id);
+    });
+
+    const genders = await Promise.all(genderPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = genders
+      .map((gender, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: gender,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  pokemonColorById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "PokemonColor") {
+      throw new GraphQLError("Invalid PokemonColor ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid PokemonColor ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.pokemon.getPokemonColorById(numericId);
+  },
+
+  pokemonColors: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch PokemonColor list from PokéAPI
+    const listResponse = await dataSources.pokemon.getPokemonColorList(limit ?? 0, offset);
+
+    // Fetch full PokemonColor data for each result
+    const colorPromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/pokemon-color/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.pokemon.getPokemonColorById(id);
+    });
+
+    const colors = await Promise.all(colorPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = colors
+      .map((color, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: color,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  pokemonShapeById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "PokemonShape") {
+      throw new GraphQLError("Invalid PokemonShape ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid PokemonShape ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.pokemon.getPokemonShapeById(numericId);
+  },
+
+  pokemonShapes: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch PokemonShape list from PokéAPI
+    const listResponse = await dataSources.pokemon.getPokemonShapeList(limit ?? 0, offset);
+
+    // Fetch full PokemonShape data for each result
+    const shapePromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/pokemon-shape/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.pokemon.getPokemonShapeById(id);
+    });
+
+    const shapes = await Promise.all(shapePromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = shapes
+      .map((shape, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: shape,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  pokemonHabitatById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "PokemonHabitat") {
+      throw new GraphQLError("Invalid PokemonHabitat ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid PokemonHabitat ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.pokemon.getPokemonHabitatById(numericId);
+  },
+
+  pokemonHabitats: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch PokemonHabitat list from PokéAPI
+    const listResponse = await dataSources.pokemon.getPokemonHabitatList(limit ?? 0, offset);
+
+    // Fetch full PokemonHabitat data for each result
+    const habitatPromises = listResponse.results.map((result: { name: string; url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/pokemon-habitat/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.pokemon.getPokemonHabitatById(id);
+    });
+
+    const habitats = await Promise.all(habitatPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = habitats
+      .map((habitat, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: habitat,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
   node: async (_, { id }, { dataSources }) => {
     const decoded = decodeGlobalId(id);
 
@@ -2000,9 +2403,611 @@ export const Query: QueryResolvers = {
         }
         return dataSources.game.getPokedexById(numericId);
       }
+      case "EggGroup": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid EggGroup ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.pokemon.getEggGroupById(numericId);
+      }
+      case "GrowthRate": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid GrowthRate ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.pokemon.getGrowthRateById(numericId);
+      }
+      case "Gender": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid Gender ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.pokemon.getGenderById(numericId);
+      }
+      case "PokemonColor": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid PokemonColor ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.pokemon.getPokemonColorById(numericId);
+      }
+      case "PokemonShape": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid PokemonShape ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.pokemon.getPokemonShapeById(numericId);
+      }
+      case "PokemonHabitat": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid PokemonHabitat ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.pokemon.getPokemonHabitatById(numericId);
+      }
+      case "ContestType": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid ContestType ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.contest.getContestTypeById(numericId);
+      }
+      case "ContestEffect": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid ContestEffect ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.contest.getContestEffectById(numericId);
+      }
+      case "SuperContestEffect": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid SuperContestEffect ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.contest.getSuperContestEffectById(numericId);
+      }
+      case "EncounterMethod": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid EncounterMethod ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.encounter.getEncounterMethodById(numericId);
+      }
+      case "EncounterCondition": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid EncounterCondition ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.encounter.getEncounterConditionById(numericId);
+      }
+      case "EncounterConditionValue": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid EncounterConditionValue ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.encounter.getEncounterConditionValueById(numericId);
+      }
+      case "Machine": {
+        const numericId = parseInt(decoded.id, 10);
+        if (isNaN(numericId)) {
+          throw new GraphQLError("Invalid Machine ID format", {
+            extensions: { code: "INVALID_GLOBAL_ID" },
+          });
+        }
+        return dataSources.machine.getMachineById(numericId);
+      }
       default:
         // Unknown typename - return null per Relay spec (node not found)
         return null;
     }
   },
+
+  contestTypeById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "ContestType") {
+      throw new GraphQLError("Invalid ContestType ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid ContestType ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.contest.getContestTypeById(numericId);
+  },
+
+  contestTypes: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch ContestType list from PokéAPI
+    const listResponse = await dataSources.contest.getContestTypeList(limit ?? 0, offset);
+
+    // Fetch full ContestType data for each result
+    const contestTypePromises = listResponse.results.map(
+      (result: { name: string; url: string }) => {
+        // Extract ID from URL
+        const urlParts = result.url.split("/");
+        const id = parseInt(urlParts[urlParts.length - 2], 10);
+        return dataSources.contest.getContestTypeById(id);
+      }
+    );
+
+    const contestTypes = await Promise.all(contestTypePromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = contestTypes
+      .map((contestType, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: contestType,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  contestEffectById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "ContestEffect") {
+      throw new GraphQLError("Invalid ContestEffect ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid ContestEffect ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.contest.getContestEffectById(numericId);
+  },
+
+  contestEffects: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch ContestEffect list from PokéAPI
+    const listResponse = await dataSources.contest.getContestEffectList(limit ?? 0, offset);
+
+    // Fetch full ContestEffect data for each result
+    const contestEffectPromises = listResponse.results.map((result: { url: string }) => {
+      // Extract ID from URL
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.contest.getContestEffectById(id);
+    });
+
+    const contestEffects = await Promise.all(contestEffectPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = contestEffects
+      .map((contestEffect, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: contestEffect,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  superContestEffectById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "SuperContestEffect") {
+      throw new GraphQLError("Invalid SuperContestEffect ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid SuperContestEffect ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.contest.getSuperContestEffectById(numericId);
+  },
+
+  superContestEffects: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch SuperContestEffect list from PokéAPI
+    const listResponse = await dataSources.contest.getSuperContestEffectList(limit ?? 0, offset);
+
+    // Fetch full SuperContestEffect data for each result
+    const superContestEffectPromises = listResponse.results.map((result: { url: string }) => {
+      // Extract ID from URL
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.contest.getSuperContestEffectById(id);
+    });
+
+    const superContestEffects = await Promise.all(superContestEffectPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = superContestEffects
+      .map((superContestEffect, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: superContestEffect,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  // ===== Encounter Methods =====
+
+  encounterMethodById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "EncounterMethod") {
+      throw new GraphQLError("Invalid EncounterMethod ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid EncounterMethod ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.encounter.getEncounterMethodById(numericId);
+  },
+
+  encounterMethods: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch EncounterMethod list from PokéAPI
+    const listResponse = await dataSources.encounter.getEncounterMethodList(limit ?? 0, offset);
+
+    // Fetch full EncounterMethod data for each result
+    const encounterMethodPromises = listResponse.results.map(
+      (result: { name: string; url: string }) => {
+        // Extract ID from URL
+        const urlParts = result.url.split("/");
+        const id = parseInt(urlParts[urlParts.length - 2], 10);
+        return dataSources.encounter.getEncounterMethodById(id);
+      }
+    );
+
+    const encounterMethods = await Promise.all(encounterMethodPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = encounterMethods
+      .map((encounterMethod, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: encounterMethod,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  encounterConditionById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "EncounterCondition") {
+      throw new GraphQLError("Invalid EncounterCondition ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid EncounterCondition ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.encounter.getEncounterConditionById(numericId);
+  },
+
+  encounterConditions: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch EncounterCondition list from PokéAPI
+    const listResponse = await dataSources.encounter.getEncounterConditionList(limit ?? 0, offset);
+
+    // Fetch full EncounterCondition data for each result
+    const encounterConditionPromises = listResponse.results.map(
+      (result: { name: string; url: string }) => {
+        // Extract ID from URL
+        const urlParts = result.url.split("/");
+        const id = parseInt(urlParts[urlParts.length - 2], 10);
+        return dataSources.encounter.getEncounterConditionById(id);
+      }
+    );
+
+    const encounterConditions = await Promise.all(encounterConditionPromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = encounterConditions
+      .map((encounterCondition, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: encounterCondition,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  encounterConditionValueById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "EncounterConditionValue") {
+      throw new GraphQLError("Invalid EncounterConditionValue ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid EncounterConditionValue ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.encounter.getEncounterConditionValueById(numericId);
+  },
+
+  encounterConditionValues: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch EncounterConditionValue list from PokéAPI
+    const listResponse = await dataSources.encounter.getEncounterConditionValueList(
+      limit ?? 0,
+      offset
+    );
+
+    // Fetch full EncounterConditionValue data for each result
+    const encounterConditionValuePromises = listResponse.results.map(
+      (result: { name: string; url: string }) => {
+        // Extract ID from URL
+        const urlParts = result.url.split("/");
+        const id = parseInt(urlParts[urlParts.length - 2], 10);
+        return dataSources.encounter.getEncounterConditionValueById(id);
+      }
+    );
+
+    const encounterConditionValues = await Promise.all(encounterConditionValuePromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = encounterConditionValues
+      .map((encounterConditionValue, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: encounterConditionValue,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  machineById: async (_, { id }, { dataSources }) => {
+    const decoded = decodeGlobalId(id);
+
+    if (!decoded || decoded.typename !== "Machine") {
+      throw new GraphQLError("Invalid Machine ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    const numericId = parseInt(decoded.id, 10);
+    if (isNaN(numericId)) {
+      throw new GraphQLError("Invalid Machine ID format", {
+        extensions: { code: "INVALID_GLOBAL_ID" },
+      });
+    }
+
+    return dataSources.machine.getMachineById(numericId);
+  },
+
+  machines: async (_, args, { dataSources }) => {
+    const { first, after } = args;
+
+    // Validate pagination arguments
+    const { limit, offset } = validatePaginationArgs(first, after);
+
+    // Fetch Machine list from PokéAPI
+    const listResponse = await dataSources.machine.getMachineList(limit ?? 0, offset);
+
+    // Fetch full Machine data for each result
+    const machinePromises = listResponse.results.map((result: { url: string }) => {
+      // Extract ID from URL (e.g., "https://pokeapi.co/api/v2/machine/1/" -> 1)
+      const urlParts = result.url.split("/");
+      const id = parseInt(urlParts[urlParts.length - 2], 10);
+      return dataSources.machine.getMachineById(id);
+    });
+
+    const machines = await Promise.all(machinePromises);
+
+    // Filter out any null results and create edges with cursors
+    const edges = machines
+      .map((machine, index: number) => ({
+        cursor: encodeCursor(offset + index),
+        node: machine,
+      }))
+      .filter(
+        (edge): edge is { cursor: string; node: NonNullable<typeof edge.node> } =>
+          edge.node !== null
+      );
+
+    // Calculate pagination info
+    const hasNextPage = offset + (limit ?? 0) < listResponse.count;
+    const hasPreviousPage = offset > 0;
+    const startCursor = edges.length > 0 ? edges[0].cursor : null;
+    const endCursor = edges.length > 0 ? edges[edges.length - 1].cursor : null;
+
+    return {
+      edges,
+      pageInfo: {
+        hasNextPage,
+        hasPreviousPage,
+        startCursor,
+        endCursor,
+      },
+      totalCount: listResponse.count,
+    };
+  },
+
+  // Machine queries
+  ...machineQueries,
 };

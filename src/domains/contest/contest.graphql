@@ -1,0 +1,184 @@
+"""
+A type of Pokemon contest.
+"""
+type ContestType implements Node {
+  """
+  The globally unique identifier for this contest type.
+  """
+  id: ID!
+
+  """
+  The name of this contest type.
+  """
+  name: String!
+
+  """
+  The berry flavor that correlates with this contest type.
+  """
+  berryFlavor: NamedAPIResource!
+
+  """
+  The localized names for this contest type.
+  """
+  names: [Name!]!
+}
+
+"""
+Connection type for ContestType pagination.
+"""
+type ContestTypeConnection {
+  """
+  List of contest type edges.
+  """
+  edges: [ContestTypeEdge!]!
+
+  """
+  Pagination information.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Total count of contest types.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for ContestType pagination.
+"""
+type ContestTypeEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+
+  """
+  The contest type node.
+  """
+  node: ContestType!
+}
+
+"""
+An effect that can occur during a Pokemon contest.
+"""
+type ContestEffect implements Node {
+  """
+  The globally unique identifier for this contest effect.
+  """
+  id: ID!
+
+  """
+  The base number of hearts the user of this move gets.
+  """
+  appeal: Int!
+
+  """
+  The base number of hearts the user's opponent loses.
+  """
+  jam: Int!
+
+  """
+  The result of this contest effect listed in different languages.
+  """
+  effectEntries: [EffectEntry!]!
+
+  """
+  The flavor text of this contest effect listed in different languages.
+  """
+  flavorTextEntries: [FlavorTextEntry!]!
+}
+
+"""
+Connection type for ContestEffect pagination.
+"""
+type ContestEffectConnection {
+  """
+  List of contest effect edges.
+  """
+  edges: [ContestEffectEdge!]!
+
+  """
+  Pagination information.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Total count of contest effects.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for ContestEffect pagination.
+"""
+type ContestEffectEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+
+  """
+  The contest effect node.
+  """
+  node: ContestEffect!
+}
+
+"""
+A super contest effect.
+"""
+type SuperContestEffect implements Node {
+  """
+  The globally unique identifier for this super contest effect.
+  """
+  id: ID!
+
+  """
+  The level of appeal this super contest effect has.
+  """
+  appeal: Int!
+
+  """
+  The flavor text of this super contest effect listed in different languages.
+  """
+  flavorTextEntries: [FlavorTextEntry!]!
+
+  """
+  A list of moves that have this super contest effect.
+  """
+  moves: [NamedAPIResource!]!
+}
+
+"""
+Connection type for SuperContestEffect pagination.
+"""
+type SuperContestEffectConnection {
+  """
+  List of super contest effect edges.
+  """
+  edges: [SuperContestEffectEdge!]!
+
+  """
+  Pagination information.
+  """
+  pageInfo: PageInfo!
+
+  """
+  Total count of super contest effects.
+  """
+  totalCount: Int!
+}
+
+"""
+Edge type for SuperContestEffect pagination.
+"""
+type SuperContestEffectEdge {
+  """
+  Cursor for this edge.
+  """
+  cursor: String!
+
+  """
+  The super contest effect node.
+  """
+  node: SuperContestEffect!
+}

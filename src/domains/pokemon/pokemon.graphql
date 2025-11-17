@@ -879,6 +879,432 @@ type PokemonFormConnection {
   totalCount: Int!
 }
 
+"""
+An Egg Group from the PokéAPI.
+Represents an egg group that Pokemon species can belong to for breeding.
+"""
+type EggGroup implements Node {
+  """
+  The globally unique identifier for this Egg Group.
+  """
+  id: ID!
+  
+  """
+  The name of this Egg Group.
+  """
+  name: String!
+  
+  """
+  The name of this Egg Group in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  Pokemon species that belong to this Egg Group.
+  """
+  pokemonSpecies: [NamedAPIResource!]!
+}
+
+"""
+An edge in an Egg Group connection.
+"""
+type EggGroupEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Egg Group at the end of the edge.
+  """
+  node: EggGroup!
+}
+
+"""
+A connection to a list of Egg Groups.
+"""
+type EggGroupConnection {
+  """
+  A list of edges.
+  """
+  edges: [EggGroupEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Egg Groups available.
+  """
+  totalCount: Int!
+}
+
+"""
+A Growth Rate from the PokéAPI.
+Represents the rate at which a Pokemon species gains levels.
+"""
+type GrowthRate implements Node {
+  """
+  The globally unique identifier for this Growth Rate.
+  """
+  id: ID!
+  
+  """
+  The name of this Growth Rate.
+  """
+  name: String!
+  
+  """
+  The formula used to calculate the experience required for each level.
+  """
+  formula: String!
+  
+  """
+  Descriptions of this Growth Rate in different languages.
+  """
+  descriptions: [Description!]!
+  
+  """
+  Experience levels for this Growth Rate.
+  """
+  levels: [GrowthRateLevel!]!
+  
+  """
+  Pokemon species that use this Growth Rate.
+  """
+  pokemonSpecies: [NamedAPIResource!]!
+}
+
+"""
+Experience level data for a Growth Rate.
+"""
+type GrowthRateLevel {
+  """
+  The level.
+  """
+  level: Int!
+  
+  """
+  The experience required to reach this level.
+  """
+  experience: Int!
+}
+
+"""
+An edge in a Growth Rate connection.
+"""
+type GrowthRateEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Growth Rate at the end of the edge.
+  """
+  node: GrowthRate!
+}
+
+"""
+A connection to a list of Growth Rates.
+"""
+type GrowthRateConnection {
+  """
+  A list of edges.
+  """
+  edges: [GrowthRateEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Growth Rates available.
+  """
+  totalCount: Int!
+}
+
+"""
+A Gender from the PokéAPI.
+Represents a gender and the Pokemon species that have that gender.
+"""
+type Gender implements Node {
+  """
+  The globally unique identifier for this Gender.
+  """
+  id: ID!
+  
+  """
+  The name of this Gender.
+  """
+  name: String!
+  
+  """
+  Pokemon species that can be this gender, with gender rate details.
+  """
+  pokemonSpeciesDetails: [GenderPokemonSpecies!]!
+  
+  """
+  Pokemon species that require this gender for evolution.
+  """
+  requiredForEvolution: [NamedAPIResource!]!
+}
+
+"""
+Pokemon species details for a gender.
+"""
+type GenderPokemonSpecies {
+  """
+  The chance of this Pokemon being this gender, in eighths.
+  """
+  rate: Int!
+  
+  """
+  The Pokemon species.
+  """
+  pokemonSpecies: NamedAPIResource!
+}
+
+"""
+An edge in a Gender connection.
+"""
+type GenderEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Gender at the end of the edge.
+  """
+  node: Gender!
+}
+
+"""
+A connection to a list of Genders.
+"""
+type GenderConnection {
+  """
+  A list of edges.
+  """
+  edges: [GenderEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Genders available.
+  """
+  totalCount: Int!
+}
+
+"""
+A Pokemon Color from the PokéAPI.
+Represents a color that Pokemon species can have.
+"""
+type PokemonColor implements Node {
+  """
+  The globally unique identifier for this Pokemon Color.
+  """
+  id: ID!
+  
+  """
+  The name of this Pokemon Color.
+  """
+  name: String!
+  
+  """
+  The name of this Pokemon Color in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  Pokemon species that have this color.
+  """
+  pokemonSpecies: [NamedAPIResource!]!
+}
+
+"""
+An edge in a Pokemon Color connection.
+"""
+type PokemonColorEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Pokemon Color at the end of the edge.
+  """
+  node: PokemonColor!
+}
+
+"""
+A connection to a list of Pokemon Colors.
+"""
+type PokemonColorConnection {
+  """
+  A list of edges.
+  """
+  edges: [PokemonColorEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Pokemon Colors available.
+  """
+  totalCount: Int!
+}
+
+"""
+A Pokemon Shape from the PokéAPI.
+Represents a shape that Pokemon species can have.
+"""
+type PokemonShape implements Node {
+  """
+  The globally unique identifier for this Pokemon Shape.
+  """
+  id: ID!
+  
+  """
+  The name of this Pokemon Shape.
+  """
+  name: String!
+  
+  """
+  Awesome names for this Pokemon Shape.
+  """
+  awesomeNames: [AwesomeName!]!
+  
+  """
+  The name of this Pokemon Shape in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  Pokemon species that have this shape.
+  """
+  pokemonSpecies: [NamedAPIResource!]!
+}
+
+"""
+An awesome name for a Pokemon Shape.
+"""
+type AwesomeName {
+  """
+  The awesome name.
+  """
+  awesomeName: String!
+  
+  """
+  The language this awesome name is in.
+  """
+  language: NamedAPIResource!
+}
+
+"""
+An edge in a Pokemon Shape connection.
+"""
+type PokemonShapeEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Pokemon Shape at the end of the edge.
+  """
+  node: PokemonShape!
+}
+
+"""
+A connection to a list of Pokemon Shapes.
+"""
+type PokemonShapeConnection {
+  """
+  A list of edges.
+  """
+  edges: [PokemonShapeEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Pokemon Shapes available.
+  """
+  totalCount: Int!
+}
+
+"""
+A Pokemon Habitat from the PokéAPI.
+Represents a habitat where Pokemon species can be found.
+"""
+type PokemonHabitat implements Node {
+  """
+  The globally unique identifier for this Pokemon Habitat.
+  """
+  id: ID!
+  
+  """
+  The name of this Pokemon Habitat.
+  """
+  name: String!
+  
+  """
+  The name of this Pokemon Habitat in different languages.
+  """
+  names: [Name!]!
+  
+  """
+  Pokemon species that can be found in this habitat.
+  """
+  pokemonSpecies: [NamedAPIResource!]!
+}
+
+"""
+An edge in a Pokemon Habitat connection.
+"""
+type PokemonHabitatEdge {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  
+  """
+  The Pokemon Habitat at the end of the edge.
+  """
+  node: PokemonHabitat!
+}
+
+"""
+A connection to a list of Pokemon Habitats.
+"""
+type PokemonHabitatConnection {
+  """
+  A list of edges.
+  """
+  edges: [PokemonHabitatEdge!]!
+  
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  
+  """
+  The total count of Pokemon Habitats available.
+  """
+  totalCount: Int!
+}
+
 extend type Query {
   """
   Fetch a single Pokemon Species by its global ID.
@@ -919,4 +1345,124 @@ extend type Query {
     """
     after: String
   ): PokemonFormConnection!
+  
+  """
+  Fetch a single Egg Group by its global ID.
+  """
+  eggGroupById(id: ID!): EggGroup
+  
+  """
+  Fetch a paginated list of Egg Groups using forward-only cursor-based pagination.
+  """
+  eggGroups(
+    """
+    Returns the first n elements from the list. Must be between 1-50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): EggGroupConnection!
+  
+  """
+  Fetch a single Growth Rate by its global ID.
+  """
+  growthRateById(id: ID!): GrowthRate
+  
+  """
+  Fetch a paginated list of Growth Rates using forward-only cursor-based pagination.
+  """
+  growthRates(
+    """
+    Returns the first n elements from the list. Must be between 1-50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): GrowthRateConnection!
+  
+  """
+  Fetch a single Gender by its global ID.
+  """
+  genderById(id: ID!): Gender
+  
+  """
+  Fetch a paginated list of Genders using forward-only cursor-based pagination.
+  """
+  genders(
+    """
+    Returns the first n elements from the list. Must be between 1-50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): GenderConnection!
+  
+  """
+  Fetch a single Pokemon Color by its global ID.
+  """
+  pokemonColorById(id: ID!): PokemonColor
+  
+  """
+  Fetch a paginated list of Pokemon Colors using forward-only cursor-based pagination.
+  """
+  pokemonColors(
+    """
+    Returns the first n elements from the list. Must be between 1-50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): PokemonColorConnection!
+  
+  """
+  Fetch a single Pokemon Shape by its global ID.
+  """
+  pokemonShapeById(id: ID!): PokemonShape
+  
+  """
+  Fetch a paginated list of Pokemon Shapes using forward-only cursor-based pagination.
+  """
+  pokemonShapes(
+    """
+    Returns the first n elements from the list. Must be between 1-50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): PokemonShapeConnection!
+  
+  """
+  Fetch a single Pokemon Habitat by its global ID.
+  """
+  pokemonHabitatById(id: ID!): PokemonHabitat
+  
+  """
+  Fetch a paginated list of Pokemon Habitats using forward-only cursor-based pagination.
+  """
+  pokemonHabitats(
+    """
+    Returns the first n elements from the list. Must be between 1-50 when provided.
+    """
+    first: Int
+    
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+  ): PokemonHabitatConnection!
 }
